@@ -141,17 +141,29 @@ Error responses should expose a safe message and, where useful, a stable error c
 
 ## 8. Environment configuration
 
-Expected configuration will be documented as implementation begins. Likely values include:
+Required configuration:
 
 - `DATABASE_URL`
-- Authentication/session secret
-- API port
-- Frontend origin / allowed CORS origin
-- Frontend API base URL
+- `NODE_ENV`
+- `PORT`
+- `FRONTEND_URL`
+- `VITE_API_BASE_URL`
+- `VITE_APP_TITLE`
 
 Use different local and production values. Never put backend secrets in variables exposed to the frontend build (for example, `VITE_*` variables).
+`SESSION_SECRET` and `COOKIE_SECRET` are not used by the current database-backed
+session implementation and are not required.
 
 ## 9. Development and deployment strategy
+
+For production, set `FRONTEND_URL` to the exact HTTPS frontend origin. The backend
+rejects missing, local, non-HTTPS, or path-bearing production origins. Set
+`VITE_API_BASE_URL` at frontend build time to the deployed backend URL including
+`/api`; production builds reject missing or localhost API URLs.
+
+For separate Vercel and Render domains, authentication and CSRF cookies use
+`SameSite=None; Secure` in production with credentialed exact-origin CORS. Local
+development retains `SameSite=Lax` and localhost defaults.
 
 1. Build and verify the local database connection.
 2. Implement one vertical feature slice at a time: schema → API → UI → tests.

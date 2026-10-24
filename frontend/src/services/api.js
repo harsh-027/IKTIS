@@ -1,7 +1,20 @@
 import axios from 'axios';
 
+const configuredApiBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim();
+const isProduction = import.meta.env.PROD;
+
+if (isProduction && !configuredApiBaseUrl) {
+  throw new Error('VITE_API_BASE_URL must be configured for production.');
+}
+
+if (isProduction && /^(https?:\/\/)?(localhost|127\.0\.0\.1)([:/]|$)/i.test(configuredApiBaseUrl)) {
+  throw new Error('VITE_API_BASE_URL must point to the production API in production.');
+}
+
+const API_BASE_URL = configuredApiBaseUrl || 'http://localhost:5000/api';
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api',
+  baseURL: API_BASE_URL,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
@@ -29,7 +42,7 @@ api.interceptors.request.use(async (config) => {
     if (!csrfToken) {
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api'}/auth/csrf`,
+          `${API_BASE_URL}/auth/csrf`,
           { withCredentials: true }
         );
         csrfToken = response.data?.data?.csrfToken;
@@ -116,4 +129,3 @@ export const reportApi = {
 };
 
 export default api;
-

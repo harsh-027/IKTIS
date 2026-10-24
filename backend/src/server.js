@@ -21,7 +21,35 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+const isProduction = process.env.NODE_ENV === 'production';
+const configuredFrontendUrl = process.env.FRONTEND_URL?.trim();
+
+if (isProduction && !configuredFrontendUrl) {
+  throw new Error('FRONTEND_URL must be configured in production.');
+}
+
+let FRONTEND_URL = configuredFrontendUrl || 'http://localhost:5173';
+if (isProduction) {
+  let frontendOrigin;
+  try {
+    frontendOrigin = new URL(FRONTEND_URL);
+  } catch {
+    throw new Error('FRONTEND_URL must be a valid HTTPS origin in production.');
+  }
+
+  if (
+    frontendOrigin.protocol !== 'https:' ||
+    ['localhost', '127.0.0.1', '::1'].includes(frontendOrigin.hostname)
+  ) {
+    throw new Error('FRONTEND_URL must be a non-local HTTPS origin in production.');
+  }
+
+  if (frontendOrigin.pathname !== '/' || frontendOrigin.search || frontendOrigin.hash) {
+    throw new Error('FRONTEND_URL must contain only the frontend origin in production.');
+  }
+
+  FRONTEND_URL = frontendOrigin.origin;
+}
 
 // 1. Security Headers
 app.use(helmet());
