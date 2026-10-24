@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+
+# Environment files
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Build outputs
+**/dist/
+**/build/
+**/out/
+**/.next/
+*.tsbuildinfo
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local databases and database dumps
+*.db
+*.sqlite
+*.sqlite3
+*.sql
+!backend/prisma/migrations/**/*.sql
+
+# Private keys and certificates
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Coverage, caches, and temporary files
+coverage/
+.nyc_output/
+.cache/
+*.tmp
+*.temp
+*.swp
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

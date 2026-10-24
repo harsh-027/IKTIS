@@ -1,0 +1,21 @@
+{
+  "name": "iktis",
+  "version": "1.0.0",
+  "private": true,
+  "description": "IKTIS — Landlord-focused rental management web application",
+  "scripts": {
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build:frontend": "npm --prefix frontend run build",
+    "test:auth": "npm --prefix backend run test:auth",
+    "prisma:validate": "npm --prefix backend run prisma:validate",
+    "prisma:generate": "npm --prefix backend run prisma:generate"
+  },
+  "keywords": [
+    "rent-management",
+    "landlord",
+    "iktis"
+  ],
+  "author": "",
+  "license": "ISC"
+}

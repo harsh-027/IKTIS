@@ -1,0 +1,212 @@
+// Prisma Schema for IKTIS
+// Database: MySQL
+// Decimal precision: 10, 2 for INR (₹) monetary amounts
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// -------------------------------------------------------------
+// 1. AUTHENTICATION & MULTI-TENANT IDENTITY
+// -------------------------------------------------------------
+
+model User {
+  id           String    @id @default(uuid()) @db.VarChar(36)
+  name         String    @db.VarChar(191)
+  email        String    @unique @db.VarChar(191)
+  passwordHash String    @db.VarChar(255)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  // Relationships (Ownership root for multi-tenant isolation)
+  sessions           Session[]
+  properties         Property[]
+  tenants            Tenant[]
+  tenancies          Tenancy[]
+  rentCharges        RentCharge[]
+  payments           Payment[]
+  paymentAllocations PaymentAllocation[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String    @id @default(uuid()) @db.VarChar(36)
+  userId    String    @db.VarChar(36)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // SHA-256 hash of the opaque cookie session token
+  tokenHash String    @unique @db.VarChar(64)
+  expiresAt DateTime
+  revokedAt DateTime? // Set upon logout or bulk password revocation
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([userId, expiresAt, revokedAt])
+  @@map("sessions")
+}
+
+// -------------------------------------------------------------
+// 2. PROPERTY & ROOM PORTFOLIO
+// -------------------------------------------------------------
+
+model Property {
+  id         String    @id @default(uuid()) @db.VarChar(36)
+  ownerId    String    @db.VarChar(36)
+  owner      User      @relation(fields: [ownerId], references: [id], onDelete: Restrict)
+
+  name       String    @db.VarChar(191)
+  address    String    @db.VarChar(255)
+  archivedAt DateTime? // Soft-archiving when property has financial/tenancy links
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  rooms      Room[]
+
+  @@index([ownerId])
+  @@map("properties")
+}
+
+model Room {
+  id          String    @id @default(uuid()) @db.VarChar(36)
+  propertyId  String    @db.VarChar(36)
+  property    Property  @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+
+  label       String    @db.VarChar(100) // e.g. "Room 101", "Studio A"
+  description String?   @db.VarChar(255)
+  isAvailable Boolean   @default(true)  // Operational/maintenance availability toggle
+  archivedAt  DateTime? // Soft-archiving when room has historical tenancies
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  tenancies   Tenancy[]
+
+  // Prevents duplicate room labels within the same property
+  @@unique([propertyId, label])
+  @@index([propertyId])
+  @@map("rooms")
+}
+
+// -------------------------------------------------------------
+// 3. TENANTS & TENANCY AGREEMENTS
+// -------------------------------------------------------------
+
+model Tenant {
+  id         String    @id @default(uuid()) @db.VarChar(36)
+  ownerId    String    @db.VarChar(36)
+  owner      User      @relation(fields: [ownerId], references: [id], onDelete: Restrict)
+
+  fullName   String    @db.VarChar(191) // Non-unique; multiple tenants can share names
+  phone      String?   @db.VarChar(30)
+  email      String?   @db.VarChar(191)
+  notes      String?   @db.Text
+  archivedAt DateTime? // Soft-archiving to preserve history
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  tenancies  Tenancy[]
+  payments   Payment[]
+
+  @@index([ownerId])
+  @@map("tenants")
+}
+
+model Tenancy {
+  id          String       @id @default(uuid()) @db.VarChar(36)
+  ownerId     String       @db.VarChar(36)
+  owner       User         @relation(fields: [ownerId], references: [id], onDelete: Restrict)
+  tenantId    String       @db.VarChar(36)
+  tenant      Tenant       @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  roomId      String       @db.VarChar(36)
+  room        Room         @relation(fields: [roomId], references: [id], onDelete: Restrict)
+
+  startDate   DateTime     @db.Date
+  endDate     DateTime?    @db.Date // Nullable while tenancy is ongoing
+  monthlyRent Decimal      @db.Decimal(10, 2) // Agreed rent in INR (₹)
+  rentDueDay  Int          // Day of month (1-31) when rent is due
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  rentCharges RentCharge[]
+
+  @@index([ownerId])
+  @@index([roomId, startDate, endDate]) // Optimized for overlap validation & derived occupancy
+  @@index([tenantId])
+  @@map("tenancies")
+}
+
+// -------------------------------------------------------------
+// 4. FINANCIAL LEDGER: RENT CHARGES, PAYMENTS & ALLOCATIONS
+// -------------------------------------------------------------
+
+model RentCharge {
+  id          String              @id @default(uuid()) @db.VarChar(36)
+  ownerId     String              @db.VarChar(36)
+  owner       User                @relation(fields: [ownerId], references: [id], onDelete: Restrict)
+  tenancyId   String              @db.VarChar(36)
+  tenancy     Tenancy             @relation(fields: [tenancyId], references: [id], onDelete: Restrict)
+
+  // Canonical first of month date (e.g. 2026-11-01)
+  period      DateTime            @db.Date
+  amountDue   Decimal             @db.Decimal(10, 2) // Stored in INR (₹); supports custom amount for partial months
+  dueDate     DateTime            @db.Date
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  allocations PaymentAllocation[]
+
+  // Guarantees idempotency of bulk rent generation (one charge per tenancy per canonical period)
+  @@unique([tenancyId, period])
+  @@index([ownerId, period])
+  @@index([tenancyId, dueDate])
+  @@map("rent_charges")
+}
+
+model Payment {
+  id          String              @id @default(uuid()) @db.VarChar(36)
+  ownerId     String              @db.VarChar(36)
+  owner       User                @relation(fields: [ownerId], references: [id], onDelete: Restrict)
+  tenantId    String              @db.VarChar(36)
+  tenant      Tenant              @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+
+  amount      Decimal             @db.Decimal(10, 2) // Strictly positive amount in INR (₹)
+  paidAt      DateTime            @db.Date           // Calendar date payment was received
+  method      String?             @db.VarChar(50)    // e.g. "Cash", "UPI", "Bank Transfer", "Cheque"
+  reference   String?             @db.VarChar(100)   // Transaction/Cheque reference
+  notes       String?             @db.Text
+
+  // Auditable correction workflow (preserves full historical record)
+  voidedAt    DateTime?
+  voidReason  String?             @db.Text
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  allocations PaymentAllocation[]
+
+  @@index([ownerId, paidAt])
+  @@index([tenantId])
+  @@map("payments")
+}
+
+model PaymentAllocation {
+  id              String      @id @default(uuid()) @db.VarChar(36)
+  ownerId         String      @db.VarChar(36)
+  owner           User        @relation(fields: [ownerId], references: [id], onDelete: Restrict)
+  paymentId       String      @db.VarChar(36)
+  payment         Payment     @relation(fields: [paymentId], references: [id], onDelete: Restrict)
+  rentChargeId    String      @db.VarChar(36)
+  rentCharge      RentCharge  @relation(fields: [rentChargeId], references: [id], onDelete: Restrict)
+
+  amountAllocated Decimal     @db.Decimal(10, 2) // Stored in INR (₹)
+  createdAt       DateTime    @default(now())
+
+  @@index([paymentId])
+  @@index([rentChargeId])
+  @@index([ownerId])
+  @@map("payment_allocations")
+}
