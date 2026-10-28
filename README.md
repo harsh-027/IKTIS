@@ -2,7 +2,6 @@
 
 IKTIS is a landlord-focused rent-management web application for tracking properties, rooms, tenants, monthly rent, manual payments, outstanding balances, and rental activity.
 
-> IKTIS is the new project name replacing **Rentit**. Use IKTIS in new UI copy, documentation, repository descriptions, and branding.
 
 ## Planned technology
 
