@@ -95,9 +95,11 @@ app.use('/api/reports', reportRoutes);
 // 7. Centralized Error Handler
 app.use(errorHandler);
 
-// Auto-start server only when executed directly
+// Auto-start server only for local development. Vercel runs the exported Express app as a serverless function.
 const isMain = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
-if (isMain) {
+const shouldListenLocally = isMain && process.env.VERCEL !== '1';
+
+if (shouldListenLocally) {
   app.listen(PORT, () => {
     console.log(`[IKTIS Backend] Server running on http://localhost:${PORT}`);
   });
