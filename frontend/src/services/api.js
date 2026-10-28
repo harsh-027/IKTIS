@@ -2,16 +2,17 @@ import axios from 'axios';
 
 const configuredApiBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim();
 const isProduction = import.meta.env.PROD;
+const defaultApiBaseUrl = isProduction ? '/api' : 'http://localhost:5000/api';
 
 if (isProduction && !configuredApiBaseUrl) {
-  throw new Error('VITE_API_BASE_URL must be configured for production.');
+  // Default to a same-origin /api path in production so the frontend Vercel rewrite can forward to the backend.
 }
 
-if (isProduction && /^(https?:\/\/)?(localhost|127\.0\.0\.1)([:/]|$)/i.test(configuredApiBaseUrl)) {
+if (isProduction && configuredApiBaseUrl && /^(https?:\/\/)?(localhost|127\.0\.0\.1)([:/]|$)/i.test(configuredApiBaseUrl)) {
   throw new Error('VITE_API_BASE_URL must point to the production API in production.');
 }
 
-const API_BASE_URL = configuredApiBaseUrl || 'http://localhost:5000/api';
+const API_BASE_URL = configuredApiBaseUrl || defaultApiBaseUrl;
 
 const api = axios.create({
   baseURL: API_BASE_URL,
