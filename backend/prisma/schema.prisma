@@ -25,6 +25,7 @@ model User {
 
   // Relationships (Ownership root for multi-tenant isolation)
   sessions           Session[]
+  passwordResetTokens PasswordResetToken[]
   properties         Property[]
   tenants            Tenant[]
   tenancies          Tenancy[]
@@ -49,6 +50,19 @@ model Session {
 
   @@index([userId, expiresAt, revokedAt])
   @@map("sessions")
+}
+
+model PasswordResetToken {
+  id        String    @id @default(uuid()) @db.VarChar(36)
+  userId    String    @db.VarChar(36)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique @db.VarChar(64)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId, expiresAt, usedAt])
+  @@map("password_reset_tokens")
 }
 
 // -------------------------------------------------------------

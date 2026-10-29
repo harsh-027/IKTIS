@@ -48,6 +48,10 @@ These are design references, not an indication that IKTIS is affiliated with or 
 
 This repository starts with planning documents. The implementation, database schema, APIs, and deployment configuration must be created and tested in later milestones.
 
+## Temporarily disabled features
+
+- **Password recovery:** The password-recovery implementation remains in the codebase, but its Sign In page link is temporarily hidden until a verified email-sending domain is available. The existing recovery files and backend endpoints are retained for later re-enablement.
+
 ## Local setup (to be completed during implementation)
 
 The final setup commands will be documented after the root scripts, frontend, backend, Prisma schema, and environment variables are implemented. Never commit real `.env` files or secrets.

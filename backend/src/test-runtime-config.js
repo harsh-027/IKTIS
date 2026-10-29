@@ -60,6 +60,8 @@ assert.equal(validTest.status, 0, validTest.stderr);
 const validProduction = runConfig({
   NODE_ENV: 'production',
   DATABASE_URL: 'mysql://test',
+  RESEND_API_KEY: 'test-key',
+  RESEND_FROM_EMAIL: 'noreply@example.com',
   FRONTEND_URL: 'https://iktis.vercel.app',
 }, `import { runtimeConfig, getCookieSecurityOptions } from '${modulePath}'; console.log(JSON.stringify({ frontendUrl: runtimeConfig.frontendUrl, cookies: getCookieSecurityOptions() }));`);
 assert.equal(validProduction.status, 0, validProduction.stderr);
@@ -70,6 +72,8 @@ assert.deepEqual(validProductionOutput.cookies, { secure: true, sameSite: 'none'
 const corsCheck = runConfig({
   NODE_ENV: 'production',
   DATABASE_URL: 'mysql://test',
+  RESEND_API_KEY: 'test-key',
+  RESEND_FROM_EMAIL: 'noreply@example.com',
   FRONTEND_URL: 'https://iktis.vercel.app',
 }, `import http from 'node:http'; import app from './src/server.js'; const server = app.listen(0, () => { const { port } = server.address(); const request = http.request({ port, path: '/api/health', method: 'OPTIONS', headers: { Origin: 'https://iktis.vercel.app', 'Access-Control-Request-Method': 'GET' } }, (response) => { console.log(JSON.stringify({ status: response.statusCode, allowOrigin: response.headers['access-control-allow-origin'], allowCredentials: response.headers['access-control-allow-credentials'] })); server.close(); }); request.on('error', (error) => { console.error(error); server.close(() => process.exit(1)); }); request.end(); });`);
 assert.equal(corsCheck.status, 0, corsCheck.stderr);

@@ -32,7 +32,9 @@ for (const fileName of pageFiles) {
   assert.doesNotMatch(source, /fixed inset-0 z-50/);
 }
 
-assert.match(readSource('components/AppLayout.jsx'), /<Dialog title="Change password"/);
+assert.doesNotMatch(readSource('components/AppLayout.jsx'), /Change password/);
+assert.doesNotMatch(readSource('pages/LoginPage.jsx'), /Forgot password\?/);
+assert.match(readSource('pages/LoginPage.jsx'), /Show password/);
 assert.match(readSource('pages/ReportsPage.jsx'), /overflow-x-auto/);
 
 console.log('Frontend accessibility and responsive contracts passed.');

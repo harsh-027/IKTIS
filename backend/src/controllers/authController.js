@@ -2,8 +2,11 @@ import {
   registerSchema,
   loginSchema,
   changePasswordSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
 } from '../validators/authValidators.js';
 import * as authService from '../services/authService.js';
+import * as passwordResetService from '../services/passwordResetService.js';
 import {
   SESSION_COOKIE_NAME,
   CSRF_COOKIE_NAME,
@@ -49,6 +52,34 @@ export async function login(req, res, next) {
       data: {
         user,
       },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function forgotPassword(req, res, next) {
+  try {
+    const { email } = forgotPasswordSchema.parse(req.body);
+    await passwordResetService.requestPasswordReset(email);
+    return res.status(202).json({
+      success: true,
+      data: {
+        message: 'If an account exists for that email, password recovery instructions have been sent.',
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function resetPassword(req, res, next) {
+  try {
+    const validatedData = resetPasswordSchema.parse(req.body);
+    await passwordResetService.resetUserPassword(validatedData);
+    return res.status(200).json({
+      success: true,
+      data: { message: 'Password reset successfully. Please sign in.' },
     });
   } catch (error) {
     next(error);

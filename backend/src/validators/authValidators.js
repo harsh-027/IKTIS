@@ -37,3 +37,19 @@ export const changePasswordSchema = z.object({
     .min(8, { message: 'New password must be at least 8 characters' })
     .max(100, { message: 'New password must be under 100 characters' }),
 });
+
+export const forgotPasswordSchema = z.object({
+  email: z
+    .string({ required_error: 'Email is required' })
+    .trim()
+    .toLowerCase()
+    .email({ message: 'Please provide a valid email address' }),
+});
+
+export const resetPasswordSchema = z.object({
+  token: z.string().min(1, { message: 'Reset token is required' }),
+  newPassword: z
+    .string({ required_error: 'New password is required' })
+    .min(8, { message: 'New password must be at least 8 characters' })
+    .max(100, { message: 'New password must be under 100 characters' }),
+});

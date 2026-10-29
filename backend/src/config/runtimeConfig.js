@@ -65,11 +65,15 @@ export const isProduction = nodeEnv === 'production';
 const databaseUrl = nodeEnv === 'test'
   ? validateTestDatabaseUrl(requireValue('TEST_DATABASE_URL'))
   : undefined;
+const resendApiKey = process.env.RESEND_API_KEY?.trim();
+const resendFromEmail = process.env.RESEND_FROM_EMAIL?.trim();
 
 export const runtimeConfig = {
   nodeEnv,
   isProduction,
   databaseUrl,
+  resendApiKey,
+  resendFromEmail,
   frontendUrl: isProduction
     ? validateFrontendOrigin(requireValue('FRONTEND_URL'))
     : (process.env.FRONTEND_URL?.trim() || 'http://localhost:5173'),
@@ -77,6 +81,8 @@ export const runtimeConfig = {
 
 if (isProduction) {
   requireValue('DATABASE_URL');
+  requireValue('RESEND_API_KEY');
+  requireValue('RESEND_FROM_EMAIL');
 }
 
 export function getCookieSecurityOptions() {

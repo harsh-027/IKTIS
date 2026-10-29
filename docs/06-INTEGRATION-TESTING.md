@@ -2,6 +2,15 @@
 
 IKTIS integration tests write users, sessions, properties, rooms, tenants, tenancies, rent charges, payments, and payment allocations. Run them only against a disposable MySQL database created specifically for testing.
 
+The password recovery feature also requires these production-only backend variables:
+
+```text
+RESEND_API_KEY
+RESEND_FROM_EMAIL
+```
+
+Keep the Resend API key private. `RESEND_FROM_EMAIL` must be a sender address verified with Resend.
+
 ## 1. Create a dedicated MySQL database
 
 Create a separate database or MySQL service named something like `iktis_integration_test`. Do not use the development database or the production Aiven database.
@@ -39,7 +48,7 @@ npx prisma migrate deploy
 Remove-Item Env:DATABASE_URL
 ```
 
-This command creates the schema in the database named by `TEST_DATABASE_URL`. Removing `DATABASE_URL` is important: it prevents the application test client from seeing an identical `DATABASE_URL`, which the safety guard rejects. It does not modify the application schema. Never run `prisma migrate reset` against a shared or production database.
+This command creates the schema in the database named by `TEST_DATABASE_URL`, including the password-reset token table from the latest migration. Removing `DATABASE_URL` is important: it prevents the application test client from seeing an identical `DATABASE_URL`, which the safety guard rejects. It does not modify the application schema. Never run `prisma migrate reset` against a shared or production database.
 
 ## 4. Run the tests
 
