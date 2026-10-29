@@ -70,7 +70,7 @@ async function runTests() {
     const regA = await makeRequest({
       method: 'POST', path: '/api/auth/register',
       headers: { 'X-CSRF-Token': csrfToken }, cookies: [csrfCookie],
-      body: { name: 'Landlord RC A', email: `rc.a.${Date.now()}@example.com`, password: 'Password123!' },
+      body: { name: 'Landlord RC A', email: `rc.a.${Date.now()}@example.com`, password: 'Password123!', termsAccepted: true, privacyPolicyAccepted: true },
     });
     assert(regA.status === 201, 'Landlord A registered');
     userAId = regA.body.data.user.id;
@@ -80,7 +80,7 @@ async function runTests() {
     const regB = await makeRequest({
       method: 'POST', path: '/api/auth/register',
       headers: { 'X-CSRF-Token': csrfToken }, cookies: [csrfCookie],
-      body: { name: 'Landlord RC B', email: `rc.b.${Date.now()}@example.com`, password: 'Password123!' },
+      body: { name: 'Landlord RC B', email: `rc.b.${Date.now()}@example.com`, password: 'Password123!', termsAccepted: true, privacyPolicyAccepted: true },
     });
     assert(regB.status === 201, 'Landlord B registered');
     userBId = regB.body.data.user.id;

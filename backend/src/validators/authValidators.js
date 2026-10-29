@@ -15,6 +15,12 @@ export const registerSchema = z.object({
     .string({ required_error: 'Password is required' })
     .min(8, { message: 'Password must be at least 8 characters' })
     .max(100, { message: 'Password must be under 100 characters' }),
+  termsAccepted: z.literal(true, {
+    errorMap: () => ({ message: 'You must accept the Terms of Service' }),
+  }),
+  privacyPolicyAccepted: z.literal(true, {
+    errorMap: () => ({ message: 'You must acknowledge the Privacy Policy' }),
+  }),
 });
 
 export const loginSchema = z.object({

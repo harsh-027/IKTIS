@@ -7,6 +7,8 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [privacyPolicyAccepted, setPrivacyPolicyAccepted] = useState(false);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -30,7 +32,7 @@ export default function RegisterPage() {
     setIsSubmitting(true);
 
     try {
-      await register({ name, email, password });
+      await register({ name, email, password, termsAccepted, privacyPolicyAccepted });
       navigate('/');
     } catch (err) {
       const serverMessage = err.response?.data?.error?.message;
@@ -181,6 +183,33 @@ export default function RegisterPage() {
               </div>
             </div>
 
+            <div className="space-y-2 pt-1 text-xs text-ink-muted">
+              <label className="flex items-start gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  required
+                  checked={termsAccepted}
+                  onChange={(e) => setTermsAccepted(e.target.checked)}
+                  className="mt-0.5 h-4 w-4 rounded border-border text-primary focus:ring-primary"
+                />
+                <span>
+                  I agree to the <Link to="/terms" className="text-primary hover:underline">Terms of Service</Link>.
+                </span>
+              </label>
+              <label className="flex items-start gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  required
+                  checked={privacyPolicyAccepted}
+                  onChange={(e) => setPrivacyPolicyAccepted(e.target.checked)}
+                  className="mt-0.5 h-4 w-4 rounded border-border text-primary focus:ring-primary"
+                />
+                <span>
+                  I acknowledge the <Link to="/privacy" className="text-primary hover:underline">Privacy Policy</Link>.
+                </span>
+              </label>
+            </div>
+
             <button
               type="submit"
               disabled={isSubmitting}
@@ -215,6 +244,11 @@ export default function RegisterPage() {
           <span className="material-symbols-outlined text-[14px]">shield</span>
           <span>Encrypted session & strict multi-tenant tenant isolation</span>
         </p>
+        <nav aria-label="Legal" className="text-center text-xs text-ink-muted mt-3">
+          <Link to="/privacy" className="hover:text-ink hover:underline">Privacy Policy</Link>
+          <span className="mx-2" aria-hidden="true">·</span>
+          <Link to="/terms" className="hover:text-ink hover:underline">Terms of Service</Link>
+        </nav>
       </div>
     </div>
   );

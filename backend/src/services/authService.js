@@ -7,7 +7,13 @@ const SESSION_LIFETIME_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 /**
  * Register a new landlord user and create an initial active session
  */
-export async function registerUser({ name, email, password }) {
+export async function registerUser({
+  name,
+  email,
+  password,
+  termsAccepted,
+  privacyPolicyAccepted,
+}) {
   const normalizedEmail = email.trim().toLowerCase();
 
   const existingUser = await prisma.user.findUnique({
@@ -31,6 +37,9 @@ export async function registerUser({ name, email, password }) {
         name: name.trim(),
         email: normalizedEmail,
         passwordHash,
+        termsAcceptedAt: termsAccepted ? new Date() : null,
+        privacyPolicyVersion: privacyPolicyAccepted ? '2026-10-29' : null,
+        privacyPolicyAcceptedAt: privacyPolicyAccepted ? new Date() : null,
       },
     });
 

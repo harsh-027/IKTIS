@@ -91,6 +91,8 @@ async function runTests() {
         name: 'Landlord Payments Tester A',
         email: `payments_a_${ts}@test.com`,
         password: 'Password123!',
+        termsAccepted: true,
+        privacyPolicyAccepted: true,
       },
     });
     assert(regResA.status === 201, 'Register Landlord A → 201');
@@ -541,6 +543,8 @@ async function runTests() {
         name: 'Landlord Payments Tester B',
         email: `payments_b_${ts}@test.com`,
         password: 'Password123!',
+        termsAccepted: true,
+        privacyPolicyAccepted: true,
       },
     });
     assert(regResB.status === 201, 'Register Landlord B → 201');

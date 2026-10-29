@@ -94,7 +94,7 @@ async function runTests() {
       method: 'POST',
       path: '/api/auth/register',
       cookies: clientCookies,
-      body: { name: testName, email: testEmail, password: testPassword },
+      body: { name: testName, email: testEmail, password: testPassword, termsAccepted: true, privacyPolicyAccepted: true },
     });
     assert(noCsrfRes.status === 403, 'POST /api/auth/register without X-CSRF-Token is rejected (HTTP 403)');
     assert(noCsrfRes.body?.error?.code === 'CSRF_TOKEN_MISSING', 'Returns code CSRF_TOKEN_MISSING');
@@ -116,7 +116,7 @@ async function runTests() {
       path: '/api/auth/register',
       headers: { 'X-CSRF-Token': rawCsrfToken },
       cookies: clientCookies,
-      body: { name: testName, email: testEmail, password: testPassword },
+      body: { name: testName, email: testEmail, password: testPassword, termsAccepted: true, privacyPolicyAccepted: true },
     });
     assert(regRes.status === 201, 'POST /api/auth/register creates user and returns HTTP 201');
     assert(regRes.body?.data?.user?.email === testEmail, 'Returns registered user profile');
@@ -151,7 +151,7 @@ async function runTests() {
       path: '/api/auth/register',
       headers: { 'X-CSRF-Token': rawCsrfToken },
       cookies: clientCookies,
-      body: { name: 'Another Landlord', email: testEmail, password: testPassword },
+      body: { name: 'Another Landlord', email: testEmail, password: testPassword, termsAccepted: true, privacyPolicyAccepted: true },
     });
     assert(dupRes.status === 409, 'Duplicate email registration rejected with HTTP 409');
     assert(dupRes.body?.error?.code === 'EMAIL_EXISTS', 'Returns code EMAIL_EXISTS');

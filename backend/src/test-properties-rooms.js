@@ -92,7 +92,7 @@ async function runTests() {
       path: '/api/auth/register',
       headers: { 'X-CSRF-Token': csrfToken },
       cookies: [csrfCookie],
-      body: { name: 'Landlord A', email: emailA, password: 'Password123!' },
+      body: { name: 'Landlord A', email: emailA, password: 'Password123!', termsAccepted: true, privacyPolicyAccepted: true },
     });
     assert(regARes.status === 201, 'Landlord A registered successfully');
     userAId = regARes.body.data.user.id;
@@ -106,7 +106,7 @@ async function runTests() {
       path: '/api/auth/register',
       headers: { 'X-CSRF-Token': csrfToken },
       cookies: [csrfCookie],
-      body: { name: 'Landlord B', email: emailB, password: 'Password123!' },
+      body: { name: 'Landlord B', email: emailB, password: 'Password123!', termsAccepted: true, privacyPolicyAccepted: true },
     });
     assert(regBRes.status === 201, 'Landlord B registered successfully');
     userBId = regBRes.body.data.user.id;

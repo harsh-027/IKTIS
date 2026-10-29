@@ -36,5 +36,8 @@ assert.doesNotMatch(readSource('components/AppLayout.jsx'), /Change password/);
 assert.doesNotMatch(readSource('pages/LoginPage.jsx'), /Forgot password\?/);
 assert.match(readSource('pages/LoginPage.jsx'), /Show password/);
 assert.match(readSource('pages/ReportsPage.jsx'), /overflow-x-auto/);
+assert.match(readSource('pages/RegisterPage.jsx'), /Terms of Service/);
+assert.match(readSource('pages/RegisterPage.jsx'), /Privacy Policy/);
+assert.match(readSource('pages/RegisterPage.jsx'), /required/);
 
 console.log('Frontend accessibility and responsive contracts passed.');

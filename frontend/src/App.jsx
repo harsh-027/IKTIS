@@ -16,6 +16,7 @@ import TenantDetailPage from './pages/TenantDetailPage.jsx';
 import RentChargesPage from './pages/RentChargesPage.jsx';
 import PaymentsPage from './pages/PaymentsPage.jsx';
 import ReportsPage from './pages/ReportsPage.jsx';
+import LegalPage from './pages/LegalPage.jsx';
 
 export default function App() {
   return (
@@ -29,6 +30,8 @@ export default function App() {
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/register" element={<RegisterPage />} />
           </Route>
+          <Route path="/privacy" element={<LegalPage />} />
+          <Route path="/terms" element={<LegalPage />} />
 
           {/* Protected routes — all share the AppLayout shell */}
           <Route element={<ProtectedRoute />}>

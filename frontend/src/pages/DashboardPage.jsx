@@ -162,33 +162,26 @@ export default function DashboardPage() {
               <span className="material-symbols-outlined text-[18px]">add_circle</span>
               <span>Bulk Rent</span>
             </Link>
-            <Link
-              to="/reports"
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-border bg-canvas hover:bg-canvas-soft text-ink font-medium text-xs sm:text-sm active:scale-[0.98] transition min-h-[40px]"
-            >
-              <span className="material-symbols-outlined text-[18px] text-ink-muted">analytics</span>
-              <span className="hidden sm:inline">Reports</span>
-            </Link>
           </div>
         </div>
 
         {/* Period Filter Pills & Month Navigator */}
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+        <div className="flex items-center gap-3 overflow-x-auto no-scrollbar py-1">
           <div className="flex items-center bg-canvas rounded-full border border-border p-1 shadow-sm shrink-0">
             <button
               onClick={handlePrevMonth}
               aria-label="Previous month"
-              className="p-1 rounded-full text-ink-muted hover:text-ink hover:bg-canvas-soft min-h-[32px] min-w-[32px] flex items-center justify-center cursor-pointer active:scale-95 transition"
+              className="p-1 rounded-full text-ink-muted hover:text-ink hover:bg-canvas-soft min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer active:scale-95 transition"
             >
               <span className="material-symbols-outlined text-[18px]">chevron_left</span>
             </button>
-            <span className="px-3 text-xs font-semibold text-ink tracking-tight whitespace-nowrap">
+            <span aria-live="polite" className="px-4 text-xs font-semibold text-ink tracking-tight whitespace-nowrap">
               {formattedMonthHeader}
             </span>
             <button
               onClick={handleNextMonth}
               aria-label="Next month"
-              className="p-1 rounded-full text-ink-muted hover:text-ink hover:bg-canvas-soft min-h-[32px] min-w-[32px] flex items-center justify-center cursor-pointer active:scale-95 transition"
+              className="p-1 rounded-full text-ink-muted hover:text-ink hover:bg-canvas-soft min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer active:scale-95 transition"
             >
               <span className="material-symbols-outlined text-[18px]">chevron_right</span>
             </button>
@@ -196,10 +189,11 @@ export default function DashboardPage() {
 
           <button
             onClick={handleSetCurrentMonth}
-            className={`px-3.5 py-1.5 rounded-full text-xs font-medium whitespace-nowrap active:scale-[0.98] transition-transform shrink-0 ${
+            aria-pressed={isCurrentMonth}
+            className={`px-3.5 py-1.5 rounded-full text-xs font-medium whitespace-nowrap active:scale-[0.98] transition-transform shrink-0 border ${
               isCurrentMonth
-                ? 'bg-ink text-white font-semibold'
-                : 'bg-canvas-soft text-ink hover:bg-surface-container'
+                ? 'bg-canvas-soft border-border text-ink font-semibold'
+                : 'bg-canvas border-border text-ink hover:bg-canvas-soft'
             }`}
           >
             This Month
@@ -209,7 +203,7 @@ export default function DashboardPage() {
             to="/payments?action=record"
             className="px-3.5 py-1.5 rounded-full bg-canvas-soft text-ink hover:bg-surface-container text-xs font-medium whitespace-nowrap active:scale-[0.98] transition-transform shrink-0 inline-flex items-center gap-1"
           >
-            <span className="material-symbols-outlined text-[16px] text-primary">payments</span>
+            <span className="material-symbols-outlined text-[16px] text-primary" aria-hidden="true">payments</span>
             <span>Record Payment</span>
           </Link>
         </div>
@@ -228,7 +222,7 @@ export default function DashboardPage() {
         <div className="p-4 rounded-[18px] bg-canvas flex flex-col justify-between shadow-sm border border-slate-100 hover:shadow-md transition-shadow relative overflow-hidden">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-ink-muted font-medium">Total Expected</span>
-            <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600">
+            <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-ink-muted">
               <span className="material-symbols-outlined text-[18px]">receipt_long</span>
             </div>
           </div>
@@ -241,7 +235,7 @@ export default function DashboardPage() {
                 <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
                 <span>{monthly.chargesCount} leases</span>
               </span>
-              <span className="text-emerald-700 font-medium">Safe Roll</span>
+              <span className="text-badge-paid-text font-medium">Safe Roll</span>
             </div>
             <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden mt-1">
               <div className="h-full bg-primary rounded-full transition-all duration-300" style={{ width: '100%' }}></div>
@@ -258,7 +252,7 @@ export default function DashboardPage() {
             </div>
           </div>
           <div className="space-y-2">
-            <div className="text-xl sm:text-2xl font-bold text-emerald-900 tabular-nums tracking-tight">
+            <div className="text-xl sm:text-2xl font-bold text-ink tabular-nums tracking-tight">
               {loading ? '—' : formatINR(monthly.paymentsCollected)}
             </div>
             <div className="flex items-center justify-between text-[11px]">
@@ -288,7 +282,7 @@ export default function DashboardPage() {
             </div>
           </div>
           <div className="space-y-2">
-            <div className={`text-xl sm:text-2xl font-bold tabular-nums tracking-tight ${monthly.outstandingRent > 0 ? 'text-rose-950' : 'text-ink'}`}>
+            <div className="text-xl sm:text-2xl font-bold text-ink tabular-nums tracking-tight">
               {loading ? '—' : formatINR(monthly.outstandingRent)}
             </div>
             <div className="flex items-center justify-between text-[11px]">
@@ -300,7 +294,7 @@ export default function DashboardPage() {
                 <span className={`w-1.5 h-1.5 rounded-full ${monthly.overdueRent > 0 ? 'bg-rose-500 animate-pulse' : 'bg-slate-400'}`}></span>
                 <span>{monthly.overdueRent > 0 ? `${formatINR(monthly.overdueRent)} overdue` : 'On schedule'}</span>
               </span>
-              <span className={`text-[11px] font-medium ${monthly.overdueRent > 0 ? 'text-rose-600' : 'text-emerald-700'}`}>
+              <span className="text-[11px] font-medium text-ink-muted">
                 {monthly.overdueRent > 0 ? 'Action req.' : 'Healthy'}
               </span>
             </div>
@@ -365,13 +359,23 @@ export default function DashboardPage() {
           </div>
         </div>
         <div className="flex items-center gap-2 w-full sm:w-auto shrink-0 justify-end pt-1 sm:pt-0">
-          <Link
-            to={`/rent-charges?month=${selectedMonth}`}
-            className="px-3.5 py-2 rounded-xl bg-primary text-white text-xs font-semibold flex items-center gap-1.5 shadow-sm active:scale-[0.98] transition-transform"
-          >
-            <span>Review Charges</span>
-            <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
-          </Link>
+          {monthly.chargesCount > 0 ? (
+            <Link
+              to={`/rent-charges?month=${selectedMonth}`}
+              className="px-3.5 py-2 rounded-xl bg-primary text-white text-xs font-semibold flex items-center gap-1.5 shadow-sm active:scale-[0.98] transition-transform"
+            >
+              <span>Review Charges</span>
+              <span className="material-symbols-outlined text-[16px]" aria-hidden="true">arrow_forward</span>
+            </Link>
+          ) : (
+            <button
+              type="button"
+              disabled
+              className="px-3.5 py-2 rounded-xl border border-border bg-canvas-soft text-ink-muted text-xs font-semibold flex items-center gap-1.5 cursor-not-allowed"
+            >
+              <span>No charges to review</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -381,21 +385,14 @@ export default function DashboardPage() {
           <div>
             <div className="flex items-center gap-1.5">
               <span className="material-symbols-outlined text-primary text-[18px]">account_balance</span>
-              <span className="text-xs font-bold uppercase tracking-wider text-ink">
-                Cumulative Lifetime Totals
+              <span className="text-xs font-bold text-ink">
+                Cumulative lifetime totals
               </span>
             </div>
-            <p className="text-[11px] text-ink-muted mt-0.5">
+            <p className="text-xs text-ink-muted mt-0.5">
               Historical ledger across all recorded periods (excludes voided payments)
             </p>
           </div>
-          <Link
-            to="/reports"
-            className="text-xs font-semibold text-primary hover:underline shrink-0 inline-flex items-center gap-1"
-          >
-            <span>Full Financial Reports</span>
-            <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
-          </Link>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 pt-1 text-xs">
@@ -412,7 +409,7 @@ export default function DashboardPage() {
             </span>
           </div>
           <div className="p-2.5 rounded-xl bg-amber-50/50 border border-amber-100/50">
-            <span className="text-[11px] text-amber-800 block font-medium">Lifetime Outstanding</span>
+            <span className="text-xs text-amber-800 block font-medium">Lifetime Outstanding</span>
             <span className="text-base sm:text-lg font-bold text-amber-700">
               {loading ? '—' : formatINR(lifetime.lifetimeOutstanding)}
             </span>
@@ -441,9 +438,9 @@ export default function DashboardPage() {
               </div>
               <Link
                 to="/payments?action=record"
-                className="text-xs font-semibold text-primary hover:underline min-h-[36px] inline-flex items-center gap-1"
+                className="text-xs font-medium text-primary hover:underline min-h-[36px] inline-flex items-center gap-1"
               >
-                <span className="material-symbols-outlined text-[16px]">add</span>
+                <span className="material-symbols-outlined text-[16px] text-primary" aria-hidden="true">payments</span>
                 <span>Record Payment</span>
               </Link>
             </div>

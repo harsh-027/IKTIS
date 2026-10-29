@@ -167,6 +167,11 @@ export default function LoginPage() {
           <span className="material-symbols-outlined text-[14px]">shield</span>
           <span>Encrypted session & strict multi-tenant tenant isolation</span>
         </p>
+        <nav aria-label="Legal" className="text-center text-xs text-ink-muted mt-3">
+          <Link to="/privacy" className="hover:text-ink hover:underline">Privacy Policy</Link>
+          <span className="mx-2" aria-hidden="true">·</span>
+          <Link to="/terms" className="hover:text-ink hover:underline">Terms of Service</Link>
+        </nav>
       </div>
     </div>
   );
