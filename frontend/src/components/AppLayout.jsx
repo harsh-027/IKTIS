@@ -12,7 +12,7 @@ export default function AppLayout() {
   };
 
   const navLinkClasses = ({ isActive }) =>
-    `inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium transition-all px-2.5 sm:px-3 py-1.5 min-h-[40px] rounded-full active:scale-[0.98] ${
+    `group ${isActive ? 'active' : ''} inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium transition-all px-2.5 sm:px-3 py-1.5 min-h-[40px] rounded-full active:scale-[0.98] ${
       isActive
         ? 'bg-ink text-white font-semibold shadow-sm'
         : 'text-ink-muted hover:text-ink hover:bg-canvas-soft'
@@ -48,27 +48,27 @@ export default function AppLayout() {
           <nav className="w-full sm:w-auto sm:flex-1 flex items-center gap-1 sm:gap-1.5 overflow-x-auto no-scrollbar py-1 order-3 sm:order-2 sm:justify-center">
             <NavLink to="/" end className={navLinkClasses}>
               <span className="material-symbols-outlined text-[18px]">dashboard</span>
-              <span>Dashboard</span>
+              <span className="hidden sm:inline group-[.active]:inline">Dashboard</span>
             </NavLink>
             <NavLink to="/properties" className={navLinkClasses}>
               <span className="material-symbols-outlined text-[18px]">apartment</span>
-              <span>Properties</span>
+              <span className="hidden sm:inline group-[.active]:inline">Properties</span>
             </NavLink>
             <NavLink to="/tenants" className={navLinkClasses}>
               <span className="material-symbols-outlined text-[18px]">group</span>
-              <span>Tenants</span>
+              <span className="hidden sm:inline group-[.active]:inline">Tenants</span>
             </NavLink>
             <NavLink to="/rent-charges" className={navLinkClasses}>
               <span className="material-symbols-outlined text-[18px]">receipt_long</span>
-              <span>Charges</span>
+              <span className="hidden sm:inline group-[.active]:inline">Charges</span>
             </NavLink>
             <NavLink to="/payments" className={navLinkClasses}>
               <span className="material-symbols-outlined text-[18px]">payments</span>
-              <span>Payments</span>
+              <span className="hidden sm:inline group-[.active]:inline">Payments</span>
             </NavLink>
             <NavLink to="/reports" className={navLinkClasses}>
               <span className="material-symbols-outlined text-[18px]">analytics</span>
-              <span>Reports</span>
+              <span className="hidden sm:inline group-[.active]:inline">Reports</span>
             </NavLink>
           </nav>
 
