@@ -4,6 +4,10 @@
     {
       "source": "/api/(.*)",
       "destination": "https://iktis-bkend.vercel.app/api/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
