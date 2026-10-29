@@ -1,5 +1,6 @@
 import { ZodError } from 'zod';
 import { AppError } from '../utils/errors.js';
+import { isProduction } from '../config/runtimeConfig.js';
 
 /**
  * Centralized Express Error Handling Middleware
@@ -49,7 +50,6 @@ export function errorHandler(err, req, res, next) {
   // Generic unhandled exceptions
   console.error('[Unhandled API Error]:', err);
 
-  const isProduction = process.env.NODE_ENV === 'production';
   return res.status(500).json({
     success: false,
     error: {

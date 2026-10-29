@@ -1,14 +1,63 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
+import { authApi } from '../services/api.js';
+import Dialog from './Dialog.jsx';
 
 export default function AppLayout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [isPasswordFormOpen, setIsPasswordFormOpen] = useState(false);
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  });
+  const [passwordError, setPasswordError] = useState('');
+  const [passwordSuccess, setPasswordSuccess] = useState('');
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
 
   const handleSignOut = async () => {
     await logout();
     navigate('/login');
+  };
+
+  const closePasswordForm = () => {
+    if (isChangingPassword) return;
+    setIsPasswordFormOpen(false);
+    setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    setPasswordError('');
+    setPasswordSuccess('');
+  };
+
+  const handlePasswordChange = async (event) => {
+    event.preventDefault();
+    setPasswordError('');
+    setPasswordSuccess('');
+
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      setPasswordError('New passwords do not match.');
+      return;
+    }
+
+    setIsChangingPassword(true);
+    try {
+      await authApi.changePassword({
+        currentPassword: passwordForm.currentPassword,
+        newPassword: passwordForm.newPassword,
+      });
+      setPasswordSuccess('Password changed successfully. Other active sessions were signed out.');
+      setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    } catch (error) {
+      const details = error.response?.data?.error?.details;
+      setPasswordError(
+        details?.length
+          ? details.map((detail) => detail.message).join(' ')
+          : error.response?.data?.error?.message || 'Unable to change password.'
+      );
+    } finally {
+      setIsChangingPassword(false);
+    }
   };
 
   const navLinkClasses = ({ isActive }) =>
@@ -76,6 +125,20 @@ export default function AppLayout() {
             </div>
 
             <button
+              onClick={() => {
+                setPasswordSuccess('');
+                setPasswordError('');
+                setIsPasswordFormOpen(true);
+              }}
+              className="inline-flex items-center gap-1 min-h-[40px] px-3 py-1.5 rounded-full border border-border hover:bg-canvas-soft text-ink text-xs font-medium transition active:scale-[0.98] cursor-pointer shrink-0 shadow-sm"
+              aria-label="Change password"
+              title="Change account password"
+            >
+              <span className="material-symbols-outlined text-[16px] text-ink-muted">key</span>
+              <span className="hidden sm:inline">Password</span>
+            </button>
+
+            <button
               onClick={handleSignOut}
               className="inline-flex items-center gap-1 min-h-[40px] px-3 py-1.5 rounded-full border border-border hover:bg-canvas-soft text-ink text-xs font-medium transition active:scale-[0.98] cursor-pointer shrink-0 shadow-sm"
               aria-label="Sign out"
@@ -92,6 +155,70 @@ export default function AppLayout() {
       <main className="flex-1 max-w-6xl w-full mx-auto px-3 sm:px-6 py-4 sm:py-6">
         <Outlet />
       </main>
+
+      {isPasswordFormOpen && (
+        <Dialog title="Change password" onClose={closePasswordForm}>
+          <p className="text-xs text-ink-muted -mt-2 mb-5">
+            Changing your password signs out other active sessions.
+          </p>
+
+          {passwordError && (
+            <div role="alert" className="mb-4 rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800">
+              {passwordError}
+            </div>
+          )}
+          {passwordSuccess && (
+            <div role="status" className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">
+              {passwordSuccess}
+            </div>
+          )}
+
+          <form onSubmit={handlePasswordChange} className="space-y-4">
+              <label className="block text-xs font-semibold text-ink">
+                Current password
+                <input
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                  value={passwordForm.currentPassword}
+                  onChange={(event) => setPasswordForm({ ...passwordForm, currentPassword: event.target.value })}
+                  className="mt-1.5 w-full rounded-xl border border-border bg-canvas px-3.5 py-2.5 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </label>
+              <label className="block text-xs font-semibold text-ink">
+                New password
+                <input
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                  minLength={8}
+                  value={passwordForm.newPassword}
+                  onChange={(event) => setPasswordForm({ ...passwordForm, newPassword: event.target.value })}
+                  className="mt-1.5 w-full rounded-xl border border-border bg-canvas px-3.5 py-2.5 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </label>
+              <label className="block text-xs font-semibold text-ink">
+                Confirm new password
+                <input
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                  minLength={8}
+                  value={passwordForm.confirmPassword}
+                  onChange={(event) => setPasswordForm({ ...passwordForm, confirmPassword: event.target.value })}
+                  className="mt-1.5 w-full rounded-xl border border-border bg-canvas px-3.5 py-2.5 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </label>
+              <button
+                type="submit"
+                disabled={isChangingPassword}
+                className="w-full min-h-[44px] rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary-focus disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {isChangingPassword ? 'Changing password...' : 'Change password'}
+              </button>
+          </form>
+        </Dialog>
+      )}
     </div>
   );
 }

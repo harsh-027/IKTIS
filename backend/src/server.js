@@ -2,9 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
-import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 
+import { isProduction, runtimeConfig } from './config/runtimeConfig.js';
 import authRoutes from './routes/authRoutes.js';
 import propertyRoutes from './routes/propertyRoutes.js';
 import roomRoutes from './routes/roomRoutes.js';
@@ -17,52 +17,17 @@ import reportRoutes from './routes/reportRoutes.js';
 import { csrfProtection } from './middleware/csrfMiddleware.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
-dotenv.config();
-
 const app = express();
 app.set('trust proxy', 1);
 
 const PORT = process.env.PORT || 5000;
-const isProduction = process.env.NODE_ENV === 'production';
-const configuredFrontendUrl = process.env.FRONTEND_URL?.trim();
-
-if (isProduction && !process.env.DATABASE_URL) {
-  throw new Error('DATABASE_URL must be configured in production.');
-}
-
-if (isProduction && !configuredFrontendUrl) {
-  throw new Error('FRONTEND_URL must be configured in production.');
-}
-
-let FRONTEND_URL = configuredFrontendUrl || 'http://localhost:5173';
-if (isProduction) {
-  let frontendOrigin;
-  try {
-    frontendOrigin = new URL(FRONTEND_URL);
-  } catch {
-    throw new Error('FRONTEND_URL must be a valid HTTPS origin in production.');
-  }
-
-  if (
-    frontendOrigin.protocol !== 'https:' ||
-    ['localhost', '127.0.0.1', '::1'].includes(frontendOrigin.hostname)
-  ) {
-    throw new Error('FRONTEND_URL must be a non-local HTTPS origin in production.');
-  }
-
-  if (frontendOrigin.pathname !== '/' || frontendOrigin.search || frontendOrigin.hash) {
-    throw new Error('FRONTEND_URL must contain only the frontend origin in production.');
-  }
-
-  FRONTEND_URL = frontendOrigin.origin;
-}
 
 // 1. Security Headers
 app.use(helmet());
 
 // 2. Cross-Origin Resource Sharing with credentials
 app.use(cors({
-  origin: FRONTEND_URL,
+  origin: runtimeConfig.frontendUrl,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'X-CSRF-Token', 'Authorization'],

@@ -1,44 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { tenantApi } from '../services/api.js';
-
-// ─── Calm Precision Modal ──────────────────────────────────────────────────
-function Modal({ title, onClose, children }) {
-  const handleBackdrop = (e) => {
-    if (e.target === e.currentTarget) onClose();
-  };
-
-  useEffect(() => {
-    const handler = (e) => {
-      if (e.key === 'Escape') onClose();
-    };
-    document.addEventListener('keydown', handler);
-    return () => document.removeEventListener('keydown', handler);
-  }, [onClose]);
-
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-3 sm:p-4 overflow-y-auto"
-      onClick={handleBackdrop}
-    >
-      <div className="bg-canvas rounded-[18px] border border-border shadow-2xl w-full max-w-md p-5 sm:p-6 max-h-[90dvh] flex flex-col my-auto">
-        <div className="flex items-center justify-between mb-4 shrink-0">
-          <h2 className="text-base font-semibold text-ink">{title}</h2>
-          <button
-            onClick={onClose}
-            aria-label="Close modal"
-            className="text-ink-muted hover:text-ink transition text-base leading-none rounded-full min-h-[40px] min-w-[40px] inline-flex items-center justify-center hover:bg-canvas-soft cursor-pointer"
-          >
-            ✕
-          </button>
-        </div>
-        <div className="overflow-y-auto flex-1 pr-0.5">
-          {children}
-        </div>
-      </div>
-    </div>
-  );
-}
+import Modal from '../components/Dialog.jsx';
 
 // ─── Tenant Form ─────────────────────────────────────────────────────────────
 function TenantForm({ initial = {}, onSubmit, onCancel, loading }) {

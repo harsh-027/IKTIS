@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import { dashboardApi, paymentApi } from '../services/api.js';
+import Dialog from '../components/Dialog.jsx';
 
 function formatINR(amount) {
   if (amount === undefined || amount === null || isNaN(amount)) return '₹0';
@@ -580,26 +581,12 @@ export default function DashboardPage() {
 
       {/* ─── Printable Receipt Viewer Modal ────────────────────────────── */}
       {receiptData && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-3 sm:p-4 overflow-y-auto"
-          onClick={(e) => { if (e.target === e.currentTarget) setReceiptData(null); }}
+        <Dialog
+          title={`Payment Receipt • ${receiptData.receiptNumber}`}
+          onClose={() => setReceiptData(null)}
+          maxWidth="max-w-xl"
         >
-          <div className="bg-canvas rounded-[18px] border border-border shadow-2xl w-full max-w-xl p-5 sm:p-6 max-h-[92dvh] overflow-y-auto my-auto space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-border">
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-primary text-[22px]">receipt_long</span>
-                <h2 className="text-base font-semibold text-ink">
-                  Payment Receipt • {receiptData.receiptNumber}
-                </h2>
-              </div>
-              <button
-                onClick={() => setReceiptData(null)}
-                className="text-ink-muted hover:text-ink text-base min-h-[40px] min-w-[40px] flex items-center justify-center cursor-pointer rounded-full hover:bg-canvas-soft"
-              >
-                ✕
-              </button>
-            </div>
-
+          <div className="space-y-4">
             <div className="space-y-3 text-xs">
               <div className="flex justify-between items-center p-3 bg-canvas-soft rounded-xl">
                 <div>
@@ -643,7 +630,7 @@ export default function DashboardPage() {
               </button>
             </div>
           </div>
-        </div>
+        </Dialog>
       )}
     </div>
   );

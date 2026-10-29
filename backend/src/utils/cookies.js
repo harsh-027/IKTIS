@@ -1,8 +1,9 @@
+import { getCookieSecurityOptions } from '../config/runtimeConfig.js';
+
 export const SESSION_COOKIE_NAME = 'iktis_session';
 export const CSRF_COOKIE_NAME = 'iktis_csrf';
 
-const isProduction = process.env.NODE_ENV === 'production';
-const sameSite = isProduction ? 'none' : 'lax';
+const cookieSecurityOptions = getCookieSecurityOptions();
 const SESSION_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
 /**
@@ -11,8 +12,7 @@ const SESSION_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 export function getSessionCookieOptions(expiresAt) {
   return {
     httpOnly: true,
-    secure: isProduction,
-    sameSite,
+    ...cookieSecurityOptions,
     path: '/',
     expires: expiresAt || new Date(Date.now() + SESSION_MAX_AGE_MS),
   };
@@ -24,8 +24,7 @@ export function getSessionCookieOptions(expiresAt) {
 export function getCsrfCookieOptions() {
   return {
     httpOnly: false,
-    secure: isProduction,
-    sameSite,
+    ...cookieSecurityOptions,
     path: '/',
     maxAge: SESSION_MAX_AGE_MS,
   };
@@ -37,8 +36,7 @@ export function getCsrfCookieOptions() {
 export function clearSessionCookie(res) {
   res.clearCookie(SESSION_COOKIE_NAME, {
     httpOnly: true,
-    secure: isProduction,
-    sameSite,
+    ...cookieSecurityOptions,
     path: '/',
   });
 }

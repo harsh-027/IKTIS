@@ -211,12 +211,82 @@ async function runTests() {
     assert(!!newSessionCookie, 'Login issues new session cookie');
     const loggedInCookies = [parseCookie(csrfCookie), parseCookie(newSessionCookie)];
 
-    // Test 12: Logout revokes session and clears cookie
+    // Test 12: Password change requires CSRF and the current password
+    const noPasswordCsrfRes = await makeRequest({
+      method: 'POST',
+      path: '/api/auth/password',
+      cookies: loggedInCookies,
+      body: { currentPassword: testPassword, newPassword: 'NewStrongPassword123!' },
+    });
+    assert(noPasswordCsrfRes.status === 403, 'Password change without CSRF token is rejected');
+
+    const wrongCurrentPasswordRes = await makeRequest({
+      method: 'POST',
+      path: '/api/auth/password',
+      headers: { 'X-CSRF-Token': rawCsrfToken },
+      cookies: loggedInCookies,
+      body: { currentPassword: 'WrongPassword999!', newPassword: 'NewStrongPassword123!' },
+    });
+    assert(wrongCurrentPasswordRes.status === 401, 'Password change with incorrect current password is rejected');
+    assert(
+      wrongCurrentPasswordRes.body?.error?.code === 'INVALID_CURRENT_PASSWORD',
+      'Incorrect current password returns INVALID_CURRENT_PASSWORD'
+    );
+
+    const invalidNewPasswordRes = await makeRequest({
+      method: 'POST',
+      path: '/api/auth/password',
+      headers: { 'X-CSRF-Token': rawCsrfToken },
+      cookies: loggedInCookies,
+      body: { currentPassword: testPassword, newPassword: 'short' },
+    });
+    assert(invalidNewPasswordRes.status === 400, 'Password change validates the new password');
+
+    const changePasswordRes = await makeRequest({
+      method: 'POST',
+      path: '/api/auth/password',
+      headers: { 'X-CSRF-Token': rawCsrfToken },
+      cookies: loggedInCookies,
+      body: { currentPassword: testPassword, newPassword: 'NewStrongPassword123!' },
+    });
+    assert(changePasswordRes.status === 200, 'Valid password change returns HTTP 200');
+    assert(
+      changePasswordRes.body?.data?.message === 'Password changed successfully.',
+      'Password change returns a success message'
+    );
+
+    const rotatedSessionCookie = changePasswordRes.cookies.find((c) => c.startsWith('iktis_session='));
+    assert(!!rotatedSessionCookie, 'Password change issues a replacement session cookie');
+    const rotatedCookies = [parseCookie(csrfCookie), parseCookie(rotatedSessionCookie)];
+
+    const oldSessionMeRes = await makeRequest({
+      method: 'GET',
+      path: '/api/auth/me',
+      cookies: loggedInCookies,
+    });
+    assert(oldSessionMeRes.status === 401, 'Password change revokes the previous session');
+
+    const rotatedSessionMeRes = await makeRequest({
+      method: 'GET',
+      path: '/api/auth/me',
+      cookies: rotatedCookies,
+    });
+    assert(rotatedSessionMeRes.status === 200, 'Replacement session remains authorized');
+
+    const rotatedRawToken = parseCookie(rotatedSessionCookie).replace('iktis_session=', '');
+    const activeSessions = await prisma.session.findMany({ where: { userId: dbUser.id } });
+    assert(
+      activeSessions.filter((session) => session.revokedAt === null).length === 1 &&
+        activeSessions.some((session) => session.tokenHash === hashToken(rotatedRawToken)),
+      'Password change leaves only the replacement session active'
+    );
+
+    // Test 13: Logout revokes session and clears cookie
     const logoutRes = await makeRequest({
       method: 'POST',
       path: '/api/auth/logout',
       headers: { 'X-CSRF-Token': rawCsrfToken },
-      cookies: loggedInCookies,
+      cookies: rotatedCookies,
     });
     assert(logoutRes.status === 200, 'POST /api/auth/logout returns HTTP 200');
 
@@ -225,17 +295,17 @@ async function runTests() {
     assert(!!clearedCookie, 'Logout clears iktis_session cookie');
 
     // Verify session revoked in database
-    const loggedInRawToken = parseCookie(newSessionCookie).replace('iktis_session=', '');
+    const loggedInRawToken = parseCookie(rotatedSessionCookie).replace('iktis_session=', '');
     const revokedSession = await prisma.session.findUnique({
       where: { tokenHash: hashToken(loggedInRawToken) },
     });
     assert(revokedSession?.revokedAt !== null, 'Session record in database is marked revokedAt !== null');
 
-    // Test 13: Subsequent request using logged-out session token is rejected
+    // Test 14: Subsequent request using logged-out session token is rejected
     const postLogoutMeRes = await makeRequest({
       method: 'GET',
       path: '/api/auth/me',
-      cookies: loggedInCookies,
+      cookies: rotatedCookies,
     });
     assert(postLogoutMeRes.status === 401, 'Subsequent GET /api/auth/me with revoked token rejected (HTTP 401)');
 

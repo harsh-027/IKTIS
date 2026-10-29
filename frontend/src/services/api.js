@@ -66,6 +66,7 @@ export const authApi = {
   login: (data) => api.post('/auth/login', data),
   logout: () => api.post('/auth/logout'),
   getMe: () => api.get('/auth/me'),
+  changePassword: (data) => api.post('/auth/password', data),
 };
 
 export const propertyApi = {

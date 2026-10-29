@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { paymentApi, tenantApi } from '../services/api.js';
+import Modal from '../components/Dialog.jsx';
 
 // ─── Currency & Date Formatting Helpers ─────────────────────────────────────
 
@@ -25,47 +26,6 @@ function formatDate(dateStr) {
   } catch {
     return dateStr;
   }
-}
-
-// ─── Modal Shell (Stitch Calm Precision) ────────────────────────────────────
-
-function Modal({ title, onClose, maxWidth = 'max-w-lg', children }) {
-  const handleBackdrop = (e) => {
-    if (e.target === e.currentTarget) onClose();
-  };
-
-  useEffect(() => {
-    const handler = (e) => {
-      if (e.key === 'Escape') onClose();
-    };
-    document.addEventListener('keydown', handler);
-    return () => document.removeEventListener('keydown', handler);
-  }, [onClose]);
-
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-3 sm:p-4 overflow-y-auto"
-      onClick={handleBackdrop}
-    >
-      <div className={`bg-canvas rounded-[18px] border border-border shadow-2xl w-full ${maxWidth} p-5 sm:p-6 max-h-[92dvh] flex flex-col my-auto transition-all`}>
-        <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-border/80 shrink-0">
-          <h2 className="text-base sm:text-lg font-bold text-ink tracking-tight flex items-center gap-2">
-            <span>{title}</span>
-          </h2>
-          <button
-            onClick={onClose}
-            aria-label="Close modal"
-            className="text-ink-muted hover:text-ink transition text-base leading-none rounded-full min-h-[40px] min-w-[40px] inline-flex items-center justify-center hover:bg-canvas-soft cursor-pointer"
-          >
-            ✕
-          </button>
-        </div>
-        <div className="overflow-y-auto flex-1 pt-3 sm:pt-4 pr-0.5">
-          {children}
-        </div>
-      </div>
-    </div>
-  );
 }
 
 // ─── Printable Receipt Component (Stitch Theme) ─────────────────────────────

@@ -13,5 +13,6 @@ router.post('/login', authLimiter, authController.login);
 // Protected routes
 router.post('/logout', requireAuth, authController.logout);
 router.get('/me', requireAuth, authController.getMe);
+router.post('/password', requireAuth, authController.changePassword);
 
 export default router;

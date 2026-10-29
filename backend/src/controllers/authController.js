@@ -1,4 +1,8 @@
-import { registerSchema, loginSchema } from '../validators/authValidators.js';
+import {
+  registerSchema,
+  loginSchema,
+  changePasswordSchema,
+} from '../validators/authValidators.js';
 import * as authService from '../services/authService.js';
 import {
   SESSION_COOKIE_NAME,
@@ -84,6 +88,30 @@ export async function getMe(req, res, next) {
       success: true,
       data: {
         user: req.user,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * Change the authenticated landlord's password and rotate their session.
+ */
+export async function changePassword(req, res, next) {
+  try {
+    const validatedData = changePasswordSchema.parse(req.body);
+    const { sessionToken, expiresAt } = await authService.changeUserPassword({
+      userId: req.user.id,
+      ...validatedData,
+    });
+
+    res.cookie(SESSION_COOKIE_NAME, sessionToken, getSessionCookieOptions(expiresAt));
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        message: 'Password changed successfully.',
       },
     });
   } catch (error) {

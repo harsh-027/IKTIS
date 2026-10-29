@@ -192,3 +192,49 @@ export async function revokeAllUserSessions(userId) {
     },
   });
 }
+
+/**
+ * Change a password, revoke all previous sessions, and issue a replacement session.
+ */
+export async function changeUserPassword({ userId, currentPassword, newPassword }) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { passwordHash: true },
+  });
+
+  if (!user || !(await comparePassword(currentPassword, user.passwordHash))) {
+    throw new AppError('Current password is incorrect.', 401, 'INVALID_CURRENT_PASSWORD');
+  }
+
+  const passwordHash = await hashPassword(newPassword);
+  const sessionToken = generateSessionToken();
+  const tokenHash = hashToken(sessionToken);
+  const expiresAt = new Date(Date.now() + SESSION_LIFETIME_MS);
+
+  await prisma.$transaction(async (tx) => {
+    await tx.user.update({
+      where: { id: userId },
+      data: { passwordHash },
+    });
+
+    await tx.session.updateMany({
+      where: {
+        userId,
+        revokedAt: null,
+      },
+      data: {
+        revokedAt: new Date(),
+      },
+    });
+
+    await tx.session.create({
+      data: {
+        userId,
+        tokenHash,
+        expiresAt,
+      },
+    });
+  });
+
+  return { sessionToken, expiresAt };
+}
