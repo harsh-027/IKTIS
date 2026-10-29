@@ -20,9 +20,15 @@ import { errorHandler } from './middleware/errorHandler.js';
 dotenv.config();
 
 const app = express();
+app.set('trust proxy', 1);
+
 const PORT = process.env.PORT || 5000;
 const isProduction = process.env.NODE_ENV === 'production';
 const configuredFrontendUrl = process.env.FRONTEND_URL?.trim();
+
+if (isProduction && !process.env.DATABASE_URL) {
+  throw new Error('DATABASE_URL must be configured in production.');
+}
 
 if (isProduction && !configuredFrontendUrl) {
   throw new Error('FRONTEND_URL must be configured in production.');
