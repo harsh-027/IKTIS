@@ -10,6 +10,7 @@ RESEND_FROM_EMAIL
 ```
 
 Keep the Resend API key private. `RESEND_FROM_EMAIL` must be a sender address verified with Resend.
+Password recovery is disabled unless `PASSWORD_RECOVERY_ENABLED=true`. When disabled, the recovery endpoints return `503 PASSWORD_RECOVERY_DISABLED` before any database lookup.
 
 ## 1. Create a dedicated MySQL database
 

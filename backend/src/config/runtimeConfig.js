@@ -67,6 +67,7 @@ const databaseUrl = nodeEnv === 'test'
   : undefined;
 const resendApiKey = process.env.RESEND_API_KEY?.trim();
 const resendFromEmail = process.env.RESEND_FROM_EMAIL?.trim();
+const passwordRecoveryEnabled = process.env.PASSWORD_RECOVERY_ENABLED?.trim().toLowerCase() === 'true';
 
 export const runtimeConfig = {
   nodeEnv,
@@ -74,6 +75,7 @@ export const runtimeConfig = {
   databaseUrl,
   resendApiKey,
   resendFromEmail,
+  passwordRecoveryEnabled,
   frontendUrl: isProduction
     ? validateFrontendOrigin(requireValue('FRONTEND_URL'))
     : (process.env.FRONTEND_URL?.trim() || 'http://localhost:5173'),
@@ -81,6 +83,9 @@ export const runtimeConfig = {
 
 if (isProduction) {
   requireValue('DATABASE_URL');
+}
+
+if (passwordRecoveryEnabled) {
   requireValue('RESEND_API_KEY');
   requireValue('RESEND_FROM_EMAIL');
 }

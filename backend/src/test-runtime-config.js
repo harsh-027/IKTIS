@@ -60,20 +60,40 @@ assert.equal(validTest.status, 0, validTest.stderr);
 const validProduction = runConfig({
   NODE_ENV: 'production',
   DATABASE_URL: 'mysql://test',
-  RESEND_API_KEY: 'test-key',
-  RESEND_FROM_EMAIL: 'noreply@example.com',
   FRONTEND_URL: 'https://iktis.vercel.app',
-}, `import { runtimeConfig, getCookieSecurityOptions } from '${modulePath}'; console.log(JSON.stringify({ frontendUrl: runtimeConfig.frontendUrl, cookies: getCookieSecurityOptions() }));`);
+}, `import { runtimeConfig, getCookieSecurityOptions } from '${modulePath}'; console.log(JSON.stringify({ frontendUrl: runtimeConfig.frontendUrl, cookies: getCookieSecurityOptions(), recovery: runtimeConfig.passwordRecoveryEnabled }));`);
 assert.equal(validProduction.status, 0, validProduction.stderr);
 const validProductionOutput = JSON.parse(validProduction.stdout.trim());
 assert.equal(validProductionOutput.frontendUrl, 'https://iktis.vercel.app');
 assert.deepEqual(validProductionOutput.cookies, { secure: true, sameSite: 'none' });
+assert.equal(validProductionOutput.recovery, false);
+
+assertFails(
+  {
+    NODE_ENV: 'production',
+    DATABASE_URL: 'mysql://test',
+    PASSWORD_RECOVERY_ENABLED: 'true',
+    RESEND_API_KEY: '',
+    RESEND_FROM_EMAIL: '',
+    FRONTEND_URL: 'https://iktis.vercel.app',
+  },
+  'RESEND_API_KEY must be configured'
+);
+
+const disabledRecoveryCheck = runConfig({
+  NODE_ENV: 'production',
+  DATABASE_URL: 'mysql://test',
+  FRONTEND_URL: 'https://iktis.vercel.app',
+}, `import http from 'node:http'; import app from './src/server.js'; const server = app.listen(0, async () => { const csrf = await new Promise((resolve, reject) => { const request = http.request({ port: server.address().port, path: '/api/auth/csrf', method: 'GET' }, (response) => { let body = ''; response.on('data', (chunk) => { body += chunk; }); response.on('end', () => resolve({ response, body })); }); request.on('error', reject); request.end(); }); const csrfCookie = csrf.response.headers['set-cookie'][0].split(';')[0]; const csrfToken = JSON.parse(csrf.body).data.csrfToken; const request = http.request({ port: server.address().port, path: '/api/auth/forgot-password', method: 'POST', headers: { Cookie: csrfCookie, 'X-CSRF-Token': csrfToken, 'Content-Type': 'application/json' } }, (response) => { let body = ''; response.on('data', (chunk) => { body += chunk; }); response.on('end', () => { console.log(JSON.stringify({ status: response.statusCode, code: JSON.parse(body).error.code })); server.close(); }); }); request.on('error', (error) => { console.error(error); server.close(() => process.exit(1)); }); request.write(JSON.stringify({ email: 'test@example.com' })); request.end(); });`);
+assert.equal(disabledRecoveryCheck.status, 0, disabledRecoveryCheck.stderr);
+assert.deepEqual(JSON.parse(disabledRecoveryCheck.stdout.trim()), {
+  status: 503,
+  code: 'PASSWORD_RECOVERY_DISABLED',
+});
 
 const corsCheck = runConfig({
   NODE_ENV: 'production',
   DATABASE_URL: 'mysql://test',
-  RESEND_API_KEY: 'test-key',
-  RESEND_FROM_EMAIL: 'noreply@example.com',
   FRONTEND_URL: 'https://iktis.vercel.app',
 }, `import http from 'node:http'; import app from './src/server.js'; const server = app.listen(0, () => { const { port } = server.address(); const request = http.request({ port, path: '/api/health', method: 'OPTIONS', headers: { Origin: 'https://iktis.vercel.app', 'Access-Control-Request-Method': 'GET' } }, (response) => { console.log(JSON.stringify({ status: response.statusCode, allowOrigin: response.headers['access-control-allow-origin'], allowCredentials: response.headers['access-control-allow-credentials'] })); server.close(); }); request.on('error', (error) => { console.error(error); server.close(() => process.exit(1)); }); request.end(); });`);
 assert.equal(corsCheck.status, 0, corsCheck.stderr);

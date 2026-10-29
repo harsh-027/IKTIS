@@ -52,6 +52,8 @@ This repository starts with planning documents. The implementation, database sch
 
 - **Password recovery:** The password-recovery implementation remains in the codebase, but its Sign In page link is temporarily hidden until a verified email-sending domain is available. The existing recovery files and backend endpoints are retained for later re-enablement.
 
+Password recovery is disabled by default. To re-enable it after configuring Resend, set `PASSWORD_RECOVERY_ENABLED=true` together with `RESEND_API_KEY` and `RESEND_FROM_EMAIL`.
+
 ## Local setup (to be completed during implementation)
 
 The final setup commands will be documented after the root scripts, frontend, backend, Prisma schema, and environment variables are implemented. Never commit real `.env` files or secrets.
