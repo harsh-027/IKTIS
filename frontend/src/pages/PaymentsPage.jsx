@@ -548,7 +548,7 @@ function RecordPaymentModal({ initialTenantId = '', onClose, onSuccess }) {
           <div>
             <label className="block text-xs font-semibold text-ink mb-1.5">Payment Method</label>
             <div className="grid grid-cols-4 gap-1.5 p-1 bg-canvas-soft rounded-xl text-center">
-              {['UPI', 'Cash', 'Bank Transfer', 'Cheque'].map((m) => (
+              {['UPI', 'Cash'].map((m) => (
                 <button
                   key={m}
                   type="button"
@@ -559,24 +559,12 @@ function RecordPaymentModal({ initialTenantId = '', onClose, onSuccess }) {
                       : 'text-ink-muted hover:text-ink'
                   }`}
                 >
-                  {m === 'Bank Transfer' ? 'NEFT/IMPS' : m}
+                  {m}
                 </button>
               ))}
             </div>
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-ink mb-1">
-              Reference / UTR / Cheque Number
-            </label>
-            <input
-              type="text"
-              value={reference}
-              onChange={(e) => setReference(e.target.value)}
-              placeholder="e.g. UPI-98218491284, CHQ-10492"
-              className="w-full h-10 px-3.5 text-xs sm:text-sm rounded-xl border border-border bg-canvas text-ink focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary font-mono transition"
-            />
-          </div>
         </div>
 
         {/* Allocation Strategy Section (Stitch Radio Cards) */}
@@ -790,7 +778,7 @@ export default function PaymentsPage() {
           <div className="text-2xl sm:text-3xl font-bold text-emerald-700 tracking-tight tabular-nums">
             {loading ? '—' : formatINR(totalCollected)}
           </div>
-          <span className="text-[11px] text-emerald-600 font-medium mt-0.5 block">
+          <span className="text-xs text-emerald-600 font-medium mt-0.5 block">
             Across valid verified ledger records
           </span>
         </div>
@@ -822,7 +810,7 @@ export default function PaymentsPage() {
 
       {/* ─── Search & Segmented Filter Bar ────────────────────────────── */}
       <div className="space-y-2">
-        <div className="relative flex items-center w-full">
+        <div className="relative flex items-center w-full max-w-3xl">
           <span className="material-symbols-outlined absolute left-3.5 text-ink-muted text-[18px] pointer-events-none">
             search
           </span>
@@ -844,13 +832,13 @@ export default function PaymentsPage() {
             <button
               key={status}
               onClick={() => setStatusFilter(status)}
-              className={`h-9 px-4 rounded-full text-xs font-semibold uppercase tracking-wider shrink-0 transition active:scale-[0.98] cursor-pointer ${
+              className={`h-9 px-4 rounded-full text-xs font-semibold tracking-wider shrink-0 transition active:scale-[0.98] cursor-pointer ${
                 statusFilter === status
                   ? 'bg-ink text-white shadow-sm'
                   : 'bg-canvas text-ink hover:bg-canvas-soft border border-border'
               }`}
             >
-              {status}
+              {status[0].toUpperCase() + status.slice(1)}
             </button>
           ))}
         </div>
@@ -871,10 +859,10 @@ export default function PaymentsPage() {
         </div>
       ) : filteredPayments.length === 0 ? (
         <div className="bg-canvas rounded-[18px] border border-slate-100 p-8 sm:p-12 text-center shadow-sm space-y-2">
-          <div className="w-12 h-12 rounded-2xl bg-canvas-soft flex items-center justify-center mx-auto mb-2 text-ink-muted">
-            <span className="material-symbols-outlined text-[28px]">payments</span>
+          <div className="w-16 h-16 rounded-2xl bg-canvas-soft flex items-center justify-center mx-auto mb-3 text-ink-muted">
+            <span className="material-symbols-outlined text-[36px]">payments</span>
           </div>
-          <h3 className="text-sm sm:text-base font-semibold text-ink">No payments found</h3>
+          <h2 className="text-sm sm:text-base font-semibold text-ink">No payments found</h2>
           <p className="text-xs text-ink-muted max-w-sm mx-auto">
             {searchQuery || statusFilter !== 'all'
               ? 'Try adjusting your search query or filter.'
@@ -883,9 +871,9 @@ export default function PaymentsPage() {
           {!searchQuery && statusFilter === 'all' && (
             <button
               onClick={() => setShowRecordModal(true)}
-              className="mt-3 inline-flex items-center gap-1 px-4 py-2 bg-primary text-white text-xs font-semibold rounded-full shadow-sm cursor-pointer"
+              className="mt-3 flex items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-primary hover:bg-primary-focus text-white text-xs sm:text-sm font-semibold transition active:scale-[0.98] shadow-sm min-h-[40px] cursor-pointer mx-auto"
             >
-              <span className="material-symbols-outlined text-[16px]">add</span>
+              <span className="material-symbols-outlined text-[18px]">add_circle</span>
               <span>Record First Payment</span>
             </button>
           )}

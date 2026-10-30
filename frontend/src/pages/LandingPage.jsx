@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext.jsx';
 
 const features = [
   {
@@ -58,10 +59,10 @@ function DashboardPreview() {
         <div className="space-y-4 bg-surface-soft/70 p-4 sm:p-5">
           <div className="flex items-end justify-between gap-3">
             <div>
-              <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-primary">Portfolio overview</p>
+              <p className="mb-1 text-xs font-semibold text-primary">Portfolio overview</p>
               <p className="text-lg font-bold tracking-tight text-ink sm:text-xl">Everything in view.</p>
             </div>
-            <span className="rounded-full border border-border bg-canvas px-3 py-1.5 text-[10px] font-semibold text-ink-muted">October 2026</span>
+            <span className="rounded-full border border-border bg-canvas px-3 py-1.5 text-xs font-semibold text-ink-muted">October 2026</span>
           </div>
 
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
@@ -73,7 +74,7 @@ function DashboardPreview() {
             ].map(([label, value, icon]) => (
               <div key={label} className="rounded-2xl border border-border/80 bg-canvas p-3">
                 <span className="material-symbols-outlined mb-3 text-[17px] text-primary" aria-hidden="true">{icon}</span>
-                <p className="text-[10px] font-medium text-ink-muted">{label}</p>
+                <p className="text-xs font-medium text-ink-muted">{label}</p>
                 <p className="mt-0.5 truncate text-sm font-bold tracking-tight text-ink sm:text-base">{value}</p>
               </div>
             ))}
@@ -84,7 +85,7 @@ function DashboardPreview() {
               <div className="mb-4 flex items-center justify-between">
                 <div>
                   <p className="text-xs font-semibold text-ink">Monthly financials</p>
-                  <p className="mt-1 text-[10px] text-ink-muted">October 2026</p>
+                  <p className="mt-1 text-xs text-ink-muted">October 2026</p>
                 </div>
                 <span className="material-symbols-outlined text-[18px] text-ink-muted" aria-hidden="true">more_horiz</span>
               </div>
@@ -98,7 +99,7 @@ function DashboardPreview() {
                   <span className="font-semibold text-emerald-700">₹2,18,400</span>
                 </div>
                 <div className="pt-1">
-                  <div className="mb-1 flex justify-between text-[10px] font-medium text-ink-muted">
+                  <div className="mb-1 flex justify-between text-xs font-medium text-ink-muted">
                     <span>Collection rate</span><span>87.4%</span>
                   </div>
                   <div className="h-2 overflow-hidden rounded-full bg-canvas-soft">
@@ -120,12 +121,12 @@ function DashboardPreview() {
                 ].map(([name, amount, status]) => (
                   <div key={name} className="flex items-center justify-between gap-2">
                     <div className="flex min-w-0 items-center gap-2">
-                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-canvas-soft text-[10px] font-bold text-ink">{name.charAt(0)}</span>
-                      <span className="truncate text-[10px] font-medium text-ink">{name}</span>
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-canvas-soft text-xs font-bold text-ink">{name.charAt(0)}</span>
+                      <span className="truncate text-xs font-medium text-ink">{name}</span>
                     </div>
                     <div className="shrink-0 text-right">
-                      <p className="text-[10px] font-semibold text-ink">{amount}</p>
-                      <p className={`text-[9px] ${status === 'Paid' ? 'text-emerald-700' : 'text-amber-700'}`}>{status}</p>
+                      <p className="text-xs font-semibold text-ink">{amount}</p>
+                      <p className={`text-xs ${status === 'Paid' ? 'text-emerald-700' : 'text-amber-700'}`}>{status}</p>
                     </div>
                   </div>
                 ))}
@@ -143,6 +144,8 @@ function DashboardPreview() {
 }
 
 export default function LandingPage() {
+  const { isAuthenticated } = useAuth();
+
   return (
     <div className="landing-page min-h-screen bg-surface text-ink">
       <header className="landing-nav">
@@ -152,8 +155,16 @@ export default function LandingPage() {
             <span className="text-lg">IKTIS</span>
           </Link>
           <nav className="flex items-center gap-2" aria-label="Main navigation">
-            <Link to="/login" className="landing-nav-link">Sign In</Link>
-            <Link to="/register" className="landing-nav-cta">Get Started</Link>
+            <a href="#features-heading" className="landing-nav-link hidden sm:inline-flex">Features</a>
+            <a href="#workflow-heading" className="landing-nav-link hidden sm:inline-flex">How it works</a>
+            {isAuthenticated ? (
+              <Link to="/" className="landing-nav-cta">Dashboard</Link>
+            ) : (
+              <>
+                <Link to="/login" className="landing-nav-link">Sign In</Link>
+                <Link to="/register" className="landing-nav-cta">Get Started</Link>
+              </>
+            )}
           </nav>
         </div>
       </header>
@@ -183,10 +194,10 @@ export default function LandingPage() {
             <div className="grid gap-px overflow-hidden rounded-[24px] border border-border/80 bg-border/80 sm:grid-cols-2 lg:grid-cols-4">
               {features.map((feature) => (
                 <article key={feature.eyebrow} className="bg-canvas p-6 sm:p-7">
-                  <span className="mb-8 inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-canvas-soft text-primary">
-                    <span className="material-symbols-outlined text-[22px]" aria-hidden="true">{feature.icon}</span>
+                  <span className="mb-8 inline-flex h-14 w-14 items-center justify-center rounded-xl bg-canvas-soft text-primary">
+                    <span className="material-symbols-outlined text-[26px]" aria-hidden="true">{feature.icon}</span>
                   </span>
-                  <p className="text-[11px] font-bold uppercase tracking-[0.13em] text-primary">{feature.eyebrow}</p>
+                  <p className="text-xs font-bold text-primary">{feature.eyebrow}</p>
                   <h3 className="mt-2 text-lg font-bold tracking-tight text-ink">{feature.title}</h3>
                   <p className="mt-3 text-sm leading-6 text-ink-muted">{feature.description}</p>
                 </article>

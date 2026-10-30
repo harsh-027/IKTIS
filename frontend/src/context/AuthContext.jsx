@@ -50,6 +50,18 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const updateProfile = async (profile) => {
+    const response = await authApi.updateProfile(profile);
+    const updatedUser = response.data.data.user;
+    setUser(updatedUser);
+    return updatedUser;
+  };
+
+  const deleteAccount = async () => {
+    await authApi.deleteAccount();
+    setUser(null);
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -59,6 +71,8 @@ export function AuthProvider({ children }) {
         login,
         register,
         logout,
+        updateProfile,
+        deleteAccount,
         checkAuth,
       }}
     >

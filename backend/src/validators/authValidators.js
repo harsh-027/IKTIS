@@ -44,6 +44,19 @@ export const changePasswordSchema = z.object({
     .max(100, { message: 'New password must be under 100 characters' }),
 });
 
+export const updateProfileSchema = z.object({
+  name: z
+    .string({ required_error: 'Name is required' })
+    .trim()
+    .min(2, { message: 'Name must be at least 2 characters' })
+    .max(100, { message: 'Name must be under 100 characters' }),
+  email: z
+    .string({ required_error: 'Email is required' })
+    .trim()
+    .toLowerCase()
+    .email({ message: 'Please provide a valid email address' }),
+});
+
 export const forgotPasswordSchema = z.object({
   email: z
     .string({ required_error: 'Email is required' })

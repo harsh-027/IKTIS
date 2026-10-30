@@ -4,6 +4,7 @@ import {
   changePasswordSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
+  updateProfileSchema,
 } from '../validators/authValidators.js';
 import * as authService from '../services/authService.js';
 import * as passwordResetService from '../services/passwordResetService.js';
@@ -145,6 +146,31 @@ export async function changePassword(req, res, next) {
         message: 'Password changed successfully.',
       },
     });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function updateProfile(req, res, next) {
+  try {
+    const validatedData = updateProfileSchema.parse(req.body);
+    const user = await authService.updateUserProfile(req.user.id, validatedData);
+
+    return res.status(200).json({
+      success: true,
+      data: { user },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function deleteAccount(req, res, next) {
+  try {
+    await authService.deleteUserAccount(req.user.id);
+    clearSessionCookie(res);
+
+    return res.status(204).send();
   } catch (error) {
     next(error);
   }

@@ -23,6 +23,8 @@ router.post('/reset-password', authLimiter, requirePasswordRecovery, authControl
 // Protected routes
 router.post('/logout', requireAuth, authController.logout);
 router.get('/me', requireAuth, authController.getMe);
+router.patch('/profile', requireAuth, authController.updateProfile);
 router.post('/password', requireAuth, authController.changePassword);
+router.delete('/account', requireAuth, authController.deleteAccount);
 
 export default router;

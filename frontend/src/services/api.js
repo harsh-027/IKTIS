@@ -68,6 +68,8 @@ export const authApi = {
   resetPassword: (data) => api.post('/auth/reset-password', data),
   logout: () => api.post('/auth/logout'),
   getMe: () => api.get('/auth/me'),
+  updateProfile: (data) => api.patch('/auth/profile', data),
+  deleteAccount: () => api.delete('/auth/account'),
   changePassword: (data) => api.post('/auth/password', data),
 };
 

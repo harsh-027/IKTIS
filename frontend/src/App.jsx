@@ -18,6 +18,7 @@ import PaymentsPage from './pages/PaymentsPage.jsx';
 import ReportsPage from './pages/ReportsPage.jsx';
 import LegalPage from './pages/LegalPage.jsx';
 import LandingPage from './pages/LandingPage.jsx';
+import SettingsPage from './pages/SettingsPage.jsx';
 
 export default function App() {
   return (
@@ -35,6 +36,7 @@ export default function App() {
           </Route>
           <Route path="/privacy" element={<LegalPage />} />
           <Route path="/terms" element={<LegalPage />} />
+          <Route path="/landing" element={<LandingPage />} />
 
           {/* Protected routes — all share the AppLayout shell */}
           <Route element={<ProtectedRoute />}>
@@ -46,6 +48,7 @@ export default function App() {
               <Route path="/rent-charges" element={<RentChargesPage />} />
               <Route path="/payments" element={<PaymentsPage />} />
               <Route path="/reports" element={<ReportsPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
             </Route>
           </Route>
 

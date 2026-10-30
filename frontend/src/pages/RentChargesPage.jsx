@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { rentChargeApi } from '../services/api.js';
 import Modal from '../components/Dialog.jsx';
 
@@ -34,6 +34,8 @@ function currentYearMonth() {
   const m = String(now.getUTCMonth() + 1).padStart(2, '0');
   return `${y}-${m}`;
 }
+
+const compactActionBase = 'inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition active:scale-[0.98] min-h-[40px] cursor-pointer';
 
 // ─── Custom Charge Form ───────────────────────────────────────────────────────
 
@@ -411,6 +413,7 @@ function GenerateModal({ month, onConfirm, onCancel, loading }) {
 // ─── RentChargesPage ──────────────────────────────────────────────────────────
 
 export default function RentChargesPage() {
+  const navigate = useNavigate();
   const [selectedMonth, setSelectedMonth] = useState(currentYearMonth());
   const [statusFilter, setStatusFilter] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -568,67 +571,61 @@ export default function RentChargesPage() {
             <p className="text-xs text-ink-muted">
               Monthly rent roll, bulk charge generation, and arrears tracking
             </p>
+            <div className="mt-2 flex flex-wrap items-center gap-3">
+              <div className="flex items-center bg-canvas rounded-full p-0.5 border border-border shadow-sm">
+                <button
+                  onClick={handlePrevMonth}
+                  aria-label="Previous Month"
+                  className="w-8 h-8 flex items-center justify-center rounded-full text-ink-muted hover:text-ink hover:bg-canvas-soft active:scale-[0.98] transition cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-[18px]">chevron_left</span>
+                </button>
+                <span className="text-xs font-semibold text-ink px-3 whitespace-nowrap">
+                  {monthLabel}
+                </span>
+                <button
+                  onClick={handleNextMonth}
+                  aria-label="Next Month"
+                  className="w-8 h-8 flex items-center justify-center rounded-full text-ink-muted hover:text-ink hover:bg-canvas-soft active:scale-[0.98] transition cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+                </button>
+              </div>
+              <span className="text-emerald-700 font-semibold flex items-center gap-1.5 text-xs">
+                <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
+                <span>Billing Cycle Active</span>
+              </span>
+            </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <div className="flex items-center bg-canvas rounded-full p-0.5 border border-border shadow-sm">
-              <button
-                onClick={handlePrevMonth}
-                aria-label="Previous Month"
-                className="w-8 h-8 flex items-center justify-center rounded-full text-ink-muted hover:text-ink hover:bg-canvas-soft active:scale-[0.98] transition cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-[18px]">chevron_left</span>
-              </button>
-              <span className="text-xs font-semibold text-ink px-3 whitespace-nowrap">
-                {monthLabel}
-              </span>
-              <button
-                onClick={handleNextMonth}
-                aria-label="Next Month"
-                className="w-8 h-8 flex items-center justify-center rounded-full text-ink-muted hover:text-ink hover:bg-canvas-soft active:scale-[0.98] transition cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-[18px]">chevron_right</span>
-              </button>
-            </div>
-
+          <div className="flex items-center">
             <button
               onClick={() => setCustomOpen(true)}
-              className="px-3.5 py-1.5 rounded-full border border-border hover:bg-canvas-soft text-ink text-xs font-medium transition cursor-pointer min-h-[36px]"
+              className={`${compactActionBase} border border-border hover:bg-canvas-soft text-ink font-medium`}
             >
               + Custom
             </button>
           </div>
         </div>
 
-        {/* Period Indicator Banner */}
-        <div className="flex items-center justify-between bg-canvas-soft px-4 py-2 rounded-xl text-xs">
-          <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary text-[18px]">event_repeat</span>
-            <span className="font-semibold text-ink">Cycle: {selectedMonth}</span>
-          </div>
-          <span className="text-emerald-700 font-semibold flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
-            <span>Billing Cycle Active</span>
-          </span>
-        </div>
-
         {/* Primary Quick Actions (Stitch Grid) */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="flex flex-wrap items-center gap-6">
           <button
             id="bulk-gen-trigger"
             onClick={() => { setGenerateOpen(true); setGenerateResult(null); }}
-            className="flex items-center justify-center gap-2 bg-primary hover:bg-primary-focus text-white text-xs sm:text-sm font-semibold py-3 px-4 rounded-xl shadow-sm active:scale-[0.98] transition cursor-pointer min-h-[44px]"
+            className={`${compactActionBase} bg-primary hover:bg-primary-focus text-white shadow-sm`}
           >
-            <span className="material-symbols-outlined text-[20px]">bolt</span>
+            <span className="material-symbols-outlined text-[18px]">bolt</span>
             <span>Bulk Generate</span>
           </button>
-          <Link
-            to="/payments?action=record"
-            className="flex items-center justify-center gap-2 bg-canvas hover:bg-canvas-soft text-ink text-xs sm:text-sm font-semibold py-3 px-4 rounded-xl shadow-sm border border-border active:scale-[0.98] transition min-h-[44px]"
+          <button
+            type="button"
+            onClick={() => navigate('/payments?action=record')}
+            className={`${compactActionBase} bg-canvas hover:bg-canvas-soft text-ink border border-border shadow-sm`}
           >
-            <span className="material-symbols-outlined text-primary text-[20px]">add_circle</span>
+            <span className="material-symbols-outlined text-primary text-[18px]">add_circle</span>
             <span>Record Payment</span>
-          </Link>
+          </button>
         </div>
       </div>
 
@@ -667,7 +664,7 @@ export default function RentChargesPage() {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs font-semibold text-ink">Idempotent Generation Guard</p>
-            <p className="text-[11px] text-ink-muted mt-0.5 leading-snug">
+            <p className="text-xs text-ink-muted mt-0.5 leading-snug">
               Charges apply strictly to active tenancies without existing charges for {monthLabel}. Safe to re-run.
             </p>
           </div>
@@ -727,7 +724,7 @@ export default function RentChargesPage() {
 
       {/* ─── Search & Status Filter Segmented Row ──────────────────────── */}
       <div className="space-y-2">
-        <div className="relative flex items-center w-full">
+        <div className="relative flex items-center w-full max-w-xl">
           <span className="material-symbols-outlined absolute left-3.5 text-ink-muted text-[18px] pointer-events-none">
             search
           </span>
@@ -736,12 +733,9 @@ export default function RentChargesPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search tenant name, unit label, or property..."
-            className="w-full h-11 pl-10 pr-24 rounded-full bg-canvas text-ink text-xs sm:text-sm border border-border shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition"
+            className="w-full h-11 pl-10 pr-3.5 rounded-full bg-canvas text-ink text-xs sm:text-sm border border-border shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition"
             aria-label="Search rent charges"
           />
-          <span className="absolute right-3 text-[11px] font-medium text-ink-muted bg-canvas-soft px-2.5 py-1 rounded-full border border-border">
-            {filteredCharges.length} total
-          </span>
         </div>
 
         {/* Filter Segmented Chips */}
@@ -824,17 +818,8 @@ export default function RentChargesPage() {
           <p className="text-xs max-w-sm mx-auto">
             {statusFilter
               ? `No charges with status "${statusFilter}" for this cycle.`
-              : 'Click "Bulk Generate" to calculate rent charges for all active tenancies.'}
+              : 'Use Bulk Generate above to calculate rent charges for all active tenancies.'}
           </p>
-          {!statusFilter && (
-            <button
-              onClick={() => { setGenerateOpen(true); setGenerateResult(null); }}
-              className="mt-3 inline-flex items-center gap-1 px-4 py-2 bg-primary text-white text-xs font-semibold rounded-full shadow-sm cursor-pointer"
-            >
-              <span className="material-symbols-outlined text-[16px]">bolt</span>
-              <span>Generate Charges</span>
-            </button>
-          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

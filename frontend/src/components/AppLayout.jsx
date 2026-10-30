@@ -47,7 +47,7 @@ export default function AppLayout({ children }) {
         <div ref={profileMenuRef} className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row sm:items-center gap-0 sm:gap-4">
           <div className="flex items-center justify-between w-full sm:w-auto sm:shrink-0 min-h-16">
             <NavLink
-              to="/"
+              to="/landing"
               className="flex items-center gap-2 font-semibold tracking-tight text-ink min-h-[44px] shrink-0"
             >
               <div className="w-8 h-8 rounded-xl bg-primary text-white flex items-center justify-center shadow-sm">
@@ -134,6 +134,14 @@ function ProfileMenu({ user, onSignOut }) {
         <p className="text-sm font-semibold text-ink truncate">{user?.name || 'Landlord'}</p>
         <p className="text-xs text-ink-muted truncate mt-0.5">{user?.email || 'No email available'}</p>
       </div>
+      <NavLink
+        to="/settings"
+        role="menuitem"
+        className="mt-2 w-full inline-flex items-center gap-2 px-2.5 py-2 rounded-xl text-sm font-medium text-ink hover:bg-canvas-soft transition"
+      >
+        <span className="material-symbols-outlined text-[18px] text-ink-muted">settings</span>
+        <span>Settings</span>
+      </NavLink>
       <button
         type="button"
         role="menuitem"

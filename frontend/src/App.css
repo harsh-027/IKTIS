@@ -11,6 +11,7 @@
   backdrop-filter: blur(18px);
   position: relative;
   z-index: 2;
+  padding-block: 16px;
 }
 
 .landing-nav-link,
@@ -73,7 +74,7 @@
   align-items: center;
   gap: 9px;
   color: var(--color-primary);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.13em;
   line-height: 1.4;
@@ -129,7 +130,7 @@
 .landing-preview-window {
   overflow: hidden;
   border: 1px solid var(--color-border);
-  border-radius: 26px;
+  border-radius: 24px;
   background: var(--color-canvas);
   box-shadow: 0 24px 60px rgba(29, 29, 31, 0.10), 0 4px 16px rgba(29, 29, 31, 0.05);
 }
@@ -141,7 +142,7 @@
   gap: 7px;
   margin-top: 16px;
   color: var(--color-muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .landing-section {
@@ -177,7 +178,7 @@
   justify-content: space-between;
   gap: 32px;
   padding: clamp(28px, 5vw, 56px);
-  border-radius: 28px;
+  border-radius: 24px;
   background: var(--color-dark-tile);
 }
 

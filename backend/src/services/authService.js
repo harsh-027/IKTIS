@@ -247,3 +247,39 @@ export async function changeUserPassword({ userId, currentPassword, newPassword 
 
   return { sessionToken, expiresAt };
 }
+
+export async function updateUserProfile(userId, { name, email }) {
+  const normalizedEmail = email.trim().toLowerCase();
+  const existingUser = await prisma.user.findFirst({
+    where: {
+      email: normalizedEmail,
+      NOT: { id: userId },
+    },
+    select: { id: true },
+  });
+
+  if (existingUser) {
+    throw new AppError('An account with this email address already exists', 409, 'EMAIL_EXISTS');
+  }
+
+  return prisma.user.update({
+    where: { id: userId },
+    data: { name: name.trim(), email: normalizedEmail },
+    select: { id: true, name: true, email: true, createdAt: true },
+  });
+}
+
+export async function deleteUserAccount(userId) {
+  await prisma.$transaction(async (tx) => {
+    await tx.paymentAllocation.deleteMany({ where: { ownerId: userId } });
+    await tx.payment.deleteMany({ where: { ownerId: userId } });
+    await tx.rentCharge.deleteMany({ where: { ownerId: userId } });
+    await tx.tenancy.deleteMany({ where: { ownerId: userId } });
+    await tx.room.deleteMany({ where: { property: { ownerId: userId } } });
+    await tx.property.deleteMany({ where: { ownerId: userId } });
+    await tx.tenant.deleteMany({ where: { ownerId: userId } });
+    await tx.passwordResetToken.deleteMany({ where: { userId } });
+    await tx.session.deleteMany({ where: { userId } });
+    await tx.user.delete({ where: { id: userId } });
+  });
+}
