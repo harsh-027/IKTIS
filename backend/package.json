@@ -9,7 +9,7 @@
     "dev": "nodemon src/server.js",
     "build": "prisma generate",
     "postinstall": "prisma generate",
-    "vercel-build": "prisma generate",
+    "vercel-build": "prisma generate && prisma migrate deploy",
     "test:auth": "node src/run-db-test.js src/test-auth.js",
     "test:properties": "node src/run-db-test.js src/test-properties-rooms.js",
     "test:tenants": "node src/run-db-test.js src/test-tenants-tenancies.js",

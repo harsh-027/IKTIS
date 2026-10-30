@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext.jsx';
+import { AuthProvider, useAuth } from './context/AuthContext.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import PublicOnlyRoute from './components/PublicOnlyRoute.jsx';
 import AppLayout from './components/AppLayout.jsx';
@@ -17,12 +17,15 @@ import RentChargesPage from './pages/RentChargesPage.jsx';
 import PaymentsPage from './pages/PaymentsPage.jsx';
 import ReportsPage from './pages/ReportsPage.jsx';
 import LegalPage from './pages/LegalPage.jsx';
+import LandingPage from './pages/LandingPage.jsx';
 
 export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
         <Routes>
+          <Route path="/" element={<RootRoute />} />
+
           {/* Public routes (redirect to / if already logged in) */}
           <Route element={<PublicOnlyRoute />}>
             <Route path="/login" element={<LoginPage />} />
@@ -36,7 +39,6 @@ export default function App() {
           {/* Protected routes — all share the AppLayout shell */}
           <Route element={<ProtectedRoute />}>
             <Route element={<AppLayout />}>
-              <Route path="/" element={<DashboardPage />} />
               <Route path="/properties" element={<PropertiesPage />} />
               <Route path="/properties/:id" element={<PropertyDetailPage />} />
               <Route path="/tenants" element={<TenantsPage />} />
@@ -53,4 +55,26 @@ export default function App() {
       </AuthProvider>
     </BrowserRouter>
   );
+}
+
+function RootRoute() {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-surface-soft flex items-center justify-center">
+        <div className="text-ink-muted text-sm tracking-wide">Loading IKTIS...</div>
+      </div>
+    );
+  }
+
+  if (isAuthenticated) {
+    return (
+      <AppLayout>
+        <DashboardPage />
+      </AppLayout>
+    );
+  }
+
+  return <LandingPage />;
 }
