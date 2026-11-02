@@ -47,12 +47,10 @@ export default function AppLayout({ children }) {
         <div ref={profileMenuRef} className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row sm:items-center gap-0 sm:gap-4">
           <div className="flex items-center justify-between w-full sm:w-auto sm:shrink-0 min-h-16">
             <NavLink
-              to="/landing"
+              to="/"
               className="flex items-center gap-2 font-semibold tracking-tight text-ink min-h-[44px] shrink-0"
             >
-              <div className="w-8 h-8 rounded-xl bg-primary text-white flex items-center justify-center shadow-sm">
-                <span className="material-symbols-outlined text-[18px]">domain</span>
-              </div>
+              <img src="/icons.svg" alt="" aria-hidden="true" className="h-8 w-8 object-contain" />
               <span className="text-base sm:text-lg font-bold tracking-tight">IKTIS</span>
             </NavLink>
 

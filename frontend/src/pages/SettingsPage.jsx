@@ -43,7 +43,7 @@ export default function SettingsPage() {
     setIsDeleting(true);
     try {
       await deleteAccount();
-      navigate('/landing', { replace: true });
+      navigate('/login', { replace: true });
     } catch (error) {
       setDeleteState({
         type: 'error',

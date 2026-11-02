@@ -82,3 +82,12 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+.iktis-landing .text-balance {
+  text-wrap: balance;
+}
+
+.iktis-landing a,
+.iktis-landing button {
+  -webkit-tap-highlight-color: transparent;
+}

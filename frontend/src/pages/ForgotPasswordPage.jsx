@@ -26,6 +26,10 @@ export default function ForgotPasswordPage() {
   return (
     <div className="min-h-screen bg-surface-soft flex flex-col justify-center items-center px-4 py-10">
       <div className="w-full max-w-[420px] bg-surface-canvas rounded-[24px] border border-border/80 p-6 sm:p-8 shadow-xs">
+        <Link to="/" className="mb-6 flex items-center justify-center gap-3" aria-label="IKTIS home">
+          <img src="/icons.svg" alt="" aria-hidden="true" className="h-10 w-10 object-contain" />
+          <span className="text-2xl font-extrabold tracking-tight text-ink">IKTIS</span>
+        </Link>
         <h1 className="text-xl font-bold text-ink">Forgot password?</h1>
         <p className="text-xs text-ink-muted mt-1 mb-6">
           Enter your email and we will send recovery instructions if an account exists.

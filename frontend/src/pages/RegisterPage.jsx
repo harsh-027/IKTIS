@@ -51,16 +51,11 @@ export default function RegisterPage() {
     <div className="min-h-screen bg-surface-soft flex flex-col justify-center items-center px-4 py-10 sm:py-16">
       <div className="w-full max-w-[440px]">
         {/* Brand Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary text-white shadow-md mb-3">
-            <span className="material-symbols-outlined text-[30px]">domain</span>
-          </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-ink font-heading">
-            IKTIS
-          </h1>
-          <p className="text-xs sm:text-sm text-ink-muted mt-1 font-medium">
-            Calm Precision Landlord Rental Management
-          </p>
+        <div className="mb-8 flex justify-center">
+          <Link to="/" className="inline-flex items-center gap-3" aria-label="IKTIS home">
+            <img src="/icons.svg" alt="" aria-hidden="true" className="h-12 w-12 object-contain" />
+            <h1 className="text-3xl font-extrabold tracking-tight text-ink font-heading">IKTIS</h1>
+          </Link>
         </div>
 
         {/* Card */}

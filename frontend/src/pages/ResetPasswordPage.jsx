@@ -32,6 +32,10 @@ export default function ResetPasswordPage() {
   return (
     <div className="min-h-screen bg-surface-soft flex flex-col justify-center items-center px-4 py-10">
       <div className="w-full max-w-[420px] bg-surface-canvas rounded-[24px] border border-border/80 p-6 sm:p-8 shadow-xs">
+        <Link to="/" className="mb-6 flex items-center justify-center gap-3" aria-label="IKTIS home">
+          <img src="/icons.svg" alt="" aria-hidden="true" className="h-10 w-10 object-contain" />
+          <span className="text-2xl font-extrabold tracking-tight text-ink">IKTIS</span>
+        </Link>
         <h1 className="text-xl font-bold text-ink">Reset password</h1>
         <p className="text-xs text-ink-muted mt-1 mb-6">Choose a new password for your IKTIS account.</p>
         {error && <div role="alert" className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-sm">{error}</div>}

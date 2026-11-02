@@ -1,250 +1,178 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext.jsx';
+import { ArrowRight, Check, ChevronDown, CircleDollarSign, Home, Menu, X } from 'lucide-react';
+import SoftBlurIn from '../components/smoothui/soft-blur-in';
+import RollingText from '../components/smoothui/rolling-text';
 
-const features = [
-  {
-    icon: 'apartment',
-    eyebrow: 'Property & Rooms',
-    title: 'Know every space at a glance.',
-    description: 'Keep properties, rooms, availability, and occupancy organised in one dependable place.',
-  },
-  {
-    icon: 'group',
-    eyebrow: 'Tenant Management',
-    title: 'Keep people and tenancies connected.',
-    description: 'Manage tenant details and room assignments with the context you need, when you need it.',
-  },
-  {
-    icon: 'payments',
-    eyebrow: 'Rent Tracking',
-    title: 'Make every payment count.',
-    description: 'Create monthly charges, record full or partial payments, and see what is still outstanding.',
-  },
-  {
-    icon: 'analytics',
-    eyebrow: 'Clear Overview',
-    title: 'Turn records into confidence.',
-    description: 'See collection rates, balances, occupancy, and recent activity in a focused dashboard.',
-  },
-];
+function IktisMark({ className = '' }) {
+  return <img src="/icons.svg" alt="" aria-hidden="true" className={className} />;
+}
 
-const steps = [
-  ['01', 'Add your properties', 'Create properties and rooms so your portfolio reflects the way you actually manage it.'],
-  ['02', 'Bring in your tenants', 'Register tenants and connect them to their rooms and active tenancies.'],
-  ['03', 'Stay on top of rent', 'Generate charges, record payments, and keep an honest view of every balance.'],
-];
-
-function BrandMark() {
-  return (
-    <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-white" aria-hidden="true">
-      <span className="material-symbols-outlined text-[20px]">domain</span>
-    </span>
+function Roll({ children }) {
+  return String(children).split(/(\d[\d,./%]*)/).map((part, index) =>
+    /\d/.test(part) ? <RollingText key={index} text={part} /> : part,
   );
 }
 
-function DashboardPreview() {
-  return (
-    <div className="landing-preview-shell" aria-label="Preview of the IKTIS dashboard">
-      <div className="landing-preview-window">
-        <div className="flex items-center justify-between border-b border-border/70 px-4 py-3 sm:px-5">
-          <div className="flex items-center gap-2">
-            <BrandMark />
-            <span className="text-sm font-bold tracking-tight text-ink">IKTIS</span>
-          </div>
-          <span className="hidden text-xs font-medium text-ink-muted sm:inline">Portfolio overview</span>
-          <span className="material-symbols-outlined text-[20px] text-ink-muted sm:hidden" aria-hidden="true">more_horiz</span>
-        </div>
-
-        <div className="space-y-4 bg-surface-soft/70 p-4 sm:p-5">
-          <div className="flex items-end justify-between gap-3">
-            <div>
-              <p className="mb-1 text-xs font-semibold text-primary">Portfolio overview</p>
-              <p className="text-lg font-bold tracking-tight text-ink sm:text-xl">Everything in view.</p>
-            </div>
-            <span className="rounded-full border border-border bg-canvas px-3 py-1.5 text-xs font-semibold text-ink-muted">October 2026</span>
-          </div>
-
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-            {[
-              ['Properties', '12', 'apartment'],
-              ['Rooms', '48', 'meeting_room'],
-              ['Occupied', '87.5%', 'hotel'],
-              ['Collected', '₹2,18,400', 'payments'],
-            ].map(([label, value, icon]) => (
-              <div key={label} className="rounded-2xl border border-border/80 bg-canvas p-3">
-                <span className="material-symbols-outlined mb-3 text-[17px] text-primary" aria-hidden="true">{icon}</span>
-                <p className="text-xs font-medium text-ink-muted">{label}</p>
-                <p className="mt-0.5 truncate text-sm font-bold tracking-tight text-ink sm:text-base">{value}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="grid gap-3 sm:grid-cols-[1.05fr_.95fr]">
-            <div className="rounded-2xl border border-border/80 bg-canvas p-4">
-              <div className="mb-4 flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-semibold text-ink">Monthly financials</p>
-                  <p className="mt-1 text-xs text-ink-muted">October 2026</p>
-                </div>
-                <span className="material-symbols-outlined text-[18px] text-ink-muted" aria-hidden="true">more_horiz</span>
-              </div>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-ink-muted">Rent charged</span>
-                  <span className="font-semibold text-ink">₹2,50,000</span>
-                </div>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-ink-muted">Payments collected</span>
-                  <span className="font-semibold text-emerald-700">₹2,18,400</span>
-                </div>
-                <div className="pt-1">
-                  <div className="mb-1 flex justify-between text-xs font-medium text-ink-muted">
-                    <span>Collection rate</span><span>87.4%</span>
-                  </div>
-                  <div className="h-2 overflow-hidden rounded-full bg-canvas-soft">
-                    <div className="h-full w-[87.4%] rounded-full bg-primary" />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="rounded-2xl border border-border/80 bg-canvas p-4">
-              <div className="mb-4 flex items-center justify-between">
-                <p className="text-xs font-semibold text-ink">Recent payments</p>
-                <span className="text-[10px] font-medium text-primary">View all</span>
-              </div>
-              <div className="space-y-3">
-                {[
-                  ['Aarav Mehta', '₹18,000', 'Paid'],
-                  ['Nisha Shah', '₹15,500', 'Paid'],
-                  ['Rohan Iyer', '₹12,000', 'Partial'],
-                ].map(([name, amount, status]) => (
-                  <div key={name} className="flex items-center justify-between gap-2">
-                    <div className="flex min-w-0 items-center gap-2">
-                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-canvas-soft text-xs font-bold text-ink">{name.charAt(0)}</span>
-                      <span className="truncate text-xs font-medium text-ink">{name}</span>
-                    </div>
-                    <div className="shrink-0 text-right">
-                      <p className="text-xs font-semibold text-ink">{amount}</p>
-                      <p className={`text-xs ${status === 'Paid' ? 'text-emerald-700' : 'text-amber-700'}`}>{status}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="landing-preview-caption">
-        <span className="material-symbols-outlined text-[18px] text-primary" aria-hidden="true">insights</span>
-        <span>A calm, current view of your rental operation.</span>
-      </div>
-    </div>
-  );
-}
+const navItems = [
+  { label: 'How it works', href: '#hero' },
+  { label: 'Sign in', href: '/login' },
+];
 
 export default function LandingPage() {
-  const { isAuthenticated } = useAuth();
+  const [menuOpen, setMenuOpen] = React.useState(false);
 
   return (
-    <div className="landing-page min-h-screen bg-surface text-ink">
-      <header className="landing-nav">
-        <div className="landing-container flex min-h-16 items-center justify-between">
-          <Link to="/" className="inline-flex min-h-[44px] items-center gap-2 font-bold tracking-tight text-ink" aria-label="IKTIS home">
-            <BrandMark />
-            <span className="text-lg">IKTIS</span>
+    <div className="iktis-landing min-h-screen overflow-hidden bg-[#f7f9fc] text-[#122033]">
+      <header className="absolute inset-x-0 top-0 z-20">
+        <div className="mx-auto flex max-w-[1180px] items-center justify-between px-6 py-6 lg:px-8">
+          <Link to="/" className="flex items-center gap-2.5" aria-label="IKTIS home">
+            <span className="flex h-9 w-9 items-center justify-center">
+              <IktisMark className="h-8 w-8 object-contain" />
+            </span>
+            <span className="text-[17px] font-extrabold tracking-[-0.03em] text-[#123653]">IKTIS</span>
           </Link>
-          <nav className="flex items-center gap-2" aria-label="Main navigation">
-            <a href="#features-heading" className="landing-nav-link hidden sm:inline-flex">Features</a>
-            <a href="#workflow-heading" className="landing-nav-link hidden sm:inline-flex">How it works</a>
-            {isAuthenticated ? (
-              <Link to="/" className="landing-nav-cta">Dashboard</Link>
-            ) : (
-              <>
-                <Link to="/login" className="landing-nav-link">Sign In</Link>
-                <Link to="/register" className="landing-nav-cta">Get Started</Link>
-              </>
+
+          <nav className="hidden items-center gap-8 text-[13px] font-semibold text-[#607187] md:flex" aria-label="Primary">
+            {navItems.map((item) =>
+              item.href.startsWith('#') ? (
+                <a key={item.label} href={item.href} className="transition-colors hover:text-[#164e78]">
+                  {item.label}
+                </a>
+              ) : (
+                <Link key={item.label} to={item.href} className="transition-colors hover:text-[#164e78]">
+                  {item.label}
+                </Link>
+              ),
             )}
+            <Link
+              to="/register"
+              className="inline-flex items-center gap-2 rounded-full bg-[#164e78] px-5 py-2.5 text-white shadow-[0_8px_24px_rgba(22,78,120,0.18)] transition hover:-translate-y-0.5 hover:bg-[#103b5b]"
+            >
+              Get started <ArrowRight size={14} />
+            </Link>
           </nav>
+
+          <button
+            type="button"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-[#d6e0ea] bg-white text-[#164e78] md:hidden"
+            onClick={() => setMenuOpen((open) => !open)}
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={menuOpen}
+          >
+            {menuOpen ? <X size={18} /> : <Menu size={18} />}
+          </button>
         </div>
+
+        {menuOpen && (
+          <nav className="mx-6 rounded-2xl border border-[#dfe7ef] bg-white p-3 shadow-xl md:hidden" aria-label="Mobile">
+            <a href="#hero" onClick={() => setMenuOpen(false)} className="block rounded-xl px-4 py-3 text-sm font-semibold text-[#607187]">
+              How it works
+            </a>
+            <Link to="/login" className="block rounded-xl px-4 py-3 text-sm font-semibold text-[#607187]">
+              Sign in
+            </Link>
+            <Link to="/register" className="mt-1 flex items-center justify-center gap-2 rounded-xl bg-[#164e78] px-4 py-3 text-sm font-bold text-white">
+              Get started <ArrowRight size={14} />
+            </Link>
+          </nav>
+        )}
       </header>
 
-      <main>
-        <section className="landing-container landing-hero">
-          <div className="landing-hero-copy">
-            <p className="landing-kicker"><span className="landing-kicker-dot" /> Calm precision for property operators</p>
-            <h1>Your properties. <span>Your people.</span> One clear picture.</h1>
-            <p className="landing-hero-description">IKTIS helps you manage properties, rooms, tenants, rent payments, and outstanding balances in one simple place.</p>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <Link to="/register" className="landing-primary-button">Get Started <span className="material-symbols-outlined text-[18px]" aria-hidden="true">arrow_forward</span></Link>
-              <Link to="/login" className="landing-secondary-button">Sign In</Link>
-            </div>
-            <p className="mt-5 text-xs text-ink-muted"><span className="material-symbols-outlined mr-1 align-[-3px] text-[15px] text-primary" aria-hidden="true">check_circle</span>Built for landlords who prefer clarity over clutter.</p>
-          </div>
-          <DashboardPreview />
-        </section>
+      <main id="hero" className="relative">
+        <section className="relative mx-auto flex min-h-[850px] max-w-[1180px] flex-col items-center px-6 pb-20 pt-36 text-center lg:px-8 lg:pt-40">
+          <div className="absolute left-[-16%] top-[12%] h-[360px] w-[360px] rounded-full bg-[#dbeaf6] blur-3xl" aria-hidden="true" />
+          <div className="absolute right-[-14%] top-[30%] h-[420px] w-[420px] rounded-full bg-[#e6edf7] blur-3xl" aria-hidden="true" />
 
-        <section className="landing-section border-y border-border/70 bg-canvas-soft/55" aria-labelledby="features-heading">
-          <div className="landing-container">
-            <div className="landing-section-heading">
-              <p className="landing-kicker">The essentials, together</p>
-              <h2 id="features-heading">Less chasing. More knowing.</h2>
-              <p>One focused workspace for the parts of property management that need your attention every day.</p>
-            </div>
-            <div className="grid gap-px overflow-hidden rounded-[24px] border border-border/80 bg-border/80 sm:grid-cols-2 lg:grid-cols-4">
-              {features.map((feature) => (
-                <article key={feature.eyebrow} className="bg-canvas p-6 sm:p-7">
-                  <span className="mb-8 inline-flex h-14 w-14 items-center justify-center rounded-xl bg-canvas-soft text-primary">
-                    <span className="material-symbols-outlined text-[26px]" aria-hidden="true">{feature.icon}</span>
-                  </span>
-                  <p className="text-xs font-bold text-primary">{feature.eyebrow}</p>
-                  <h3 className="mt-2 text-lg font-bold tracking-tight text-ink">{feature.title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-ink-muted">{feature.description}</p>
-                </article>
-              ))}
-            </div>
+          <div className="relative z-10 max-w-[700px]">
+            <h1 className="text-balance text-[clamp(2.6rem,5.5vw,5.2rem)] font-extrabold leading-[0.94] tracking-[-0.075em] text-[#102b43]">
+              <SoftBlurIn>Know what's due.</SoftBlurIn><br />
+              <SoftBlurIn className="text-[#3e7ea1]">Know what's paid.</SoftBlurIn>
+            </h1>
+            <p className="mx-auto mt-7 max-w-[540px] text-[17px] leading-7 text-[#607187] sm:text-[19px]">
+              No scattered records. No forgotten payments. Just a clearer way to manage your rental business.
+            </p>
           </div>
-        </section>
 
-        <section className="landing-section" aria-labelledby="workflow-heading">
-          <div className="landing-container">
-            <div className="landing-section-heading">
-              <p className="landing-kicker">A simpler rhythm</p>
-              <h2 id="workflow-heading">Set it up once. Stay in control.</h2>
+          <div className="relative z-10 mt-16 w-full max-w-[930px] lg:mt-20">
+            <div className="absolute -inset-8 rounded-[42px] bg-[#dce9f3]/60 blur-2xl" aria-hidden="true" />
+            <div className="relative overflow-hidden rounded-[24px] border border-[#cfdae4] bg-white text-left shadow-[0_28px_70px_rgba(31,67,97,0.16)]">
+              <div className="flex items-center justify-between border-b border-[#e7edf2] px-5 py-4 sm:px-7">
+                <div className="flex items-center gap-2.5">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#edf5f9]"><IktisMark className="h-5 w-5 object-contain" /></span>
+                  <div>
+                    <p className="text-xs font-bold text-[#173653]"><Roll>Portfolio overview</Roll></p>
+                    <p className="text-[10px] text-[#91a0ad]"><Roll>October 2026</Roll></p>
+                  </div>
+                </div>
+                <span className="rounded-full bg-[#eef8f3] px-3 py-1 text-[10px] font-bold text-[#36805f]"><Roll>All up to date</Roll></span>
+              </div>
+              <div className="grid gap-4 bg-[#fbfcfd] p-5 sm:grid-cols-[1.05fr_1.7fr] sm:p-7">
+                <div className="rounded-2xl border border-[#e4ebf0] bg-white p-5">
+                  <div className="mb-6 flex items-center justify-between">
+                    <p className="text-xs font-bold text-[#607187]"><Roll>This month</Roll></p>
+                    <CircleDollarSign size={17} className="text-[#e28553]" />
+                  </div>
+                  <p className="text-3xl font-extrabold tracking-tight text-[#122f47]"><Roll>₹2,48,500</Roll></p>
+                  <p className="mt-1 text-xs text-[#8b9aa8]"><Roll>collected rent</Roll></p>
+                  <div className="mt-7 flex items-end gap-1.5">
+                    {[38, 50, 42, 67, 58, 76, 86, 72, 94, 82, 100, 91].map((height, index) => (
+                      <span key={index} className="flex-1 rounded-t bg-[#b9d8e6]" style={{ height: `${height}px` }} />
+                    ))}
+                  </div>
+                </div>
+                <div className="rounded-2xl border border-[#e4ebf0] bg-white p-5">
+                  <div className="mb-5 flex items-center justify-between">
+                    <p className="text-xs font-bold text-[#607187]"><Roll>Properties & occupancy</Roll></p>
+                    <span className="text-xs font-bold text-[#3e7ea1]"><Roll>92% occupied</Roll></span>
+                  </div>
+                  <div className="space-y-3">
+                    {[
+                      ['Riverside Apartments', '18 / 20 rooms', '₹1,42,000'],
+                      ['Maple Residency', '12 / 14 rooms', '₹86,500'],
+                      ['Greenview Homes', '5 / 6 rooms', '₹20,000'],
+                    ].map(([name, rooms, amount]) => (
+                      <div key={name} className="flex items-center justify-between rounded-xl bg-[#f8fafc] px-3.5 py-3">
+                        <div>
+                          <p className="text-xs font-bold text-[#25445d]"><Roll>{name}</Roll></p>
+                          <p className="mt-1 text-[10px] text-[#8a99a7]"><Roll>{rooms}</Roll></p>
+                        </div>
+                        <p className="text-xs font-bold text-[#3e7ea1]"><Roll>{amount}</Roll></p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center justify-between border-t border-[#e7edf2] px-5 py-4 sm:px-7">
+                <p className="text-xs font-medium text-[#91a0ad]"><Roll>A clear view of what is paid, pending, and next.</Roll></p>
+                <div className="hidden items-center gap-1 text-[10px] font-bold text-[#3e7ea1] sm:flex"><Roll>View dashboard</Roll> <ChevronDown size={12} className="-rotate-90" /></div>
+              </div>
             </div>
-            <div className="grid gap-8 md:grid-cols-3 md:gap-10">
-              {steps.map(([number, title, description]) => (
-                <article key={number} className="relative border-t border-border pt-5">
-                  <p className="text-xs font-bold tracking-[0.12em] text-primary">{number}</p>
-                  <h3 className="mt-5 text-xl font-bold tracking-tight text-ink">{title}</h3>
-                  <p className="mt-3 max-w-sm text-sm leading-6 text-ink-muted">{description}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="landing-container pb-20 sm:pb-28" aria-labelledby="cta-heading">
-          <div className="landing-final-cta">
-            <div>
-              <p className="landing-kicker text-blue-200">A clearer way to manage</p>
-              <h2 id="cta-heading">Your next clear picture starts here.</h2>
-              <p>Bring your properties, people, and payments into one calm workspace.</p>
-            </div>
-            <Link to="/register" className="landing-light-button">Create your account <span className="material-symbols-outlined text-[18px]" aria-hidden="true">arrow_forward</span></Link>
           </div>
         </section>
       </main>
 
-      <footer className="border-t border-border/70 bg-canvas">
-        <div className="landing-container flex flex-col gap-5 py-8 text-sm sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-2 font-bold tracking-tight"><BrandMark /><span>IKTIS</span></div>
-          <nav className="flex flex-wrap gap-x-5 gap-y-2 text-xs text-ink-muted" aria-label="Footer navigation">
-            <Link to="/privacy" className="hover:text-ink hover:underline">Privacy Policy</Link>
-            <Link to="/terms" className="hover:text-ink hover:underline">Terms of Service</Link>
-            <a href="mailto:harshit.work009@gmail.com" className="hover:text-ink hover:underline">Contact & grievances</a>
-          </nav>
-          <p className="text-xs text-ink-muted">© {new Date().getFullYear()} IKTIS</p>
+      <footer className="relative overflow-hidden text-[#102b43]">
+        <div className="absolute inset-x-0 bottom-[-42px] select-none text-center text-[26vw] font-black leading-none tracking-[-0.1em] text-[#102b43]/[0.035]" aria-hidden="true">
+          IKTIS
+        </div>
+        <div className="relative mx-auto max-w-[1180px] px-6 pb-8 pt-16 lg:px-8">
+          <div className="flex flex-col items-center text-center">
+            <Link to="/" className="flex items-center gap-2.5" aria-label="IKTIS home">
+              <IktisMark className="h-9 w-9 object-contain" />
+              <span className="text-lg font-extrabold tracking-[-0.04em]">IKTIS</span>
+            </Link>
+            <div className="mt-9 flex flex-wrap items-center justify-center gap-x-7 gap-y-3 text-xs font-semibold text-[#607187]">
+              <Link to="/privacy" className="transition hover:text-[#164e78]">Privacy</Link>
+              <Link to="/terms" className="transition hover:text-[#164e78]">Terms</Link>
+              <a href="mailto:hello@iktis.app" className="transition hover:text-[#164e78]">Contact</a>
+              <Link to="/login" className="transition hover:text-[#164e78]">Sign in</Link>
+            </div>
+          </div>
+          <div className="mt-14 flex flex-col items-center justify-between gap-3 border-t border-[#d6e0ea] pt-5 text-xs text-[#7692a7] sm:flex-row">
+            <p>© {new Date().getFullYear()} IKTIS. Built for better-managed homes.</p>
+            <p className="flex items-center gap-1.5"><Check size={13} className="text-[#79c4a0]" /> Secure landlord workspace</p>
+          </div>
         </div>
       </footer>
     </div>
