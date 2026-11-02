@@ -1,21 +1,21 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import PublicOnlyRoute from './components/PublicOnlyRoute.jsx';
-import AppLayout from './components/AppLayout.jsx';
-import LoginPage from './pages/LoginPage.jsx';
-import ForgotPasswordPage from './pages/ForgotPasswordPage.jsx';
-import ResetPasswordPage from './pages/ResetPasswordPage.jsx';
-import RegisterPage from './pages/RegisterPage.jsx';
-import DashboardPage from './pages/DashboardPage.jsx';
-import PropertiesPage from './pages/PropertiesPage.jsx';
-import PropertyDetailPage from './pages/PropertyDetailPage.jsx';
-import TenantsPage from './pages/TenantsPage.jsx';
-import TenantDetailPage from './pages/TenantDetailPage.jsx';
-import RentChargesPage from './pages/RentChargesPage.jsx';
-import PaymentsPage from './pages/PaymentsPage.jsx';
-import ReportsPage from './pages/ReportsPage.jsx';
+const AppLayout = lazy(() => import('./components/AppLayout.jsx'));
+const LoginPage = lazy(() => import('./pages/LoginPage.jsx'));
+const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage.jsx'));
+const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage.jsx'));
+const RegisterPage = lazy(() => import('./pages/RegisterPage.jsx'));
+const DashboardPage = lazy(() => import('./pages/DashboardPage.jsx'));
+const PropertiesPage = lazy(() => import('./pages/PropertiesPage.jsx'));
+const PropertyDetailPage = lazy(() => import('./pages/PropertyDetailPage.jsx'));
+const TenantsPage = lazy(() => import('./pages/TenantsPage.jsx'));
+const TenantDetailPage = lazy(() => import('./pages/TenantDetailPage.jsx'));
+const RentChargesPage = lazy(() => import('./pages/RentChargesPage.jsx'));
+const PaymentsPage = lazy(() => import('./pages/PaymentsPage.jsx'));
+const ReportsPage = lazy(() => import('./pages/ReportsPage.jsx'));
 import LegalPage from './pages/LegalPage.jsx';
 import LandingPage from './pages/LandingPage.jsx';
 import SettingsPage from './pages/SettingsPage.jsx';
@@ -24,7 +24,8 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
+        <Suspense fallback={<div className="min-h-screen bg-surface-soft flex items-center justify-center"><div className="text-ink-muted text-sm tracking-wide">Loading IKTIS...</div></div>}>
+          <Routes>
           <Route path="/" element={<RootRoute />} />
 
           {/* Public routes (redirect to / if already logged in) */}
@@ -54,7 +55,8 @@ export default function App() {
 
           {/* Catch-all fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+          </Routes>
+        </Suspense>
       </AuthProvider>
     </BrowserRouter>
   );
