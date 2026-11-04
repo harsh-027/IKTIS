@@ -57,16 +57,53 @@ const validTest = runConfig({
 });
 assert.equal(validTest.status, 0, validTest.stderr);
 
+const testConnectionLimit = runConfig({
+  NODE_ENV: 'test',
+  DATABASE_URL: 'mysql://development',
+  TEST_DATABASE_URL: 'mysql://test-host:3306/iktis_integration_test',
+}, `import { runtimeConfig } from '${modulePath}'; console.log(runtimeConfig.databaseConnectionLimit);`);
+assert.equal(testConnectionLimit.status, 0, testConnectionLimit.stderr);
+assert.equal(testConnectionLimit.stdout.trim(), '5');
+
+const customConnectionLimit = runConfig({
+  NODE_ENV: 'production',
+  DATABASE_URL: 'mysql://test',
+  DATABASE_CONNECTION_LIMIT: '2',
+  FRONTEND_URL: 'https://iktis.vercel.app',
+}, `import { runtimeConfig } from '${modulePath}'; console.log(runtimeConfig.databaseConnectionLimit);`);
+assert.equal(customConnectionLimit.status, 0, customConnectionLimit.stderr);
+assert.equal(customConnectionLimit.stdout.trim(), '2');
+
+assertFails(
+  {
+    NODE_ENV: 'production',
+    DATABASE_URL: 'mysql://test',
+    DATABASE_CONNECTION_LIMIT: '0',
+    FRONTEND_URL: 'https://iktis.vercel.app',
+  },
+  'DATABASE_CONNECTION_LIMIT must be an integer between 1 and 100'
+);
+
 const validProduction = runConfig({
   NODE_ENV: 'production',
   DATABASE_URL: 'mysql://test',
   FRONTEND_URL: 'https://iktis.vercel.app',
-}, `import { runtimeConfig, getCookieSecurityOptions } from '${modulePath}'; console.log(JSON.stringify({ frontendUrl: runtimeConfig.frontendUrl, cookies: getCookieSecurityOptions(), recovery: runtimeConfig.passwordRecoveryEnabled }));`);
+}, `import { runtimeConfig, getCookieSecurityOptions } from '${modulePath}'; console.log(JSON.stringify({ frontendUrl: runtimeConfig.frontendUrl, cookies: getCookieSecurityOptions(), recovery: runtimeConfig.passwordRecoveryEnabled, connectionLimit: runtimeConfig.databaseConnectionLimit }));`);
 assert.equal(validProduction.status, 0, validProduction.stderr);
 const validProductionOutput = JSON.parse(validProduction.stdout.trim());
 assert.equal(validProductionOutput.frontendUrl, 'https://iktis.vercel.app');
 assert.deepEqual(validProductionOutput.cookies, { secure: true, sameSite: 'none' });
 assert.equal(validProductionOutput.recovery, false);
+assert.equal(validProductionOutput.connectionLimit, 1);
+
+const datasourceOptions = runConfig({
+  NODE_ENV: 'production',
+  DATABASE_URL: 'mysql://test',
+  FRONTEND_URL: 'https://iktis.vercel.app',
+}, `import { withConnectionLimit } from './src/config/db.js'; console.log(withConnectionLimit('mysql://test/database', 1));`);
+assert.equal(datasourceOptions.status, 0, datasourceOptions.stderr);
+assert.match(datasourceOptions.stdout.trim(), /connection_limit=1/);
+assert.match(datasourceOptions.stdout.trim(), /pool_timeout=10/);
 
 assertFails(
   {

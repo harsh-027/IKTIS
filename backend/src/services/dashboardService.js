@@ -1,52 +1,138 @@
+import { Prisma } from '@prisma/client';
 import prisma from '../config/db.js';
+import { toPeriodDateString, toUtcDateString, toUtcDateTimeString } from '../utils/dashboardDates.js';
 
-/**
- * Helper to compute outstanding on a charge
- */
-function computeChargeOutstanding(charge) {
-  const allocated = (charge.allocations || []).reduce((sum, a) => {
-    if (!a.payment || a.payment.voidedAt) return sum;
-    return sum + Number(a.amountAllocated);
-  }, 0);
-  return Math.max(0, Number((Number(charge.amountDue) - allocated).toFixed(2)));
+function toNumber(value) {
+  return Number(value || 0);
+}
+
+function computeCollectionRate(collected, charged) {
+  return charged > 0 ? Number(((collected / charged) * 100).toFixed(1)) : 0;
 }
 
 /**
- * Get comprehensive landlord dashboard summary
+ * Get comprehensive landlord dashboard summary.
  */
 export async function getDashboardSummary(ownerId, yearMonth) {
   const now = new Date();
-
-  // If no month provided, default to current UTC month YYYY-MM
   const targetMonth = yearMonth || `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}`;
-  const [year, mon] = targetMonth.split('-').map(Number);
-  const periodStart = new Date(Date.UTC(year, mon - 1, 1));
+  const periodStart = toPeriodDateString(targetMonth);
+  const today = toUtcDateString(now);
+  const utcNow = toUtcDateTimeString(now);
 
-  // ─── 1. Portfolio & Occupancy Metrics ───────────────────────────────────────
-  const [totalProperties, totalRooms, activeTenancies] = await Promise.all([
-    prisma.property.count({
-      where: { ownerId, archivedAt: null },
-    }),
-    prisma.room.count({
-      where: {
-        archivedAt: null,
-        property: { ownerId, archivedAt: null },
-      },
-    }),
-    prisma.tenancy.findMany({
-      where: {
-        ownerId,
-        startDate: { lte: now },
-        OR: [{ endDate: null }, { endDate: { gte: now } }],
-        room: {
+  const allocationTotals = Prisma.sql`
+    SELECT pa.rentChargeId, SUM(pa.amountAllocated) AS allocated
+    FROM payment_allocations pa
+    INNER JOIN payments p ON p.id = pa.paymentId
+    WHERE p.voidedAt IS NULL
+      AND pa.ownerId = ${ownerId}
+    GROUP BY pa.rentChargeId
+  `;
+
+  const [portfolio, financials, upcomingCharges, recentPaymentsRaw] = await Promise.all([
+    Promise.all([
+      prisma.property.count({
+        where: { ownerId, archivedAt: null },
+      }),
+      prisma.room.count({
+        where: {
           archivedAt: null,
-          property: { archivedAt: null },
+          property: { ownerId, archivedAt: null },
         },
+      }),
+      prisma.tenancy.findMany({
+        where: {
+          ownerId,
+          startDate: { lte: now },
+          OR: [{ endDate: null }, { endDate: { gte: now } }],
+          room: {
+            archivedAt: null,
+            property: { archivedAt: null },
+          },
+        },
+        select: { roomId: true, tenantId: true },
+      }),
+    ]),
+    Promise.all([
+      prisma.$queryRaw(Prisma.sql`
+        SELECT
+          COALESCE(SUM(rc.amountDue), 0) AS charged,
+          COALESCE(SUM(GREATEST(rc.amountDue - COALESCE(at.allocated, 0), 0)), 0) AS outstanding,
+          COALESCE(SUM(CASE
+            WHEN rc.dueDate < CAST(${utcNow} AS DATETIME(3))
+              AND rc.amountDue - COALESCE(at.allocated, 0) > 0
+            THEN rc.amountDue - COALESCE(at.allocated, 0)
+            ELSE 0
+          END), 0) AS overdue,
+          COUNT(rc.id) AS chargesCount
+        FROM rent_charges rc
+        LEFT JOIN (${allocationTotals}) at ON at.rentChargeId = rc.id
+        WHERE rc.ownerId = ${ownerId} AND rc.period = CAST(${periodStart} AS DATE)
+      `),
+      prisma.$queryRaw(Prisma.sql`
+        SELECT
+          COALESCE(SUM(rc.amountDue), 0) AS charged,
+          COALESCE(SUM(GREATEST(rc.amountDue - COALESCE(at.allocated, 0), 0)), 0) AS outstanding,
+          COALESCE(SUM(CASE
+            WHEN rc.dueDate < CAST(${utcNow} AS DATETIME(3))
+              AND rc.amountDue - COALESCE(at.allocated, 0) > 0
+            THEN rc.amountDue - COALESCE(at.allocated, 0)
+            ELSE 0
+          END), 0) AS overdue
+        FROM rent_charges rc
+        LEFT JOIN (${allocationTotals}) at ON at.rentChargeId = rc.id
+        WHERE rc.ownerId = ${ownerId}
+      `),
+      prisma.payment.aggregate({
+        where: { ownerId, voidedAt: null },
+        _sum: { amount: true },
+        _count: { id: true },
+      }),
+    ]),
+    prisma.$queryRaw(Prisma.sql`
+      SELECT
+        rc.id,
+        rc.tenancyId,
+        rc.dueDate,
+        rc.amountDue,
+        t.fullName AS tenantName,
+        t.phone AS tenantPhone,
+        p.name AS propertyName,
+        r.label AS roomLabel,
+        (rc.amountDue - COALESCE(at.allocated, 0)) AS outstanding
+      FROM rent_charges rc
+      INNER JOIN tenancies te ON te.id = rc.tenancyId
+      INNER JOIN tenants t ON t.id = te.tenantId
+      INNER JOIN rooms r ON r.id = te.roomId
+      INNER JOIN properties p ON p.id = r.propertyId
+      LEFT JOIN (${allocationTotals}) at ON at.rentChargeId = rc.id
+      WHERE rc.ownerId = ${ownerId}
+        AND rc.dueDate >= CAST(${today} AS DATE)
+        AND rc.amountDue - COALESCE(at.allocated, 0) > 0
+      ORDER BY rc.dueDate ASC
+      LIMIT 5
+    `),
+    prisma.payment.findMany({
+      where: { ownerId },
+      take: 5,
+      orderBy: [
+        { paidAt: 'desc' },
+        { createdAt: 'desc' },
+      ],
+      select: {
+        id: true,
+        amount: true,
+        paidAt: true,
+        method: true,
+        reference: true,
+        voidedAt: true,
+        voidReason: true,
+        tenant: { select: { id: true, fullName: true } },
       },
-      select: { roomId: true, tenantId: true },
     }),
   ]);
 
+  const [totalProperties, totalRooms, activeTenancies] = portfolio;
   const occupiedRoomIds = new Set(activeTenancies.map((t) => t.roomId));
   const occupiedRooms = occupiedRoomIds.size;
   const vacantRooms = Math.max(0, totalRooms - occupiedRooms);
@@ -54,164 +140,48 @@ export async function getDashboardSummary(ownerId, yearMonth) {
   const activeTenanciesCount = activeTenancies.length;
   const occupancyRate = totalRooms > 0 ? Number(((occupiedRooms / totalRooms) * 100).toFixed(1)) : 0;
 
-  // ─── 2. Monthly Financial Metrics ──────────────────────────────────────────
-  const monthlyCharges = await prisma.rentCharge.findMany({
-    where: { ownerId, period: periodStart },
-    include: {
-      allocations: {
-        include: {
-          payment: { select: { id: true, voidedAt: true } },
-        },
-      },
-      tenancy: {
-        include: {
-          tenant: { select: { id: true, fullName: true } },
-          room: {
-            include: { property: { select: { id: true, name: true } } },
-          },
-        },
-      },
-    },
-  });
+  const [monthlyRows, lifetimeRows, validPaymentsSum] = financials;
+  const monthly = monthlyRows[0] || {};
+  const lifetime = lifetimeRows[0] || {};
+  const monthlyCharged = toNumber(monthly.charged);
+  const monthlyOutstanding = toNumber(monthly.outstanding);
+  const monthlyCollected = Number((monthlyCharged - monthlyOutstanding).toFixed(2));
+  const monthlyOverdue = toNumber(monthly.overdue);
+  const lifetimeCharged = toNumber(lifetime.charged);
+  const lifetimeOutstanding = toNumber(lifetime.outstanding);
+  const lifetimeOverdue = toNumber(lifetime.overdue);
+  const lifetimeCollected = Number(toNumber(validPaymentsSum._sum.amount).toFixed(2));
 
-  let monthlyCharged = 0;
-  let monthlyCollected = 0;
-  let monthlyOutstanding = 0;
-  let monthlyOverdue = 0;
+  const upcomingDue = upcomingCharges.map((charge) => ({
+    id: charge.id,
+    tenancyId: charge.tenancyId,
+    tenantName: charge.tenantName || 'Tenant',
+    tenantPhone: charge.tenantPhone || '',
+    propertyName: charge.propertyName || 'Property',
+    roomLabel: charge.roomLabel || 'Room',
+    dueDate: charge.dueDate,
+    amountDue: toNumber(charge.amountDue),
+    outstanding: toNumber(charge.outstanding),
+  }));
 
-  for (const c of monthlyCharges) {
-    const due = Number(c.amountDue);
-    const outstanding = computeChargeOutstanding(c);
-    const collected = Number((due - outstanding).toFixed(2));
-
-    monthlyCharged += due;
-    monthlyCollected += collected;
-    monthlyOutstanding += outstanding;
-
-    if (outstanding > 0 && new Date(c.dueDate) < now) {
-      monthlyOverdue += outstanding;
-    }
-  }
-
-  monthlyCharged = Number(monthlyCharged.toFixed(2));
-  monthlyCollected = Number(monthlyCollected.toFixed(2));
-  monthlyOutstanding = Number(monthlyOutstanding.toFixed(2));
-  monthlyOverdue = Number(monthlyOverdue.toFixed(2));
-  const collectionRate = monthlyCharged > 0 ? Number(((monthlyCollected / monthlyCharged) * 100).toFixed(1)) : 0;
-
-  // ─── 3. Lifetime Financial Metrics ─────────────────────────────────────────
-  const allCharges = await prisma.rentCharge.findMany({
-    where: { ownerId },
-    include: {
-      allocations: {
-        include: {
-          payment: { select: { id: true, voidedAt: true } },
-        },
-      },
-    },
-  });
-
-  let lifetimeCharged = 0;
-  let lifetimeOutstanding = 0;
-  let lifetimeOverdue = 0;
-
-  for (const c of allCharges) {
-    const due = Number(c.amountDue);
-    const outstanding = computeChargeOutstanding(c);
-    lifetimeCharged += due;
-    lifetimeOutstanding += outstanding;
-    if (outstanding > 0 && new Date(c.dueDate) < now) {
-      lifetimeOverdue += outstanding;
-    }
-  }
-
-  // Lifetime collected from valid payments
-  const validPaymentsSum = await prisma.payment.aggregate({
-    where: { ownerId, voidedAt: null },
-    _sum: { amount: true },
-    _count: { id: true },
-  });
-
-  const lifetimeCollected = Number((Number(validPaymentsSum._sum.amount || 0)).toFixed(2));
-  lifetimeCharged = Number(lifetimeCharged.toFixed(2));
-  lifetimeOutstanding = Number(lifetimeOutstanding.toFixed(2));
-  lifetimeOverdue = Number(lifetimeOverdue.toFixed(2));
-
-  // ─── 4. Upcoming Rent Due Dates (Next 5 unpaid charges) ─────────────────────
-  const upcomingCharges = await prisma.rentCharge.findMany({
-    where: {
-      ownerId,
-      dueDate: { gte: new Date(now.toISOString().slice(0, 10)) },
-    },
-    include: {
-      tenancy: {
-        include: {
-          tenant: { select: { id: true, fullName: true, phone: true } },
-          room: {
-            include: { property: { select: { id: true, name: true } } },
-          },
-        },
-      },
-      allocations: {
-        include: {
-          payment: { select: { id: true, voidedAt: true } },
-        },
-      },
-    },
-    orderBy: { dueDate: 'asc' },
-  });
-
-  const upcomingDueList = [];
-  for (const c of upcomingCharges) {
-    if (upcomingDueList.length >= 5) break;
-    const outstanding = computeChargeOutstanding(c);
-    if (outstanding > 0) {
-      upcomingDueList.push({
-        id: c.id,
-        tenancyId: c.tenancyId,
-        tenantName: c.tenancy?.tenant?.fullName || 'Tenant',
-        tenantPhone: c.tenancy?.tenant?.phone || '',
-        propertyName: c.tenancy?.room?.property?.name || 'Property',
-        roomLabel: c.tenancy?.room?.label || 'Room',
-        dueDate: c.dueDate,
-        amountDue: Number(c.amountDue),
-        outstanding,
-      });
-    }
-  }
-
-  // ─── 5. Recent Payments (Latest 5 records) ──────────────────────────────────
-  const recentPaymentsRaw = await prisma.payment.findMany({
-    where: { ownerId },
-    take: 5,
-    orderBy: [
-      { paidAt: 'desc' },
-      { createdAt: 'desc' },
-    ],
-    include: {
-      tenant: { select: { id: true, fullName: true } },
-    },
-  });
-
-  const recentPayments = recentPaymentsRaw.map((p) => {
-    const d = new Date(p.paidAt);
-    const y = d.getUTCFullYear();
-    const m = String(d.getUTCMonth() + 1).padStart(2, '0');
-    const slug = (p.id || '').replace(/-/g, '').slice(0, 8).toUpperCase();
-    const receiptNumber = `RCP-${y}${m}-${slug}`;
+  const recentPayments = recentPaymentsRaw.map((payment) => {
+    const date = new Date(payment.paidAt);
+    const yearPart = date.getUTCFullYear();
+    const monthPart = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const slug = (payment.id || '').replace(/-/g, '').slice(0, 8).toUpperCase();
 
     return {
-      id: p.id,
-      receiptNumber,
-      amount: Number(p.amount),
-      paidAt: p.paidAt,
-      method: p.method || 'Cash',
-      reference: p.reference,
-      isVoided: Boolean(p.voidedAt),
-      voidReason: p.voidReason,
-      tenant: p.tenant ? {
-        id: p.tenant.id,
-        fullName: p.tenant.fullName,
+      id: payment.id,
+      receiptNumber: `RCP-${yearPart}${monthPart}-${slug}`,
+      amount: toNumber(payment.amount),
+      paidAt: payment.paidAt,
+      method: payment.method || 'Cash',
+      reference: payment.reference,
+      isVoided: Boolean(payment.voidedAt),
+      voidReason: payment.voidReason,
+      tenant: payment.tenant ? {
+        id: payment.tenant.id,
+        fullName: payment.tenant.fullName,
       } : null,
     };
   });
@@ -233,8 +203,8 @@ export async function getDashboardSummary(ownerId, yearMonth) {
       paymentsCollected: monthlyCollected,
       outstandingRent: monthlyOutstanding,
       overdueRent: monthlyOverdue,
-      collectionRate,
-      chargesCount: monthlyCharges.length,
+      collectionRate: computeCollectionRate(monthlyCollected, monthlyCharged),
+      chargesCount: Number(monthly.chargesCount || 0),
     },
     lifetimeFinancials: {
       lifetimeCharged,
@@ -243,7 +213,7 @@ export async function getDashboardSummary(ownerId, yearMonth) {
       totalOverdue: lifetimeOverdue,
       totalPaymentsCount: validPaymentsSum._count.id || 0,
     },
-    upcomingDue: upcomingDueList,
+    upcomingDue,
     recentPayments,
   };
 }

@@ -149,6 +149,7 @@ Required configuration:
 - `FRONTEND_URL`
 - `VITE_API_BASE_URL`
 - `VITE_APP_TITLE`
+- `DATABASE_CONNECTION_LIMIT` (optional; production defaults to one connection per warm serverless instance)
 
 Use different local and production values. Never put backend secrets in variables exposed to the frontend build (for example, `VITE_*` variables).
 `SESSION_SECRET` and `COOKIE_SECRET` are not used by the current database-backed

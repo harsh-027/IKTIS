@@ -121,9 +121,18 @@ export async function validateSession(sessionToken) {
 
   const tokenHash = hashToken(sessionToken);
 
-  const session = await prisma.session.findUnique({
-    where: { tokenHash },
-    include: {
+  const now = new Date();
+  const session = await prisma.session.findFirst({
+    where: {
+      tokenHash,
+      revokedAt: null,
+      expiresAt: { gt: now },
+    },
+    select: {
+      id: true,
+      userId: true,
+      expiresAt: true,
+      createdAt: true,
       user: {
         select: {
           id: true,
@@ -136,16 +145,6 @@ export async function validateSession(sessionToken) {
   });
 
   if (!session) {
-    return null;
-  }
-
-  // Check if session has been explicitly revoked
-  if (session.revokedAt !== null) {
-    return null;
-  }
-
-  // Check if session has expired
-  if (new Date(session.expiresAt) <= new Date()) {
     return null;
   }
 

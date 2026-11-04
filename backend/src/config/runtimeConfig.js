@@ -62,6 +62,20 @@ if (!SUPPORTED_NODE_ENVS.has(nodeEnv)) {
 
 export const isProduction = nodeEnv === 'production';
 
+function getConnectionLimit() {
+  const configured = process.env.DATABASE_CONNECTION_LIMIT?.trim();
+  if (!configured) {
+    return isProduction ? 1 : 5;
+  }
+
+  const connectionLimit = Number(configured);
+  if (!Number.isInteger(connectionLimit) || connectionLimit < 1 || connectionLimit > 100) {
+    throw new Error('DATABASE_CONNECTION_LIMIT must be an integer between 1 and 100.');
+  }
+
+  return connectionLimit;
+}
+
 const databaseUrl = nodeEnv === 'test'
   ? validateTestDatabaseUrl(requireValue('TEST_DATABASE_URL'))
   : undefined;
@@ -76,6 +90,7 @@ export const runtimeConfig = {
   resendApiKey,
   resendFromEmail,
   passwordRecoveryEnabled,
+  databaseConnectionLimit: getConnectionLimit(),
   frontendUrl: isProduction
     ? validateFrontendOrigin(requireValue('FRONTEND_URL'))
     : (process.env.FRONTEND_URL?.trim() || 'http://localhost:5173'),
