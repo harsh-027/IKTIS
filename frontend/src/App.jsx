@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import PublicOnlyRoute from './components/PublicOnlyRoute.jsx';
+import IKTISLoadingScreen from './components/IKTISLoadingScreen.jsx';
 const AppLayout = lazy(() => import('./components/AppLayout.jsx'));
 const LoginPage = lazy(() => import('./pages/LoginPage.jsx'));
 const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage.jsx'));
@@ -24,7 +25,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Suspense fallback={<div className="min-h-screen bg-surface-soft flex items-center justify-center"><div className="text-ink-muted text-sm tracking-wide">Loading IKTIS...</div></div>}>
+        <Suspense fallback={<IKTISLoadingScreen complete />}>
           <Routes>
           <Route path="/" element={<RootRoute />} />
 
@@ -66,11 +67,7 @@ function RootRoute() {
   const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-surface-soft flex items-center justify-center">
-        <div className="text-ink-muted text-sm tracking-wide">Loading IKTIS...</div>
-      </div>
-    );
+    return <IKTISLoadingScreen />;
   }
 
   if (isAuthenticated) {
