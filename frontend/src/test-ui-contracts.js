@@ -17,6 +17,23 @@ assert.match(dialogSource, /previousActiveElement\.focus/);
 const cssSource = readSource('index.css');
 assert.match(cssSource, /prefers-reduced-motion:\s*reduce/);
 
+const authSource = readSource('context/AuthContext.jsx');
+assert.match(authSource, /let sharedAuthInitialization = null/);
+assert.match(authSource, /const ensureAuth = useCallback/);
+assert.match(authSource, /const checkAuth = useCallback/);
+assert.match(authSource, /authVersionRef/);
+assert.doesNotMatch(authSource, /useEffect\(\(\) => \{\s*checkAuth\(\)/);
+
+for (const fileName of [
+  'App.jsx',
+  'components/ProtectedRoute.jsx',
+  'components/PublicOnlyRoute.jsx',
+]) {
+  const source = readSource(fileName);
+  assert.match(source, /ensureAuth/);
+  assert.match(source, /isInitialized/);
+}
+
 const pageFiles = [
   'pages/DashboardPage.jsx',
   'pages/PaymentsPage.jsx',

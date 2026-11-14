@@ -17,9 +17,9 @@ const TenantDetailPage = lazy(() => import('./pages/TenantDetailPage.jsx'));
 const RentChargesPage = lazy(() => import('./pages/RentChargesPage.jsx'));
 const PaymentsPage = lazy(() => import('./pages/PaymentsPage.jsx'));
 const ReportsPage = lazy(() => import('./pages/ReportsPage.jsx'));
-import LegalPage from './pages/LegalPage.jsx';
-import LandingPage from './pages/LandingPage.jsx';
-import SettingsPage from './pages/SettingsPage.jsx';
+const LegalPage = lazy(() => import('./pages/LegalPage.jsx'));
+const LandingPage = lazy(() => import('./pages/LandingPage.jsx'));
+const SettingsPage = lazy(() => import('./pages/SettingsPage.jsx'));
 
 export default function App() {
   return (
@@ -64,9 +64,13 @@ export default function App() {
 }
 
 function RootRoute() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, isInitialized, ensureAuth } = useAuth();
 
-  if (isLoading) {
+  React.useEffect(() => {
+    ensureAuth();
+  }, [ensureAuth]);
+
+  if (isLoading || !isInitialized) {
     return <IKTISLoadingScreen />;
   }
 
