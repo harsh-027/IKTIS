@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
+import Icons8Icon from '../components/Icons8Icon.jsx';
 
 export default function SettingsPage() {
   const { user, updateProfile, deleteAccount } = useAuth();
@@ -54,16 +55,14 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-5">
+    <div className="iktis-internal mx-auto max-w-3xl space-y-5">
       <div>
         <p className="text-xs font-semibold uppercase tracking-wider text-primary">Account</p>
         <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-ink mt-1">Settings</h1>
-        <p className="text-sm text-ink-muted mt-1">Manage your profile details and account data.</p>
       </div>
 
       <section className="bg-canvas rounded-[18px] border border-slate-100 p-5 sm:p-6 shadow-sm">
         <h2 className="text-base font-semibold text-ink">Profile details</h2>
-        <p className="text-sm text-ink-muted mt-1">These details are used for your account and receipts.</p>
 
         <form onSubmit={handleProfileSubmit} className="mt-5 space-y-4">
           <div>
@@ -107,6 +106,32 @@ export default function SettingsPage() {
           </button>
         </form>
       </section>
+
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Link
+          to="/privacy"
+          className="group rounded-[18px] border border-slate-100 bg-canvas p-5 shadow-sm transition hover:border-border hover:shadow-md sm:p-6"
+        >
+<Icons8Icon icon="shield" className="text-primary text-[20px]" />
+          <h2 className="mt-3 text-base font-semibold text-ink">Privacy Policy</h2>
+          <p className="mt-1 text-sm leading-relaxed text-ink-muted">
+            Learn how IKTIS collects, uses, and protects your information.
+          </p>
+          <span className="mt-4 inline-flex text-sm font-semibold text-primary group-hover:underline">Read policy</span>
+        </Link>
+
+        <Link
+          to="/terms"
+          className="group rounded-[18px] border border-slate-100 bg-canvas p-5 shadow-sm transition hover:border-border hover:shadow-md sm:p-6"
+        >
+<Icons8Icon icon="content" className="text-primary text-[20px]" />
+          <h2 className="mt-3 text-base font-semibold text-ink">Terms of Service</h2>
+          <p className="mt-1 text-sm leading-relaxed text-ink-muted">
+            Review the terms that govern your use of IKTIS.
+          </p>
+          <span className="mt-4 inline-flex text-sm font-semibold text-primary group-hover:underline">Read terms</span>
+        </Link>
+      </div>
 
       <section className="bg-canvas rounded-[18px] border border-rose-200 p-5 sm:p-6 shadow-sm">
         <h2 className="text-base font-semibold text-rose-800">Delete account</h2>

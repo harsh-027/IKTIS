@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { rentChargeApi } from '../services/api.js';
 import Modal from '../components/Dialog.jsx';
+import Icons8Icon from '../components/Icons8Icon.jsx';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -73,7 +74,7 @@ function CustomChargeForm({ onSubmit, onCancel, loading }) {
     <form onSubmit={handleSubmit} noValidate className="space-y-4">
       {error && (
         <div className="text-xs text-rose-700 bg-rose-50 border border-rose-200 rounded-xl px-3 py-2 flex items-center gap-1.5">
-          <span className="material-symbols-outlined text-[16px] text-rose-600">error</span>
+<Icons8Icon icon="error" className="text-[16px] text-rose-600" />
           <span>{error}</span>
         </div>
       )}
@@ -199,7 +200,7 @@ function EditAmountForm({ charge, onSubmit, onCancel, loading }) {
     <form onSubmit={handleSubmit} noValidate className="space-y-4">
       {error && (
         <div className="text-xs text-rose-700 bg-rose-50 border border-rose-200 rounded-xl px-3 py-2 flex items-center gap-1.5">
-          <span className="material-symbols-outlined text-[16px] text-rose-600">error</span>
+<Icons8Icon icon="error" className="text-[16px] text-rose-600" />
           <span>{error}</span>
         </div>
       )}
@@ -327,7 +328,7 @@ function ChargeCard({ charge, onEdit, onDelete }) {
         {/* Due date and Tenant Link */}
         <div className="flex items-center justify-between text-xs pt-1">
           <span className={`text-[11px] flex items-center gap-1 ${isOverdue ? 'text-rose-600 font-semibold' : 'text-ink-muted'}`}>
-            <span className="material-symbols-outlined text-[14px]">calendar_today</span>
+<Icons8Icon icon="calendar" className="text-[16px]" />
             <span>Due {formatDate(charge.dueDate)}</span>
           </span>
           {charge.tenancy?.tenant?.id && (
@@ -336,7 +337,7 @@ function ChargeCard({ charge, onEdit, onDelete }) {
               className="text-primary hover:underline text-xs font-medium inline-flex items-center gap-0.5"
             >
               <span>Tenant</span>
-              <span className="material-symbols-outlined text-[13px]">arrow_forward</span>
+<Icons8Icon icon="arrow_forward" className="text-[16px]" />
             </Link>
           )}
         </div>
@@ -380,7 +381,7 @@ function GenerateModal({ month, onConfirm, onCancel, loading }) {
 
       <div className="bg-canvas-soft rounded-xl p-3.5 text-xs text-ink-muted space-y-1.5 leading-relaxed">
         <p className="flex items-center gap-1.5 text-ink font-medium">
-          <span className="material-symbols-outlined text-[16px] text-emerald-600">verified</span>
+<Icons8Icon icon="approval" className="text-[16px] text-emerald-600" />
           <span>Idempotent Safe Check Active</span>
         </p>
         <p>• Charges calculate strictly from each tenancy&apos;s agreed rent.</p>
@@ -560,7 +561,7 @@ export default function RentChargesPage() {
   });
 
   return (
-    <div className="space-y-5 pb-8">
+    <div className="iktis-internal space-y-5 pb-8">
       {/* ─── Top Header & Period Selector ─────────────────────────────── */}
       <div className="flex flex-col gap-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -568,9 +569,6 @@ export default function RentChargesPage() {
             <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-ink">
               Rent &amp; Collections
             </h1>
-            <p className="text-xs text-ink-muted">
-              Monthly rent roll, bulk charge generation, and arrears tracking
-            </p>
             <div className="mt-2 flex flex-wrap items-center gap-3">
               <div className="flex items-center bg-canvas rounded-full p-0.5 border border-border shadow-sm">
                 <button
@@ -578,7 +576,7 @@ export default function RentChargesPage() {
                   aria-label="Previous Month"
                   className="w-8 h-8 flex items-center justify-center rounded-full text-ink-muted hover:text-ink hover:bg-canvas-soft active:scale-[0.98] transition cursor-pointer"
                 >
-                  <span className="material-symbols-outlined text-[18px]">chevron_left</span>
+<Icons8Icon icon="chevron_left" className="text-[18px]" />
                 </button>
                 <span className="text-xs font-semibold text-ink px-3 whitespace-nowrap">
                   {monthLabel}
@@ -588,7 +586,7 @@ export default function RentChargesPage() {
                   aria-label="Next Month"
                   className="w-8 h-8 flex items-center justify-center rounded-full text-ink-muted hover:text-ink hover:bg-canvas-soft active:scale-[0.98] transition cursor-pointer"
                 >
-                  <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+<Icons8Icon icon="chevron_right" className="text-[18px]" />
                 </button>
               </div>
               <span className="text-emerald-700 font-semibold flex items-center gap-1.5 text-xs">
@@ -615,7 +613,7 @@ export default function RentChargesPage() {
             onClick={() => { setGenerateOpen(true); setGenerateResult(null); }}
             className={`${compactActionBase} bg-primary hover:bg-primary-focus text-white shadow-sm`}
           >
-            <span className="material-symbols-outlined text-[18px]">bolt</span>
+<Icons8Icon icon="lightning" className="text-[18px]" />
             <span>Bulk Generate</span>
           </button>
           <button
@@ -623,7 +621,7 @@ export default function RentChargesPage() {
             onClick={() => navigate('/payments?action=record')}
             className={`${compactActionBase} bg-canvas hover:bg-canvas-soft text-ink border border-border shadow-sm`}
           >
-            <span className="material-symbols-outlined text-primary text-[18px]">add_circle</span>
+<Icons8Icon icon="add" className="text-primary text-[18px]" />
             <span>Record Payment</span>
           </button>
         </div>
@@ -638,13 +636,13 @@ export default function RentChargesPage() {
         }`}>
           {generateResult.error ? (
             <p className="flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-rose-600 text-[18px]">error</span>
+<Icons8Icon icon="error" className="text-rose-600 text-[18px]" />
               <span>{generateResult.error}</span>
             </p>
           ) : (
             <div className="flex items-center justify-between flex-wrap gap-2">
               <div className="flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-emerald-600 text-[18px]">verified</span>
+<Icons8Icon icon="approval" className="text-emerald-600 text-[18px]" />
                 <span>Generated <strong>{generateResult.generated}</strong> new charges</span>
                 {generateResult.skipped > 0 && (
                   <span className="text-ink-muted">({generateResult.skipped} already on record)</span>
@@ -656,67 +654,52 @@ export default function RentChargesPage() {
         </div>
       )}
 
-      {/* Idempotent Generation Guard Info Card */}
-      <div className="bg-canvas rounded-[18px] p-4 shadow-sm border border-slate-100 flex flex-col gap-2">
-        <div className="flex items-start gap-3">
-          <div className="w-8 h-8 rounded-xl bg-blue-50 text-primary flex items-center justify-center shrink-0">
-            <span className="material-symbols-outlined text-[18px]">verified</span>
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold text-ink">Idempotent Generation Guard</p>
-            <p className="text-xs text-ink-muted mt-0.5 leading-snug">
-              Charges apply strictly to active tenancies without existing charges for {monthLabel}. Safe to re-run.
-            </p>
-          </div>
-        </div>
-      </div>
-
       {/* ─── Bento Summary Cards ───────────────────────────────────────── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <div className="bg-canvas rounded-[18px] border border-slate-100 p-4 shadow-sm">
-          <span className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider block mb-1">
+        <div className="relative overflow-hidden rounded-2xl bg-primary-container p-5 text-white shadow-sm sm:p-6">
+          <span className="font-label text-[10px] font-semibold uppercase tracking-[0.08em] text-primary-fixed block mb-1">
             Total Due
           </span>
-          <p className="text-xl sm:text-2xl font-bold tabular-nums text-ink">
+          <p className="mt-2 font-display text-2xl font-normal tracking-tight text-white">
             {summaryLoading ? '—' : formatINR(summary?.totalDue || 0)}
           </p>
-          <span className="text-[10px] text-ink-muted block mt-0.5">
+          <span className="mt-1 block text-[10px] font-medium text-primary-fixed">
             {summary?.totalCharges || 0} active charges
           </span>
         </div>
 
-        <div className="bg-canvas rounded-[18px] border border-slate-100 p-4 shadow-sm">
-          <span className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider block mb-1">
+        <div className="relative overflow-hidden rounded-2xl bg-primary-container p-5 text-white shadow-sm sm:p-6">
+          <span className="font-label text-[10px] font-semibold uppercase tracking-[0.08em] text-primary-fixed block mb-1">
             Collected
           </span>
-          <p className="text-xl sm:text-2xl font-bold tabular-nums text-emerald-700">
+          <p className="mt-2 font-display text-2xl font-normal tracking-tight text-white">
             {summaryLoading ? '—' : formatINR(summary?.totalPaid || 0)}
           </p>
-          <span className="text-[10px] text-emerald-600 block mt-0.5">
+          <span className="mt-1 block text-[10px] font-medium text-tertiary-fixed-dim">
             {summary?.totalDue > 0 ? Math.round(((summary.totalPaid || 0) / summary.totalDue) * 100) : 0}% collected
           </span>
         </div>
 
-        <div className="bg-canvas rounded-[18px] border border-slate-100 p-4 shadow-sm">
-          <span className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider block mb-1">
+        <div className="relative overflow-hidden rounded-2xl bg-primary-container p-5 text-white shadow-sm sm:p-6">
+          <span className="font-label text-[10px] font-semibold uppercase tracking-[0.08em] text-primary-fixed block mb-1">
             Outstanding
           </span>
-          <p className={`text-xl sm:text-2xl font-bold tabular-nums ${summary?.totalOutstanding > 0 ? 'text-rose-700' : 'text-ink'}`}>
+          <p className="mt-2 font-display text-2xl font-normal tracking-tight text-white">
             {summaryLoading ? '—' : formatINR(summary?.totalOutstanding || 0)}
           </p>
-          <span className="text-[10px] text-ink-muted block mt-0.5">
+          <span className="mt-1 block text-[10px] font-medium text-primary-fixed">
             Unpaid this cycle
           </span>
         </div>
 
-        <div className="bg-canvas rounded-[18px] border border-slate-100 p-4 shadow-sm">
-          <span className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider block mb-1">
+        <div className="relative overflow-hidden rounded-2xl bg-primary-container p-5 text-white shadow-sm sm:p-6">
+          <span className="font-label text-[10px] font-semibold uppercase tracking-[0.08em] text-primary-fixed block mb-1">
             Charges Count
           </span>
-          <p className="text-xl sm:text-2xl font-bold tabular-nums text-ink">
+          <p className="mt-2 font-display text-2xl font-normal tracking-tight text-white">
             {summaryLoading ? '—' : summary?.totalCharges || 0}
           </p>
-          <span className="text-[10px] text-ink-muted block mt-0.5">
+          <span className="mt-1 block text-[10px] font-medium text-primary-fixed">
             Tenancies billed
           </span>
         </div>
@@ -725,9 +708,7 @@ export default function RentChargesPage() {
       {/* ─── Search & Status Filter Segmented Row ──────────────────────── */}
       <div className="space-y-2">
         <div className="relative flex items-center w-full max-w-xl">
-          <span className="material-symbols-outlined absolute left-3.5 text-ink-muted text-[18px] pointer-events-none">
-            search
-          </span>
+          <Icons8Icon icon="search" className="absolute left-3.5 text-ink-muted text-[18px] pointer-events-none" />
           <input
             type="search"
             value={searchQuery}
@@ -806,13 +787,13 @@ export default function RentChargesPage() {
         </div>
       ) : error ? (
         <div className="bg-rose-50 border border-rose-200 text-rose-700 rounded-xl p-4 text-xs flex items-center gap-2">
-          <span className="material-symbols-outlined text-[18px]">error</span>
+<Icons8Icon icon="error" className="text-[18px]" />
           <span>{error}</span>
         </div>
       ) : filteredCharges.length === 0 ? (
         <div className="bg-canvas rounded-[18px] border border-slate-100 p-8 text-center text-ink-muted shadow-sm space-y-2">
           <div className="w-12 h-12 rounded-2xl bg-canvas-soft flex items-center justify-center mx-auto mb-2 text-ink-muted">
-            <span className="material-symbols-outlined text-[28px]">receipt_long</span>
+<Icons8Icon icon="receipt" className="text-[28px]" />
           </div>
           <p className="text-sm font-semibold text-ink">No charges for {monthLabel}</p>
           <p className="text-xs max-w-sm mx-auto">
@@ -872,7 +853,7 @@ export default function RentChargesPage() {
           <div className="space-y-4">
             {deleteError && (
               <div className="text-xs text-rose-700 bg-rose-50 border border-rose-200 rounded-xl px-3 py-2 flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-[16px] text-rose-600">error</span>
+<Icons8Icon icon="error" className="text-[16px] text-rose-600" />
                 <span>{deleteError}</span>
               </div>
             )}

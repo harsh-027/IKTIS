@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { paymentApi, tenantApi } from '../services/api.js';
+import { dashboardApi, paymentApi, tenantApi } from '../services/api.js';
 import Modal from '../components/Dialog.jsx';
+import Icons8Icon from '../components/Icons8Icon.jsx';
 
 // ─── Currency & Date Formatting Helpers ─────────────────────────────────────
 
@@ -67,7 +68,7 @@ function PrintableReceipt({ receipt, onClose }) {
         {/* Status Alert if Voided */}
         {isVoided && (
           <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-rose-800 text-xs sm:text-sm flex items-start gap-2.5">
-            <span className="material-symbols-outlined text-[20px] text-rose-600 shrink-0 mt-0.5">warning</span>
+<Icons8Icon icon="warning" className="text-[20px] text-rose-600 shrink-0 mt-0.5" />
             <div>
               <p className="font-bold">PAYMENT RECORD VOIDED</p>
               <p className="mt-0.5"><strong>Reason:</strong> {receipt.voidReason || 'Not specified'}</p>
@@ -82,7 +83,7 @@ function PrintableReceipt({ receipt, onClose }) {
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 pb-4 border-b border-border">
           <div>
             <div className="flex items-center gap-1.5 text-xs text-primary font-semibold uppercase tracking-wider">
-              <span className="material-symbols-outlined text-[16px]">domain</span>
+<Icons8Icon icon="building" className="text-[16px]" />
               <span>IKTIS • Rental Management</span>
             </div>
             <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-ink mt-1">Official Rent Receipt</h3>
@@ -211,7 +212,7 @@ function PrintableReceipt({ receipt, onClose }) {
             onClick={handlePrint}
             className="px-5 py-2 text-xs font-semibold text-white bg-primary hover:bg-primary-focus rounded-full min-h-[40px] inline-flex items-center gap-1.5 shadow-sm cursor-pointer transition active:scale-[0.98]"
           >
-            <span className="material-symbols-outlined text-[18px]">print</span>
+<Icons8Icon icon="print" className="text-[18px]" />
             <span>Print Voucher</span>
           </button>
         </div>
@@ -255,7 +256,7 @@ function VoidPaymentModal({ payment, onClose, onSuccess }) {
     <Modal title="Void Payment Transaction" onClose={onClose} maxWidth="max-w-md">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-xl text-amber-900 text-xs sm:text-sm flex items-start gap-2.5">
-          <span className="material-symbols-outlined text-[20px] text-amber-600 shrink-0 mt-0.5">policy</span>
+<Icons8Icon icon="privacy_policy" className="text-[20px] text-amber-600 shrink-0 mt-0.5" />
           <div>
             <p className="font-bold text-ink">Important Audit Notice</p>
             <p className="mt-0.5 text-xs text-amber-800 leading-relaxed">
@@ -266,7 +267,7 @@ function VoidPaymentModal({ payment, onClose, onSuccess }) {
 
         {error && (
           <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs flex items-center gap-1.5">
-            <span className="material-symbols-outlined text-[16px] text-rose-600">error</span>
+<Icons8Icon icon="error" className="text-[16px] text-rose-600" />
             <span>{error}</span>
           </div>
         )}
@@ -451,7 +452,7 @@ function RecordPaymentModal({ initialTenantId = '', onClose, onSuccess }) {
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
           <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs sm:text-sm flex items-center gap-2">
-            <span className="material-symbols-outlined text-[18px]">error</span>
+<Icons8Icon icon="error" className="text-[18px]" />
             <span>{error}</span>
           </div>
         )}
@@ -485,7 +486,7 @@ function RecordPaymentModal({ initialTenantId = '', onClose, onSuccess }) {
 
           {loadingOutstanding && (
             <div className="text-xs text-ink-muted animate-pulse flex items-center gap-1.5 pt-1">
-              <span className="material-symbols-outlined text-[16px] animate-spin">sync</span>
+<Icons8Icon icon="refresh" className="text-[16px] animate-spin" />
               <span>Loading outstanding ledger charges...</span>
             </div>
           )}
@@ -673,7 +674,7 @@ function RecordPaymentModal({ initialTenantId = '', onClose, onSuccess }) {
             disabled={submitting || (outstandingData && outstandingData.totalOutstanding <= 0)}
             className="px-5 py-2 text-xs font-semibold text-white bg-primary hover:bg-primary-focus rounded-full min-h-[40px] cursor-pointer transition active:scale-[0.98] shadow-sm disabled:opacity-50 flex items-center gap-1.5"
           >
-            <span className="material-symbols-outlined text-[16px]">check_circle</span>
+<Icons8Icon icon="approval" className="text-[16px]" />
             <span>{submitting ? 'Recording...' : `Confirm & Record Payment (${formatINR(Number(amount || 0))})`}</span>
           </button>
         </div>
@@ -687,6 +688,7 @@ function RecordPaymentModal({ initialTenantId = '', onClose, onSuccess }) {
 export default function PaymentsPage() {
   const [searchParams] = useSearchParams();
   const [payments, setPayments] = useState([]);
+  const [monthlySummary, setMonthlySummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -717,6 +719,20 @@ export default function PaymentsPage() {
   useEffect(() => {
     loadPayments();
   }, [loadPayments]);
+
+  useEffect(() => {
+    let current = true;
+    const now = new Date();
+    const month = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}`;
+    dashboardApi.getSummary(month)
+      .then((res) => {
+        if (current && res.data?.success) {
+          setMonthlySummary(res.data.data?.monthlyFinancials || null);
+        }
+      })
+      .catch(() => {});
+    return () => { current = false; };
+  }, []);
 
   const handleOpenReceipt = async (paymentId) => {
     try {
@@ -749,71 +765,76 @@ export default function PaymentsPage() {
   });
 
   return (
-    <div className="space-y-5 pb-8">
+    <div className="iktis-internal space-y-6 pb-8">
       {/* ─── Page Title & Header Actions ──────────────────────────────── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-ink">
-            Payments &amp; Receipts
+          <h1 className="font-display text-2xl font-medium tracking-tight text-ink sm:text-3xl">
+            Rent Collection
           </h1>
-          <p className="text-xs text-ink-muted">
-            Track verified ledger payments, issue printable vouchers, and manage audit records
-          </p>
         </div>
         <button
           onClick={() => setShowRecordModal(true)}
-          className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-primary hover:bg-primary-focus text-white text-xs sm:text-sm font-semibold transition active:scale-[0.98] shadow-sm min-h-[40px] cursor-pointer"
+          className="flex min-h-10 items-center justify-center gap-1.5 rounded-lg bg-tertiary-fixed-dim px-4 py-2 text-xs font-medium text-primary shadow-sm transition-colors hover:bg-tertiary-fixed sm:text-sm"
         >
-          <span className="material-symbols-outlined text-[18px]">add_circle</span>
+<Icons8Icon icon="add" className="text-[18px]" />
           <span>Record Payment</span>
         </button>
       </div>
 
       {/* ─── Bento Summary KPI Cards ──────────────────────────────────── */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div className="bg-canvas rounded-[18px] border border-slate-100 p-4 shadow-sm flex flex-col justify-between">
-          <span className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider block mb-1">
-            Total Collected
+      <div className="grid grid-cols-3 gap-2 rounded-2xl bg-primary-container p-4 text-white sm:gap-3 sm:p-5">
+        <div className="min-w-0">
+          <span className="block truncate text-[10px] font-semibold uppercase tracking-wider text-primary-fixed sm:text-[11px]">
+            {monthlySummary ? 'Collected' : 'Total Collected'}
           </span>
-          <div className="text-2xl sm:text-3xl font-bold text-emerald-700 tracking-tight tabular-nums">
-            {loading ? '—' : formatINR(totalCollected)}
+          <div className="mt-1 text-base font-display font-medium text-white tabular-nums sm:text-2xl">
+            {loading ? '—' : formatINR(monthlySummary?.paymentsCollected ?? totalCollected)}
           </div>
-          <span className="text-xs text-emerald-600 font-medium mt-0.5 block">
-            Across valid verified ledger records
+          <span className="mt-1 block text-[10px] text-primary-fixed sm:text-xs">
+            {monthlySummary ? 'This month' : 'Valid receipts'}
           </span>
         </div>
 
-        <div className="bg-canvas rounded-[18px] border border-slate-100 p-4 shadow-sm flex flex-col justify-between">
-          <span className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider block mb-1">
-            Valid Payments
+        <div className="min-w-0 border-l border-white/15 pl-3 sm:pl-4">
+          <span className="block truncate text-[10px] font-semibold uppercase tracking-wider text-primary-fixed sm:text-[11px]">
+            {monthlySummary ? 'Outstanding' : 'Valid'}
           </span>
-          <div className="text-2xl sm:text-3xl font-bold text-ink tracking-tight tabular-nums">
-            {loading ? '—' : validPayments.length}
+          <div className="mt-1 text-base font-display font-medium text-white tabular-nums sm:text-2xl">
+            {loading ? '—' : monthlySummary ? formatINR(monthlySummary.outstandingRent) : validPayments.length}
           </div>
-          <span className="text-[11px] text-ink-muted mt-0.5 block">
-            Active transactions
+          <span className="mt-1 block text-[10px] text-primary-fixed sm:text-xs">
+            {monthlySummary ? 'Rent due' : 'Ledger entries'}
           </span>
         </div>
 
-        <div className="bg-canvas rounded-[18px] border border-slate-100 p-4 shadow-sm flex flex-col justify-between">
-          <span className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider block mb-1">
-            Voided Records
+        <div className="min-w-0 border-l border-white/15 pl-3 sm:pl-4">
+          <span className="block truncate text-[10px] font-semibold uppercase tracking-wider text-primary-fixed sm:text-[11px]">
+            {monthlySummary ? 'Overdue' : 'Voided'}
           </span>
-          <div className="text-2xl sm:text-3xl font-bold text-rose-700 tracking-tight tabular-nums">
-            {loading ? '—' : voidedPayments.length}
+          <div className="mt-1 text-base font-display font-medium text-tertiary-fixed tabular-nums sm:text-2xl">
+            {loading ? '—' : monthlySummary ? formatINR(monthlySummary.overdueRent) : voidedPayments.length}
           </div>
-          <span className="text-[11px] text-rose-600 font-medium mt-0.5 block">
-            Preserved for strict audit trail
+          <span className="mt-1 block text-[10px] text-primary-fixed sm:text-xs">
+            {monthlySummary ? 'Past due' : 'Audit records'}
           </span>
         </div>
       </div>
 
       {/* ─── Search & Segmented Filter Bar ────────────────────────────── */}
+      {monthlySummary?.overdueRent > 0 && (
+        <Link
+          to="/rent-charges"
+          className="flex min-h-11 items-center justify-between gap-3 rounded-lg border border-error-container bg-error-container/50 px-3.5 py-2.5 text-sm text-on-error-container transition-colors hover:bg-error-container/70"
+        >
+          <span className="font-semibold">Review overdue charges</span>
+          <span className="shrink-0 font-display text-lg font-medium tabular-nums">{formatINR(monthlySummary.overdueRent)}</span>
+        </Link>
+      )}
+
       <div className="space-y-2">
         <div className="relative flex items-center w-full max-w-3xl">
-          <span className="material-symbols-outlined absolute left-3.5 text-ink-muted text-[18px] pointer-events-none">
-            search
-          </span>
+          <Icons8Icon icon="search" className="absolute left-3.5 text-ink-muted text-[18px] pointer-events-none" />
           <input
             type="search"
             value={searchQuery}
@@ -847,10 +868,15 @@ export default function PaymentsPage() {
       {/* ─── Payments Content ─────────────────────────────────────────── */}
       {error && (
         <div className="p-4 bg-rose-50 border border-rose-200 rounded-xl text-rose-800 text-xs sm:text-sm flex items-center gap-2">
-          <span className="material-symbols-outlined text-[18px]">error</span>
+<Icons8Icon icon="error" className="text-[18px]" />
           <span>{error}</span>
         </div>
       )}
+
+      <div className="flex items-center justify-between gap-3 px-1">
+        <h2 className="font-display text-lg font-medium text-ink">Recent Receipts</h2>
+        <span className="font-label text-[10px] font-semibold uppercase tracking-wider text-secondary">Ledger archive</span>
+      </div>
 
       {loading ? (
         <div className="bg-canvas rounded-[18px] border border-slate-100 p-8 text-center text-ink-muted text-xs shadow-sm">
@@ -860,20 +886,20 @@ export default function PaymentsPage() {
       ) : filteredPayments.length === 0 ? (
         <div className="bg-canvas rounded-[18px] border border-slate-100 p-8 sm:p-12 text-center shadow-sm space-y-2">
           <div className="w-16 h-16 rounded-2xl bg-canvas-soft flex items-center justify-center mx-auto mb-3 text-ink-muted">
-            <span className="material-symbols-outlined text-[36px]">payments</span>
+<Icons8Icon icon="transaction" className="text-[36px]" />
           </div>
           <h2 className="text-sm sm:text-base font-semibold text-ink">No payments found</h2>
           <p className="text-xs text-ink-muted max-w-sm mx-auto">
             {searchQuery || statusFilter !== 'all'
-              ? 'Try adjusting your search query or filter.'
-              : 'Record rent payments to start building your verified financial ledger and generating receipts.'}
+              ? 'Try adjusting your search or filter.'
+              : 'Record a payment to create a receipt.'}
           </p>
           {!searchQuery && statusFilter === 'all' && (
             <button
               onClick={() => setShowRecordModal(true)}
               className="mt-3 flex items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-primary hover:bg-primary-focus text-white text-xs sm:text-sm font-semibold transition active:scale-[0.98] shadow-sm min-h-[40px] cursor-pointer mx-auto"
             >
-              <span className="material-symbols-outlined text-[18px]">add_circle</span>
+<Icons8Icon icon="add" className="text-[18px]" />
               <span>Record First Payment</span>
             </button>
           )}
@@ -888,7 +914,7 @@ export default function PaymentsPage() {
             return (
               <div
                 key={p.id}
-                className={`bg-canvas rounded-[18px] border border-slate-100 p-4 sm:p-5 shadow-sm transition hover:shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
+                className={`bg-surface-low rounded-lg border border-border/50 p-3.5 sm:p-4 shadow-sm transition hover:shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
                   p.isVoided ? 'border-rose-200 bg-rose-50/15' : ''
                 }`}
               >
@@ -948,7 +974,7 @@ export default function PaymentsPage() {
                       onClick={() => handleOpenReceipt(p.id)}
                       className="px-3 py-1.5 text-xs font-semibold text-primary hover:bg-primary/10 rounded-full border border-border inline-flex items-center gap-1 transition active:scale-[0.98] cursor-pointer"
                     >
-                      <span className="material-symbols-outlined text-[15px]">print</span>
+<Icons8Icon icon="print" className="text-[16px]" />
                       <span>Receipt</span>
                     </button>
                     {!p.isVoided && (

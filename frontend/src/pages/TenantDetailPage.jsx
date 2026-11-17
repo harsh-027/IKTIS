@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { tenantApi, tenancyApi, propertyApi, roomApi, paymentApi } from '../services/api.js';
 import Modal from '../components/Dialog.jsx';
+import Icons8Icon from '../components/Icons8Icon.jsx';
 
 function formatINR(amount) {
   if (amount === undefined || amount === null) return '₹0';
@@ -60,7 +61,7 @@ function EditTenantForm({ initial, onSubmit, onCancel, loading }) {
     <form onSubmit={handleSubmit} noValidate className="space-y-4">
       {error && (
         <div className="text-xs text-rose-700 bg-rose-50 border border-rose-200 rounded-xl px-3 py-2 flex items-center gap-1.5">
-          <span className="material-symbols-outlined text-[16px] text-rose-600">error</span>
+<Icons8Icon icon="error" className="text-[16px] text-rose-600" />
           <span>{error}</span>
         </div>
       )}
@@ -172,7 +173,7 @@ function EndTenancyForm({ tenancy, onSubmit, onCancel, loading }) {
     <form onSubmit={handleSubmit} noValidate className="space-y-4">
       {error && (
         <div className="text-xs text-rose-700 bg-rose-50 border border-rose-200 rounded-xl px-3 py-2 flex items-center gap-1.5">
-          <span className="material-symbols-outlined text-[16px] text-rose-600">error</span>
+<Icons8Icon icon="error" className="text-[16px] text-rose-600" />
           <span>{error}</span>
         </div>
       )}
@@ -329,7 +330,7 @@ function AssignRoomForm({ tenantId, onSubmit, onCancel, loading }) {
     <form onSubmit={handleSubmit} noValidate className="space-y-4">
       {error && (
         <div className="text-xs text-rose-700 bg-rose-50 border border-rose-200 rounded-xl px-3 py-2 flex items-center gap-1.5">
-          <span className="material-symbols-outlined text-[16px] text-rose-600">error</span>
+<Icons8Icon icon="error" className="text-[16px] text-rose-600" />
           <span>{error}</span>
         </div>
       )}
@@ -608,7 +609,7 @@ export default function TenantDetailPage() {
           to="/tenants"
           className="inline-flex items-center gap-1.5 text-xs text-ink-muted hover:text-ink min-h-[40px] transition"
         >
-          <span className="material-symbols-outlined text-[16px]">arrow_back</span>
+<Icons8Icon icon="arrow_back" className="text-[16px]" />
           <span>Back to Tenants</span>
         </Link>
         <div className="bg-rose-50 border border-rose-200 text-rose-700 rounded-xl p-4 text-xs">
@@ -626,11 +627,11 @@ export default function TenantDetailPage() {
     : 'TN';
 
   return (
-    <div className="max-w-4xl mx-auto space-y-5 pb-8">
+    <div className="iktis-internal mx-auto max-w-4xl space-y-5 pb-8">
       {/* ─── Breadcrumb Navigation ────────────────────────────────────── */}
       <nav className="flex items-center gap-2 text-xs text-ink-muted">
         <Link to="/tenants" className="hover:text-primary transition flex items-center gap-1 font-medium">
-          <span className="material-symbols-outlined text-[16px]">group</span>
+<Icons8Icon icon="user_group" className="text-[16px]" />
           <span>Tenants</span>
         </Link>
         <span className="text-ink-muted/50">/</span>
@@ -677,7 +678,7 @@ export default function TenantDetailPage() {
                 onClick={() => setEditOpen(true)}
                 className="inline-flex items-center gap-1 min-h-[38px] px-3.5 py-1.5 rounded-full border border-border hover:bg-canvas-soft text-ink text-xs font-medium transition cursor-pointer active:scale-[0.98]"
               >
-                <span className="material-symbols-outlined text-[16px]">edit</span>
+<Icons8Icon icon="edit" className="text-[16px]" />
                 <span>Edit</span>
               </button>
               <button
@@ -687,7 +688,7 @@ export default function TenantDetailPage() {
                 }}
                 className="inline-flex items-center gap-1 min-h-[38px] px-3.5 py-1.5 rounded-full border border-border hover:bg-rose-50 hover:border-rose-200 text-ink-muted hover:text-rose-700 text-xs font-medium transition cursor-pointer active:scale-[0.98]"
               >
-                <span className="material-symbols-outlined text-[16px]">archive</span>
+<Icons8Icon icon="archive" className="text-[16px]" />
                 <span>Archive</span>
               </button>
             </div>
@@ -697,7 +698,7 @@ export default function TenantDetailPage() {
         {/* Contact info grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 border-t border-border/50 text-xs">
           <div className="bg-canvas-soft p-3 rounded-xl border border-slate-100 flex items-center gap-2.5">
-            <span className="material-symbols-outlined text-primary text-[20px] shrink-0">call</span>
+<Icons8Icon icon="phone" className="text-primary text-[20px] shrink-0" />
             <div className="min-w-0">
               <p className="text-[10px] text-ink-muted uppercase font-bold">Phone Number</p>
               {tenant.phone ? (
@@ -711,7 +712,7 @@ export default function TenantDetailPage() {
           </div>
 
           <div className="bg-canvas-soft p-3 rounded-xl border border-slate-100 flex items-center gap-2.5">
-            <span className="material-symbols-outlined text-primary text-[20px] shrink-0">mail</span>
+<Icons8Icon icon="email" className="text-primary text-[20px] shrink-0" />
             <div className="min-w-0">
               <p className="text-[10px] text-ink-muted uppercase font-bold">Email Address</p>
               {tenant.email ? (
@@ -726,7 +727,7 @@ export default function TenantDetailPage() {
 
           {tenant.notes && (
             <div className="sm:col-span-2 bg-canvas-soft p-3 rounded-xl border border-slate-100 flex items-start gap-2.5">
-              <span className="material-symbols-outlined text-primary text-[20px] shrink-0 mt-0.5">description</span>
+<Icons8Icon icon="content" className="text-primary text-[20px] shrink-0 mt-0.5" />
               <div>
                 <p className="text-[10px] text-ink-muted uppercase font-bold">Notes &amp; Identification</p>
                 <p className="text-xs text-ink whitespace-pre-wrap mt-0.5">{tenant.notes}</p>
@@ -740,7 +741,7 @@ export default function TenantDetailPage() {
       <div className="bg-canvas rounded-[18px] border border-slate-100 p-5 shadow-sm space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-sm sm:text-base font-bold text-ink flex items-center gap-1.5">
-            <span className="material-symbols-outlined text-primary text-[20px]">key</span>
+<Icons8Icon icon="key" className="text-primary text-[20px]" />
             <span>Current Tenancy Agreement</span>
           </h2>
 
@@ -749,7 +750,7 @@ export default function TenantDetailPage() {
               onClick={() => setAssignOpen(true)}
               className="inline-flex items-center gap-1 px-3.5 py-1.5 bg-primary hover:bg-primary-focus text-white text-xs font-semibold rounded-full shadow-sm cursor-pointer transition active:scale-[0.98]"
             >
-              <span className="material-symbols-outlined text-[16px]">add</span>
+<Icons8Icon icon="add" className="text-[16px]" />
               <span>Assign Room</span>
             </button>
           )}
@@ -781,13 +782,22 @@ export default function TenantDetailPage() {
               )}
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t border-blue-200/60 text-xs">
+            <div className="grid grid-cols-2 gap-2 rounded-lg bg-surface-low p-3">
               <div>
-                <span className="text-[11px] text-ink-muted block font-medium">Monthly Rent</span>
-                <span className="text-base font-bold text-ink tabular-nums">
+                <span className="font-label text-[10px] font-semibold uppercase tracking-wider text-secondary">Monthly Rent</span>
+                <span className="mt-0.5 block font-display text-xl font-medium text-primary tabular-nums">
                   {formatINR(activeTenancy.monthlyRent)}
                 </span>
               </div>
+              <div>
+                <span className="font-label text-[10px] font-semibold uppercase tracking-wider text-secondary">Outstanding</span>
+                <span className={`mt-0.5 block font-display text-xl font-medium tabular-nums ${outstandingInfo?.totalOutstanding > 0 ? 'text-rose-800' : 'text-primary'}`}>
+                  {outstandingInfo ? formatINR(outstandingInfo.totalOutstanding) : '—'}
+                </span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-2 border-t border-border/60 pt-3 text-xs">
               <div>
                 <span className="text-[11px] text-ink-muted block font-medium">Rent Due Day</span>
                 <span className="text-base font-bold text-ink tabular-nums">
@@ -810,7 +820,7 @@ export default function TenantDetailPage() {
           </div>
         ) : (
           <div className="text-center py-8 text-ink-muted text-xs bg-canvas-soft rounded-2xl border border-dashed border-border p-4 space-y-1">
-            <span className="material-symbols-outlined text-[28px] text-ink-muted mx-auto block">meeting_room</span>
+<Icons8Icon icon="meeting_room" className="text-[28px] text-ink-muted mx-auto block" />
             <p className="font-semibold text-ink">This tenant does not currently hold an active tenancy agreement.</p>
             {!isArchived && (
               <p>Assign them to any vacant room across your properties to start tracking rent.</p>
@@ -822,13 +832,13 @@ export default function TenantDetailPage() {
       {/* ─── Tenancy History Section ───────────────────────────────────── */}
       <div className="bg-canvas rounded-[18px] border border-slate-100 p-5 shadow-sm space-y-3">
         <h2 className="text-sm sm:text-base font-bold text-ink flex items-center gap-1.5">
-          <span className="material-symbols-outlined text-ink-muted text-[20px]">history</span>
+<Icons8Icon icon="history" className="text-ink-muted text-[20px]" />
           <span>Tenancy History ({previousTenancies.length})</span>
         </h2>
 
         {previousTenancies.length === 0 ? (
           <p className="text-xs text-ink-muted italic py-1">
-            No previous concluded tenancies on record for this tenant.
+            No tenancy history.
           </p>
         ) : (
           <div className="space-y-2.5">
@@ -882,18 +892,15 @@ export default function TenantDetailPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h2 className="text-sm sm:text-base font-bold text-ink flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-emerald-600 text-[20px]">payments</span>
+<Icons8Icon icon="transaction" className="text-emerald-600 text-[20px]" />
               <span>Payment History &amp; Receipts ({payments.length})</span>
             </h2>
-            <p className="text-xs text-ink-muted">
-              Manually recorded rent payments and allocations for this tenant
-            </p>
           </div>
           <Link
             to={`/payments?action=record&tenantId=${tenant.id}`}
             className="px-4 py-2 bg-primary hover:bg-primary-focus text-white text-xs font-semibold rounded-full shadow-sm transition active:scale-[0.98] inline-flex items-center gap-1 shrink-0"
           >
-            <span className="material-symbols-outlined text-[16px]">add</span>
+<Icons8Icon icon="add" className="text-[16px]" />
             <span>Record Payment</span>
           </Link>
         </div>
@@ -917,7 +924,7 @@ export default function TenantDetailPage() {
 
         {payments.length === 0 ? (
           <p className="text-xs text-ink-muted italic py-1">
-            No payments recorded yet for this tenant.
+            No payments recorded.
           </p>
         ) : (
           <div className="space-y-2">
@@ -960,7 +967,7 @@ export default function TenantDetailPage() {
                     className="px-3 py-1 text-xs font-semibold text-primary hover:bg-primary/10 rounded-full border border-border inline-flex items-center gap-1 transition"
                   >
                     <span>View</span>
-                    <span className="material-symbols-outlined text-[13px]">arrow_forward</span>
+<Icons8Icon icon="arrow_forward" className="text-[16px]" />
                   </Link>
                 </div>
               </div>
@@ -1008,13 +1015,13 @@ export default function TenantDetailPage() {
           <div className="space-y-4">
             {archiveError && (
               <div className="text-xs text-rose-700 bg-rose-50 border border-rose-200 rounded-xl px-3 py-2 flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-[16px] text-rose-600">error</span>
+<Icons8Icon icon="error" className="text-[16px] text-rose-600" />
                 <span>{archiveError}</span>
               </div>
             )}
 
             <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-xl text-amber-900 text-xs sm:text-sm flex items-start gap-2.5">
-              <span className="material-symbols-outlined text-[20px] text-amber-600 shrink-0 mt-0.5">warning</span>
+<Icons8Icon icon="warning" className="text-[20px] text-amber-600 shrink-0 mt-0.5" />
               <div>
                 <p className="font-bold text-ink">Archive &quot;{tenant.fullName}&quot;?</p>
                 <p className="mt-0.5 text-xs text-amber-800 leading-relaxed">

@@ -14,7 +14,6 @@ IKTIS is a landlord-focused rent-management web application for tracking propert
 - **Authentication:** Secure server-managed authentication using HTTP-only cookies
 - **Version control:** Git and GitHub
 
-TypeScript is not part of the planned stack.
 
 ## Core workflow
 

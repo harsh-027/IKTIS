@@ -17,5 +17,8 @@
     "iktis"
   ],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "shadcn": "^4.23.0"
+  }
 }

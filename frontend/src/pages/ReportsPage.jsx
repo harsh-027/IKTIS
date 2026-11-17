@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { reportApi } from '../services/api.js';
+import Icons8Icon from '../components/Icons8Icon.jsx';
 
 function formatINR(amount) {
   if (amount === undefined || amount === null || isNaN(amount)) return '₹0';
@@ -99,26 +100,23 @@ export default function ReportsPage() {
   );
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className="iktis-internal space-y-6 pb-12">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border/60">
         <div>
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary text-[28px]">analytics</span>
+<Icons8Icon icon="analytics" className="text-primary text-[28px]" />
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-ink font-heading">
               Financial & Portfolio Reports
             </h1>
           </div>
-          <p className="text-xs sm:text-sm text-ink-muted mt-1">
-            Audit-ready reports calculated directly from stored rent charges, payments, and unit capacity
-          </p>
         </div>
 
         <button
           onClick={() => window.print()}
           className="px-4 py-2.5 text-xs font-semibold text-ink bg-surface-canvas hover:bg-surface-soft border border-border rounded-full shadow-xs min-h-[44px] inline-flex items-center gap-2 transition cursor-pointer self-start sm:self-auto print:hidden"
         >
-          <span className="material-symbols-outlined text-[18px] text-ink-muted">print</span>
+<Icons8Icon icon="print" className="text-[18px] text-ink-muted" />
           <span>Print / Export PDF</span>
         </button>
       </div>
@@ -142,7 +140,7 @@ export default function ReportsPage() {
                   : 'text-ink-muted hover:text-ink hover:bg-surface-container-low'
               }`}
             >
-              <span className="material-symbols-outlined text-[18px]">{tab.icon}</span>
+<Icons8Icon icon={tab.icon === 'receipt_long' ? 'receipt' : tab.icon} className="text-[18px]" />
               <span>{tab.label}</span>
             </button>
           );
@@ -151,7 +149,7 @@ export default function ReportsPage() {
 
       {error && (
         <div className="p-4 bg-rose-50 border border-rose-200/80 rounded-[14px] text-rose-800 text-xs sm:text-sm flex items-center gap-2">
-          <span className="material-symbols-outlined text-[20px] text-rose-600">error</span>
+<Icons8Icon icon="error" className="text-[20px] text-rose-600" />
           <span>{error}</span>
         </div>
       )}
@@ -165,9 +163,8 @@ export default function ReportsPage() {
               <h2 className="text-sm sm:text-base font-bold text-ink">
                 Monthly Rent Charged, Collected & Outstanding
               </h2>
-              <p className="text-xs text-ink-muted">Historical month-by-month financial performance</p>
             </div>
-            <div className="flex items-center gap-1.5 print:hidden">
+            <div className="flex flex-wrap sm:flex-nowrap items-center gap-1.5 print:hidden">
               <span className="text-xs font-medium text-ink-muted mr-1">Timeframe:</span>
               {[3, 6, 12].map((m) => (
                 <button
@@ -188,37 +185,37 @@ export default function ReportsPage() {
           {/* Quick Summary Bento */}
           {!loading && trendsData.length > 0 && (
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-              <div className="bg-surface-canvas p-4 rounded-[18px] border border-border shadow-xs">
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-ink-muted block">Total Charged</span>
-                <span className="text-lg sm:text-2xl font-bold text-ink mt-1 block">
+              <div className="relative overflow-hidden rounded-2xl bg-primary-container p-5 text-white shadow-sm sm:p-6">
+                <span className="font-label text-[10px] font-semibold uppercase tracking-[0.08em] text-primary-fixed block">Total Charged</span>
+                <span className="mt-2 block font-display text-2xl font-normal tracking-tight text-white">
                   {formatINR(trendsSummary.charged)}
                 </span>
-                <span className="text-[11px] text-ink-muted mt-0.5 block">Across {trendMonths} months</span>
+                <span className="mt-1 block text-[10px] font-medium text-primary-fixed">Across {trendMonths} months</span>
               </div>
-              <div className="bg-surface-canvas p-4 rounded-[18px] border border-border shadow-xs">
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-emerald-700 block">Total Collected</span>
-                <span className="text-lg sm:text-2xl font-bold text-emerald-700 mt-1 block">
+              <div className="relative overflow-hidden rounded-2xl bg-primary-container p-5 text-white shadow-sm sm:p-6">
+                <span className="font-label text-[10px] font-semibold uppercase tracking-[0.08em] text-primary-fixed block">Total Collected</span>
+                <span className="mt-2 block font-display text-2xl font-normal tracking-tight text-white">
                   {formatINR(trendsSummary.collected)}
                 </span>
-                <span className="text-[11px] text-ink-muted mt-0.5 block">
+                <span className="mt-1 block text-[10px] font-medium text-tertiary-fixed-dim">
                   {trendsSummary.charged > 0
                     ? `${Math.round((trendsSummary.collected / trendsSummary.charged) * 100)}% overall recovery`
                     : '—'}
                 </span>
               </div>
-              <div className="bg-surface-canvas p-4 rounded-[18px] border border-border shadow-xs">
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-amber-700 block">Total Outstanding</span>
-                <span className="text-lg sm:text-2xl font-bold text-amber-700 mt-1 block">
+              <div className="relative overflow-hidden rounded-2xl bg-primary-container p-5 text-white shadow-sm sm:p-6">
+                <span className="font-label text-[10px] font-semibold uppercase tracking-[0.08em] text-primary-fixed block">Total Outstanding</span>
+                <span className="mt-2 block font-display text-2xl font-normal tracking-tight text-white">
                   {formatINR(trendsSummary.outstanding)}
                 </span>
-                <span className="text-[11px] text-ink-muted mt-0.5 block">Pending payment</span>
+                <span className="mt-1 block text-[10px] font-medium text-primary-fixed">Pending payment</span>
               </div>
-              <div className="bg-surface-canvas p-4 rounded-[18px] border border-border shadow-xs">
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-rose-700 block">Total Overdue</span>
-                <span className="text-lg sm:text-2xl font-bold text-rose-700 mt-1 block">
+              <div className="relative overflow-hidden rounded-2xl bg-primary-container p-5 text-white shadow-sm sm:p-6">
+                <span className="font-label text-[10px] font-semibold uppercase tracking-[0.08em] text-primary-fixed block">Total Overdue</span>
+                <span className="mt-2 block font-display text-2xl font-normal tracking-tight text-white">
                   {formatINR(trendsSummary.overdue)}
                 </span>
-                <span className="text-[11px] text-rose-600 mt-0.5 block">Past due date</span>
+                <span className="mt-1 block text-[10px] font-medium text-tertiary-fixed-dim">Past due date</span>
               </div>
             </div>
           )}
@@ -296,12 +293,9 @@ export default function ReportsPage() {
               <h2 className="text-sm sm:text-base font-bold text-ink">
                 Tenant Balances & Collection Status
               </h2>
-              <p className="text-xs text-ink-muted">Grouped ledger balances and overdue tracking per tenant</p>
             </div>
             <div className="relative w-full sm:w-64 print:hidden">
-              <span className="material-symbols-outlined absolute left-3 top-2.5 text-[18px] text-ink-muted pointer-events-none">
-                search
-              </span>
+              <Icons8Icon icon="search" className="absolute left-3 top-2.5 text-[18px] text-ink-muted pointer-events-none" />
               <input
                 type="text"
                 value={tenantSearch}
@@ -379,7 +373,7 @@ export default function ReportsPage() {
                               className="text-xs font-semibold text-primary hover:underline min-h-[36px] inline-flex items-center gap-1"
                             >
                               <span>Record Payment</span>
-                              <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+<Icons8Icon icon="arrow_forward" className="text-[16px]" />
                             </Link>
                           </td>
                         </tr>
@@ -400,7 +394,6 @@ export default function ReportsPage() {
               <h2 className="text-sm sm:text-base font-bold text-ink">
                 Property Occupancy & Rent Performance
               </h2>
-              <p className="text-xs text-ink-muted">Unit capacity, occupancy rates, and collection per property</p>
             </div>
             <div className="flex items-center gap-2 print:hidden">
               <span className="text-xs font-medium text-ink-muted">Select Month:</span>
@@ -428,7 +421,7 @@ export default function ReportsPage() {
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <Link to={`/properties/${p.propertyId}`} className="text-base font-bold text-ink hover:text-primary transition flex items-center gap-1.5">
-                        <span className="material-symbols-outlined text-primary text-[20px]">apartment</span>
+<Icons8Icon icon="apartment" className="text-primary text-[20px]" />
                         <span>{p.name}</span>
                       </Link>
                       <p className="text-xs text-ink-muted mt-0.5">{p.address}</p>
@@ -488,7 +481,6 @@ export default function ReportsPage() {
               <h2 className="text-sm sm:text-base font-bold text-ink">
                 Payments Audit Ledger
               </h2>
-              <p className="text-xs text-ink-muted">Comprehensive transaction audit history with date and method filters</p>
             </div>
           </div>
 

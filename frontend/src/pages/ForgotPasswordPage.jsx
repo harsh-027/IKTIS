@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { authApi } from '../services/api.js';
+import AuthShell from '../components/AuthShell.jsx';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -24,29 +25,22 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-surface-soft flex flex-col justify-center items-center px-4 py-10">
-      <div className="w-full max-w-[420px] bg-surface-canvas rounded-[24px] border border-border/80 p-6 sm:p-8 shadow-xs">
-        <Link to="/" className="mb-6 flex items-center justify-center gap-3" aria-label="IKTIS home">
-          <img src="/icons.svg" alt="" aria-hidden="true" className="h-10 w-10 object-contain" />
-          <span className="text-2xl font-extrabold tracking-tight text-ink">IKTIS</span>
-        </Link>
-        <h1 className="text-xl font-bold text-ink">Forgot password?</h1>
-        <p className="text-xs text-ink-muted mt-1 mb-6">
-          Enter your email and we will send recovery instructions if an account exists.
-        </p>
-        {error && <div role="alert" className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-sm">{error}</div>}
-        {message && <div role="status" className="mb-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm">{message}</div>}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <label htmlFor="reset-email" className="block text-xs font-bold text-ink-muted uppercase tracking-wider">
-            Email address
-            <input id="reset-email" type="email" autoComplete="email" required value={email} onChange={(event) => setEmail(event.target.value)} className="mt-1.5 w-full px-4 py-2.5 rounded-full border border-border bg-surface-canvas min-h-[44px] focus:outline-none focus:ring-2 focus:ring-primary" />
-          </label>
-          <button type="submit" disabled={isSubmitting} className="w-full py-3 rounded-full bg-primary text-white text-sm font-bold disabled:opacity-60">
-            {isSubmitting ? 'Sending...' : 'Send recovery link'}
-          </button>
-        </form>
-        <Link to="/login" className="block mt-5 text-center text-xs font-semibold text-primary hover:underline">Back to Sign In</Link>
-      </div>
-    </div>
+    <AuthShell
+      title="Recover your password"
+      description="Enter your email and we will send recovery instructions if an account exists."
+      footer={<Link to="/login" className="text-sm font-medium text-primary hover:underline">Back to sign in</Link>}
+    >
+      {error && <div role="alert" className="mb-5 rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800">{error}</div>}
+      {message && <div role="status" className="mb-5 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">{message}</div>}
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <label htmlFor="reset-email" className="block text-sm font-medium text-ink">
+          Email address
+          <input id="reset-email" type="email" autoComplete="email" required value={email} onChange={(event) => setEmail(event.target.value)} className="mt-1.5 min-h-11 w-full rounded-lg border border-border bg-white px-4 py-2.5 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" />
+        </label>
+        <button type="submit" disabled={isSubmitting} className="min-h-11 w-full rounded-lg bg-tertiary-fixed-dim py-3 text-sm font-medium text-primary shadow-sm transition-colors hover:bg-tertiary-fixed disabled:opacity-60">
+          {isSubmitting ? 'Sending...' : 'Send recovery link'}
+        </button>
+      </form>
+    </AuthShell>
   );
 }

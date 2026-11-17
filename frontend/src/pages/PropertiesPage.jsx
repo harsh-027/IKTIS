@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { propertyApi } from '../services/api.js';
 import Modal from '../components/Dialog.jsx';
+import Icons8Icon from '../components/Icons8Icon.jsx';
 
 // ─── Property Form ────────────────────────────────────────────────────────────
 function PropertyForm({ initial = {}, onSubmit, onCancel, loading }) {
@@ -29,7 +30,7 @@ function PropertyForm({ initial = {}, onSubmit, onCancel, loading }) {
     <form onSubmit={handleSubmit} noValidate className="space-y-4">
       {error && (
         <div className="text-xs text-rose-700 bg-rose-50 border border-rose-200 rounded-xl px-3 py-2 flex items-center gap-1.5">
-          <span className="material-symbols-outlined text-[16px] text-rose-600">error</span>
+<Icons8Icon icon="error" className="text-[16px] text-rose-600" />
           <span>{error}</span>
         </div>
       )}
@@ -93,12 +94,12 @@ function ArchiveConfirmModal({ property, onConfirm, onCancel, loading, error }) 
     <Modal title="Archive Property" onClose={onCancel}>
       {error && (
         <div className="text-xs text-rose-700 bg-rose-50 border border-rose-200 rounded-xl px-3 py-2 mb-3 flex items-center gap-1.5">
-          <span className="material-symbols-outlined text-[16px] text-rose-600">error</span>
+<Icons8Icon icon="error" className="text-[16px] text-rose-600" />
           <span>{error}</span>
         </div>
       )}
       <div className="flex items-start gap-3 mb-3 p-3 bg-amber-50 rounded-xl border border-amber-200 text-amber-900">
-        <span className="material-symbols-outlined text-amber-600 text-[20px] shrink-0 mt-0.5">warning</span>
+<Icons8Icon icon="warning" className="text-amber-600 text-[20px] shrink-0 mt-0.5" />
         <div className="text-xs space-y-1">
           <p className="font-semibold text-ink">
             Archive property &quot;{property.name}&quot;?
@@ -231,70 +232,58 @@ export default function PropertiesPage() {
     : 0;
 
   return (
-    <div className="space-y-5 pb-8">
+    <div className="iktis-internal space-y-4 pb-8">
       {/* ─── Top Stats Hero Overview Card (Stitch Calm Precision) ───────── */}
-      <div className="w-full bg-canvas rounded-[18px] p-4 sm:p-5 shadow-sm border border-slate-100 flex flex-col gap-3">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-primary text-white flex items-center justify-center shadow-sm">
-              <span className="material-symbols-outlined text-[20px]">apartment</span>
-            </div>
-            <div>
-              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-ink">
-                Properties & Buildings
-              </h1>
-              <p className="text-xs text-ink-muted">
-                Manage your real estate portfolio, room inventory, and building occupancy
-              </p>
-            </div>
-          </div>
+      <div className="space-y-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h1 className="min-w-0 font-display text-2xl font-medium tracking-tight text-ink sm:text-3xl">Properties</h1>
           <button
             id="btn-create-property"
             onClick={() => setShowCreate(true)}
-            className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-primary hover:bg-primary-focus text-white text-xs sm:text-sm font-semibold transition active:scale-[0.98] shadow-sm min-h-[40px] cursor-pointer"
+            className="flex min-h-10 shrink-0 items-center justify-center gap-1.5 rounded-lg bg-tertiary-fixed-dim px-4 py-2 text-xs font-medium text-primary shadow-sm transition-colors hover:bg-tertiary-fixed sm:text-sm"
           >
-            <span className="material-symbols-outlined text-[18px]">add_circle</span>
-            <span>New Property</span>
+<Icons8Icon icon="add" className="text-[18px]" />
+            <span>Add Property</span>
           </button>
         </div>
 
         {/* Portfolio Occupancy Progress Bar & Quick Stats */}
-        <div className="space-y-2 pt-1 border-t border-border/50">
-          <div className="flex justify-between items-end text-xs">
+        <div className="space-y-4 rounded-2xl bg-primary-container p-4 text-white sm:p-5">
+          <div className="flex items-center justify-between gap-2 text-xs">
             <div className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 inline-block ring-2 ring-emerald-200"></span>
-              <span className="font-semibold text-ink">Portfolio Occupancy</span>
+              <span className="w-2.5 h-2.5 rounded-full bg-tertiary-fixed-dim inline-block ring-2 ring-tertiary-fixed/40"></span>
+              <span className="font-semibold text-white">Portfolio Occupancy</span>
             </div>
-            <div className="flex items-baseline gap-1 font-bold text-ink">
-              <span className="text-base text-primary tabular-nums">{portfolioOccupancyRate}%</span>
-              <span className="text-[11px] text-ink-muted font-normal">capacity</span>
+            <div className="flex items-baseline gap-1 font-bold text-white">
+              <span className="text-base tabular-nums">{portfolioOccupancyRate}%</span>
+              <span className="text-[11px] text-primary-fixed font-normal">capacity</span>
             </div>
           </div>
-          <div className="w-full h-2 rounded-full bg-slate-100 flex overflow-hidden">
+          <div className="w-full h-2 rounded-full bg-white/15 flex overflow-hidden">
             <div
-              className="h-full bg-primary transition-all duration-300 rounded-l-full"
+              className="h-full bg-tertiary-fixed-dim transition-all duration-300 rounded-l-full"
               style={{ width: `${portfolioOccupancyRate}%` }}
             ></div>
             <div
-              className="h-full bg-emerald-400 transition-all duration-300 rounded-r-full"
+              className="h-full bg-white/10 transition-all duration-300 rounded-r-full"
               style={{ width: `${100 - portfolioOccupancyRate}%` }}
             ></div>
           </div>
-          <div className="grid grid-cols-3 gap-2 pt-1 text-center text-xs">
-            <div className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-xl bg-canvas-soft border border-slate-100">
-              <span className="material-symbols-outlined text-primary text-[16px]">domain</span>
-              <span className="font-semibold text-ink">{totalPropertiesCount}</span>
-              <span className="text-ink-muted hidden sm:inline">Properties</span>
+          <div className="grid grid-cols-3 gap-2 pt-3 text-center text-xs">
+            <div className="flex items-center justify-center gap-1.5 px-1 py-1.5">
+<Icons8Icon icon="building" className="text-tertiary-fixed-dim text-[16px]" />
+              <span className="font-semibold text-white tabular-nums">{totalPropertiesCount}</span>
+              <span className="text-primary-fixed hidden sm:inline">Properties</span>
             </div>
-            <div className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-xl bg-blue-50/60 border border-blue-100/60">
-              <span className="material-symbols-outlined text-primary text-[16px]">verified</span>
-              <span className="font-semibold text-primary">{totalOccupiedRooms}</span>
-              <span className="text-blue-700 hidden sm:inline">Occupied</span>
+            <div className="flex items-center justify-center gap-1.5 px-1 py-1.5">
+<Icons8Icon icon="approval" className="text-tertiary-fixed-dim text-[16px]" />
+              <span className="font-semibold text-white tabular-nums">{totalOccupiedRooms}</span>
+              <span className="text-primary-fixed hidden sm:inline">Occupied</span>
             </div>
-            <div className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-xl bg-emerald-50/60 border border-emerald-100/60">
-              <span className="material-symbols-outlined text-emerald-700 text-[16px]">meeting_room</span>
-              <span className="font-semibold text-emerald-700">{totalAvailableRooms}</span>
-              <span className="text-emerald-700 hidden sm:inline">Available</span>
+            <div className="flex items-center justify-center gap-1.5 px-1 py-1.5">
+<Icons8Icon icon="meeting_room" className="text-tertiary-fixed-dim text-[16px]" />
+              <span className="font-semibold text-white tabular-nums">{totalAvailableRooms}</span>
+              <span className="text-primary-fixed hidden sm:inline">Available</span>
             </div>
           </div>
         </div>
@@ -303,9 +292,7 @@ export default function PropertiesPage() {
       {/* ─── Search & Segmented Filter Bar (Stitch Horizontal Scroll) ───── */}
       <div className="space-y-2">
         <div className="relative flex items-center w-full">
-          <span className="material-symbols-outlined absolute left-3.5 text-ink-muted text-[18px] pointer-events-none">
-            search
-          </span>
+          <Icons8Icon icon="search" className="absolute left-3.5 text-ink-muted text-[18px] pointer-events-none" />
           <input
             type="search"
             value={searchQuery}
@@ -319,7 +306,7 @@ export default function PropertiesPage() {
           </span>
         </div>
 
-        <div className="flex items-center justify-between gap-2 overflow-x-auto no-scrollbar py-0.5">
+        <div className="flex w-full min-w-0 max-w-full items-center justify-between gap-2 overflow-x-auto no-scrollbar py-0.5">
           <div className="flex items-center gap-1.5 shrink-0">
             <button
               onClick={() => setActiveTab('all')}
@@ -379,7 +366,7 @@ export default function PropertiesPage() {
       ) : filteredProperties.length === 0 ? (
         <div className="text-center py-16 bg-canvas rounded-[18px] border border-slate-100 p-6 shadow-sm">
           <div className="w-12 h-12 rounded-2xl bg-canvas-soft flex items-center justify-center mx-auto mb-3 text-ink-muted">
-            <span className="material-symbols-outlined text-[28px]">domain_disabled</span>
+<Icons8Icon icon="unavailable" className="text-[28px]" />
           </div>
           <p className="text-sm font-semibold text-ink mb-1">
             {searchQuery ? 'No matching properties found' : 'No properties in this category'}
@@ -387,7 +374,7 @@ export default function PropertiesPage() {
           <p className="text-xs text-ink-muted mb-5 max-w-xs mx-auto">
             {searchQuery
               ? 'Try adjusting your search query or clear the filter.'
-              : 'Add your first property to start managing rooms, tenancies, and monthly rent.'}
+              : 'Add a property to manage rooms and tenancies.'}
           </p>
           {searchQuery ? (
             <button
@@ -417,60 +404,56 @@ export default function PropertiesPage() {
             return (
               <div
                 key={property.id}
-                className={`bg-canvas rounded-[18px] border border-slate-100 p-4 sm:p-5 transition hover:shadow-md relative overflow-hidden shadow-sm ${
+                className={`rounded-2xl border border-border/40 bg-white p-3 transition-shadow sm:p-4 ${
                   isArchived ? 'opacity-70 bg-canvas-soft/40' : ''
                 }`}
               >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2 flex-wrap mb-1">
+                <div className="rounded-xl bg-surface-container p-3 sm:p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex min-w-0 items-center gap-3">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-surface-high text-secondary">
+<Icons8Icon icon="apartment" className="text-[24px]" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                      <div className="mb-1 flex items-center gap-2">
                       <Link
                         to={`/properties/${property.id}`}
-                        className="text-base font-bold text-ink hover:text-primary transition truncate flex items-center gap-1.5"
+                        className="min-w-0 truncate font-display text-lg font-medium leading-tight text-primary hover:text-secondary sm:text-xl"
                       >
-                        <span className="material-symbols-outlined text-[20px] text-primary">apartment</span>
-                        <span>{property.name}</span>
+                        {property.name}
                       </Link>
                       {isArchived ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 text-[11px] font-semibold rounded-full bg-badge-partial-bg text-badge-partial-text border border-badge-partial-border">
+                        <span className="inline-flex shrink-0 items-center rounded bg-tertiary-fixed px-1.5 py-0.5 font-label text-[10px] font-semibold uppercase text-on-tertiary-fixed-variant">
                           <span className="w-1.5 h-1.5 rounded-full bg-amber-600"></span>
-                          <span>Archived</span>
+                          <span className="ml-1">Archived</span>
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 text-[11px] font-semibold rounded-full bg-badge-paid-bg text-badge-paid-text border border-badge-paid-border">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                        <span className="inline-flex shrink-0 items-center rounded bg-secondary-container/70 px-1.5 py-0.5 font-label text-[10px] font-semibold uppercase text-on-secondary-fixed">
                           <span>Active</span>
                         </span>
                       )}
                     </div>
-
-                    <p className="text-xs text-ink-muted truncate max-w-xl">{property.address}</p>
-
-                    {/* Quick unit indicators */}
-                    <div className="flex items-center gap-2 sm:gap-3 mt-3 text-xs flex-wrap">
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-canvas-soft text-ink font-medium">
-                        <span className="material-symbols-outlined text-[14px] text-ink-muted">door_front</span>
-                        <span>{totalR} units</span>
-                      </span>
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-50 text-primary font-medium">
-                        <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
-                        <span>{occR} occupied ({occPct}%)</span>
-                      </span>
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-medium">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
-                        <span>{availR} ready/vacant</span>
-                      </span>
+                    <p className="truncate text-xs text-on-surface-variant">{property.address}</p>
+                      </div>
                     </div>
                   </div>
+                  <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg bg-surface-low px-3 py-2 text-xs text-on-surface-variant">
+                    <span><strong className="font-semibold text-primary">{totalR}</strong> Rooms</span>
+                    <span className="text-border" aria-hidden="true">•</span>
+                    <span><strong className="font-medium text-secondary">{occR}</strong> Occupied{totalR > 0 ? ` (${occPct}%)` : ''}</span>
+                    <span className="text-border" aria-hidden="true">•</span>
+                    <span className={availR > 0 ? 'font-medium text-on-tertiary-fixed-variant' : ''}>{availR} Vacant</span>
+                  </div>
+                </div>
 
                   {/* Actions Bar */}
-                  <div className="flex items-center gap-2 pt-2 sm:pt-0 border-t sm:border-t-0 border-border/50 w-full sm:w-auto justify-end shrink-0">
+                  <div className="flex items-center justify-between gap-2 px-1 pt-3">
                     <Link
                       to={`/properties/${property.id}`}
-                      className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1 min-h-[38px] px-3.5 py-1.5 rounded-full bg-canvas-soft hover:bg-surface-container text-ink text-xs font-semibold transition active:scale-[0.98]"
+                      className="inline-flex min-h-10 items-center gap-1 rounded-lg px-2 text-xs font-medium text-secondary transition-colors hover:bg-surface-low"
                     >
-                      <span>Manage Rooms</span>
-                      <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                      <span>View rooms</span>
+<Icons8Icon icon="arrow_forward" className="text-[16px]" />
                     </Link>
                     {!isArchived && (
                       <>
@@ -480,7 +463,7 @@ export default function PropertiesPage() {
                           aria-label={`Edit ${property.name}`}
                           title="Edit Property"
                         >
-                          <span className="material-symbols-outlined text-[16px]">edit</span>
+<Icons8Icon icon="edit" className="text-[16px]" />
                         </button>
                         <button
                           onClick={() => setArchiveProperty(property)}
@@ -488,12 +471,11 @@ export default function PropertiesPage() {
                           aria-label={`Archive ${property.name}`}
                           title="Archive Property"
                         >
-                          <span className="material-symbols-outlined text-[16px]">archive</span>
+<Icons8Icon icon="archive" className="text-[16px]" />
                         </button>
                       </>
                     )}
                   </div>
-                </div>
               </div>
             );
           })}

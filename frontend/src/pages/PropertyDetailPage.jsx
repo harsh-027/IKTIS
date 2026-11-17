@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { propertyApi, roomApi } from '../services/api.js';
 import Modal from '../components/Dialog.jsx';
+import Icons8Icon from '../components/Icons8Icon.jsx';
 
 function formatINR(amount) {
   if (amount === undefined || amount === null || isNaN(amount)) return '₹0';
@@ -38,7 +39,7 @@ function PropertyForm({ initial = {}, onSubmit, onCancel, loading }) {
     <form onSubmit={handleSubmit} noValidate className="space-y-4">
       {error && (
         <div className="text-xs text-rose-700 bg-rose-50 border border-rose-200 rounded-xl px-3 py-2 flex items-center gap-1.5">
-          <span className="material-symbols-outlined text-[16px] text-rose-600">error</span>
+<Icons8Icon icon="error" className="text-[16px] text-rose-600" />
           <span>{error}</span>
         </div>
       )}
@@ -120,7 +121,7 @@ function RoomForm({ initial = {}, onSubmit, onCancel, loading }) {
     <form onSubmit={handleSubmit} noValidate className="space-y-4">
       {error && (
         <div className="text-xs text-rose-700 bg-rose-50 border border-rose-200 rounded-xl px-3 py-2 flex items-center gap-1.5">
-          <span className="material-symbols-outlined text-[16px] text-rose-600">error</span>
+<Icons8Icon icon="error" className="text-[16px] text-rose-600" />
           <span>{error}</span>
         </div>
       )}
@@ -196,12 +197,12 @@ function ConfirmModal({ title, message, submessage, confirmLabel, confirmClass, 
     <Modal title={title} onClose={onCancel}>
       {error && (
         <div className="text-xs text-rose-700 bg-rose-50 border border-rose-200 rounded-xl px-3 py-2 mb-3 flex items-center gap-1.5">
-          <span className="material-symbols-outlined text-[16px] text-rose-600">error</span>
+<Icons8Icon icon="error" className="text-[16px] text-rose-600" />
           <span>{error}</span>
         </div>
       )}
       <div className="flex items-start gap-3 mb-4 p-3.5 bg-amber-50 rounded-xl border border-amber-200 text-amber-900">
-        <span className="material-symbols-outlined text-amber-600 text-[20px] shrink-0 mt-0.5">warning</span>
+<Icons8Icon icon="warning" className="text-amber-600 text-[20px] shrink-0 mt-0.5" />
         <div className="text-xs space-y-1">
           <p className="font-semibold text-ink">{message}</p>
           {submessage && <p className="text-amber-800 leading-relaxed">{submessage}</p>}
@@ -359,7 +360,7 @@ export default function PropertyDetailPage() {
       <div className="text-center py-20 bg-canvas rounded-[18px] border border-slate-100 p-6">
         <p className="text-sm font-semibold text-rose-700 mb-2">{error}</p>
         <Link to="/properties" className="text-xs text-primary font-medium hover:underline inline-flex items-center gap-1">
-          <span className="material-symbols-outlined text-[14px]">arrow_back</span>
+<Icons8Icon icon="arrow_back" className="text-[16px]" />
           <span>Back to Properties</span>
         </Link>
       </div>
@@ -393,11 +394,11 @@ export default function PropertyDetailPage() {
   });
 
   return (
-    <div className="space-y-5 pb-8">
+    <div className="iktis-internal space-y-5 pb-8">
       {/* ─── Breadcrumb Navigation ────────────────────────────────────── */}
       <nav className="flex items-center gap-2 text-xs text-ink-muted">
         <Link to="/properties" className="hover:text-primary transition flex items-center gap-1 font-medium">
-          <span className="material-symbols-outlined text-[16px]">apartment</span>
+<Icons8Icon icon="apartment" className="text-[16px]" />
           <span>Properties</span>
         </Link>
         <span className="text-ink-muted/50">/</span>
@@ -409,7 +410,7 @@ export default function PropertyDetailPage() {
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
           <div className="flex items-start gap-3 min-w-0">
             <div className="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center shrink-0 shadow-sm mt-0.5">
-              <span className="material-symbols-outlined text-[22px]">apartment</span>
+<Icons8Icon icon="apartment" className="text-[22px]" />
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
@@ -439,7 +440,7 @@ export default function PropertyDetailPage() {
                 onClick={() => setShowEditProperty(true)}
                 className="inline-flex items-center gap-1 min-h-[38px] px-3.5 py-1.5 rounded-full border border-border hover:bg-canvas-soft text-ink text-xs font-medium transition cursor-pointer active:scale-[0.98]"
               >
-                <span className="material-symbols-outlined text-[16px]">edit</span>
+<Icons8Icon icon="edit" className="text-[16px]" />
                 <span>Edit</span>
               </button>
               <button
@@ -447,7 +448,7 @@ export default function PropertyDetailPage() {
                 onClick={() => setShowArchiveProperty(true)}
                 className="inline-flex items-center gap-1 min-h-[38px] px-3.5 py-1.5 rounded-full border border-border hover:bg-rose-50 hover:border-rose-200 text-ink-muted hover:text-rose-700 text-xs font-medium transition cursor-pointer active:scale-[0.98]"
               >
-                <span className="material-symbols-outlined text-[16px]">archive</span>
+<Icons8Icon icon="archive" className="text-[16px]" />
                 <span>Archive</span>
               </button>
             </div>
@@ -482,17 +483,17 @@ export default function PropertyDetailPage() {
 
           <div className="grid grid-cols-3 gap-2 pt-1 text-center text-xs">
             <div className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-xl bg-surface-container-low">
-              <span className="material-symbols-outlined text-badge-paid-text text-[15px]">verified</span>
+<Icons8Icon icon="approval" className="text-badge-paid-text text-[16px]" />
               <span className="font-semibold text-ink">{occupiedUnits}</span>
               <span className="text-ink-muted">Active</span>
             </div>
             <div className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-xl bg-badge-partial-bg/60">
-              <span className="material-symbols-outlined text-badge-partial-text text-[15px]">build</span>
+<Icons8Icon icon="settings" className="text-badge-partial-text text-[16px]" />
               <span className="font-semibold text-badge-partial-text">{maintenanceUnits}</span>
               <span className="text-badge-partial-text">Maint.</span>
             </div>
             <div className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-xl bg-surface-container-low">
-              <span className="material-symbols-outlined text-ink-muted text-[15px]">meeting_room</span>
+<Icons8Icon icon="meeting_room" className="text-ink-muted text-[16px]" />
               <span className="font-semibold text-ink">{vacantUnits}</span>
               <span className="text-ink-muted">Vacant</span>
             </div>
@@ -501,19 +502,10 @@ export default function PropertyDetailPage() {
       </div>
 
       {/* ─── Operational & Derived Logic Explainer Micro-banner ─────────── */}
-      <div className="flex items-center gap-2.5 p-3 bg-surface-container-low/70 rounded-xl border border-slate-100">
-        <span className="material-symbols-outlined text-primary text-[20px] shrink-0">info</span>
-        <p className="text-xs text-ink-muted flex-1 leading-snug">
-          Dual Status Engine: <strong className="text-ink font-semibold">Operational</strong> indicates physical habitability; <strong className="text-ink font-semibold">Derived</strong> synchronizes live tenant lease agreements in real time.
-        </p>
-      </div>
-
       {/* ─── Search & Unit Filter Row ──────────────────────────────────── */}
       <div className="space-y-2">
         <div className="relative flex items-center w-full">
-          <span className="material-symbols-outlined absolute left-3.5 text-ink-muted text-[18px] pointer-events-none">
-            search
-          </span>
+          <Icons8Icon icon="search" className="absolute left-3.5 text-ink-muted text-[18px] pointer-events-none" />
           <input
             type="search"
             value={searchQuery}
@@ -527,8 +519,8 @@ export default function PropertyDetailPage() {
           </span>
         </div>
 
-        <div className="flex items-center justify-between gap-2 overflow-x-auto no-scrollbar py-0.5">
-          <div className="flex items-center gap-1.5 shrink-0">
+        <div className="flex w-full flex-wrap items-center justify-between gap-2 py-0.5">
+          <div className="flex min-w-0 max-w-full flex-wrap items-center gap-1.5">
             <button
               onClick={() => setRoomFilter('all')}
               className={`h-9 px-3.5 rounded-full text-xs font-semibold shrink-0 flex items-center gap-1.5 active:scale-[0.98] transition cursor-pointer ${
@@ -583,7 +575,7 @@ export default function PropertyDetailPage() {
               onClick={() => setShowAddRoom(true)}
               className="inline-flex items-center gap-1.5 h-9 px-4 rounded-full bg-primary hover:bg-primary-focus text-white text-xs font-semibold transition active:scale-[0.98] shadow-sm cursor-pointer shrink-0"
             >
-              <span className="material-symbols-outlined text-[16px]">add</span>
+<Icons8Icon icon="add" className="text-[16px]" />
               <span>Add Unit</span>
             </button>
           )}
@@ -594,15 +586,15 @@ export default function PropertyDetailPage() {
       {filteredRooms.length === 0 ? (
         <div className="text-center py-16 bg-canvas rounded-[18px] border border-slate-100 p-6 shadow-sm">
           <div className="w-12 h-12 rounded-2xl bg-canvas-soft flex items-center justify-center mx-auto mb-3 text-ink-muted">
-            <span className="material-symbols-outlined text-[28px]">meeting_room</span>
+<Icons8Icon icon="meeting_room" className="text-[28px]" />
           </div>
           <p className="text-sm font-semibold text-ink mb-1">
             {searchQuery ? 'No matching units found' : 'No units in this building yet'}
           </p>
           <p className="text-xs text-ink-muted mb-4 max-w-xs mx-auto">
             {searchQuery
-              ? 'Try modifying your search or filter criteria.'
-              : 'Add rooms and rental units to begin assigning tenancies.'}
+            ? 'Try adjusting your search or filter.'
+            : 'Add a room to assign a tenancy.'}
           </p>
           {!isArchived && (
             <button
@@ -647,7 +639,7 @@ export default function PropertyDetailPage() {
                         className="w-9 h-9 flex items-center justify-center rounded-full text-ink-muted hover:text-ink hover:bg-canvas-soft active:scale-[0.98] transition cursor-pointer"
                         title="Edit Unit"
                       >
-                        <span className="material-symbols-outlined text-[18px]">edit</span>
+<Icons8Icon icon="edit" className="text-[18px]" />
                       </button>
                       {!room.isOccupied && (
                         <button
@@ -656,7 +648,7 @@ export default function PropertyDetailPage() {
                           className="w-9 h-9 flex items-center justify-center rounded-full text-ink-muted hover:text-rose-700 hover:bg-rose-50 active:scale-[0.98] transition cursor-pointer"
                           title="Archive Unit"
                         >
-                          <span className="material-symbols-outlined text-[18px]">archive</span>
+<Icons8Icon icon="archive" className="text-[18px]" />
                         </button>
                       )}
                     </div>
@@ -681,12 +673,12 @@ export default function PropertyDetailPage() {
                   {/* Derived tenancy agreement status */}
                   {room.isOccupied ? (
                     <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 text-primary font-medium">
-                      <span className="material-symbols-outlined text-[14px]">key</span>
+<Icons8Icon icon="key" className="text-[16px]" />
                       <span>Occupied</span>
                     </div>
                   ) : (
                     <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-medium">
-                      <span className="material-symbols-outlined text-[14px]">meeting_room</span>
+<Icons8Icon icon="meeting_room" className="text-[16px]" />
                       <span>Vacant</span>
                     </div>
                   )}
@@ -724,25 +716,21 @@ export default function PropertyDetailPage() {
                         className="px-3 py-1.5 bg-canvas hover:bg-surface-container text-primary font-semibold text-xs rounded-full border border-border flex items-center gap-1 active:scale-[0.98] transition"
                       >
                         <span>Tenancy</span>
-                        <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+<Icons8Icon icon="arrow_forward" className="text-[16px]" />
                       </Link>
                     </div>
                   </div>
                 ) : !isArchived && room.isAvailable ? (
                   <div className="flex items-center justify-between p-3 bg-emerald-50/40 rounded-xl border border-emerald-100/60">
                     <div className="flex items-center gap-2">
-                      <span className="material-symbols-outlined text-emerald-600 text-[20px]">door_front</span>
-                      <div>
-                        <p className="text-xs font-semibold text-emerald-950">Unit is ready for tenant</p>
-                        <p className="text-[11px] text-emerald-700">No active lease agreement bound to this room</p>
-                      </div>
+<Icons8Icon icon="door" className="text-emerald-600 text-[20px]" />
                     </div>
                     <Link
                       to="/tenants"
                       className="px-3 py-1.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs inline-flex items-center gap-1 shadow-sm active:scale-[0.98] transition"
                     >
                       <span>Assign</span>
-                      <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+<Icons8Icon icon="arrow_forward" className="text-[16px]" />
                     </Link>
                   </div>
                 ) : null}

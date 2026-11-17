@@ -3,24 +3,22 @@
 @tailwind utilities;
 
 :root {
-  /* Calm Precision Color Tokens */
-  --color-primary: #004e9f;
-  --color-primary-container: #0066cc;
-  --color-primary-focus: #0071e3;
-  --color-primary-on-dark: #2997ff;
-  --color-ink: #1d1d1f;
-  --color-muted: #7a7a7a;
+  --color-primary: #06111c;
+  --color-primary-container: #1b2632;
+  --color-primary-focus: #1b2632;
+  --color-primary-on-dark: #d8e3f4;
+  --color-ink: #1d1c16;
+  --color-muted: #44474b;
   --color-canvas: #ffffff;
-  --color-canvas-soft: #f5f5f7;
-  --color-surface: #fcf8fb;
-  --color-surface-pearl: #fafafc;
-  --color-dark: #000000;
-  --color-dark-tile: #272729;
-  --color-border: #e0e0e0;
-  --color-divider: #f0f0f0;
+  --color-canvas-soft: #f8f3e9;
+  --color-surface: #fef9ef;
+  --color-surface-pearl: #fef9ef;
+  --color-dark: #06111c;
+  --color-dark-tile: #1b2632;
+  --color-border: #c4c6cc;
+  --color-divider: #e7e2d8;
 
-  font-family: Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text",
-    "SF Pro Display", system-ui, sans-serif;
+  font-family: "DM Sans", Inter, system-ui, sans-serif;
   color: var(--color-ink);
   background-color: var(--color-surface);
   -webkit-font-smoothing: antialiased;
@@ -45,16 +43,49 @@ body {
   letter-spacing: normal;
   text-transform: none;
   display: inline-block;
+  width: 1.15em;
+  max-width: 1.15em;
+  flex: 0 0 1.15em;
+  overflow: hidden;
   white-space: nowrap;
   word-wrap: normal;
   direction: ltr;
-  -webkit-font-feature-settings: 'liga';
+  -webkit-font-feature-settings: 'liga' 1;
+  font-feature-settings: 'liga' 1;
   -webkit-font-smoothing: antialiased;
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
 .material-symbols-outlined.fill {
   font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Icons8 Material Outlined assets used by authenticated navigation. */
+.icons8-navigation-icon {
+  display: inline-block;
+  line-height: 1;
+  vertical-align: middle;
+  width: 1em;
+  height: 1em;
+  flex: 0 0 1em;
+  object-fit: contain;
+}
+
+/* Icons8 PNGs are black by default; preserve IKTIS semantic text colors. */
+.icons8-navigation-icon.text-white {
+  filter: brightness(0) invert(1);
+}
+
+.icons8-navigation-icon.text-rose-600 {
+  filter: brightness(0) saturate(100%) invert(34%) sepia(13%) saturate(1769%) hue-rotate(336deg) brightness(93%) contrast(87%);
+}
+
+.icons8-navigation-icon.text-amber-600 {
+  filter: brightness(0) saturate(100%) invert(57%) sepia(82%) saturate(1778%) hue-rotate(359deg) brightness(101%) contrast(101%);
+}
+
+.icons8-navigation-icon.text-emerald-600 {
+  filter: brightness(0) saturate(100%) invert(37%) sepia(99%) saturate(1071%) hue-rotate(127deg) brightness(88%) contrast(94%);
 }
 
 /* Accessible focus ring */
@@ -70,6 +101,15 @@ body {
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* Keep the existing pill navigation pinned while tablet/mobile content scrolls. */
+@media (max-width: 1023px) {
+  .mobile-bottom-nav {
+    position: fixed !important;
+    inset-inline: 1rem;
+    bottom: 1rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -90,4 +130,167 @@ body {
 .iktis-landing a,
 .iktis-landing button {
   -webkit-tap-highlight-color: transparent;
+}
+
+.landing-building-stage {
+  position: relative;
+  min-height: 285px;
+  overflow: hidden;
+  background: linear-gradient(145deg, #f9f6ef 0%, #e9eee9 100%);
+  border-bottom: 1px solid #e7e0d5;
+}
+
+.apartment-scene,
+.apartment-scene-fallback {
+  position: absolute;
+  inset: 0;
+}
+
+.apartment-scene canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.landing-building-caption {
+  position: absolute;
+  bottom: 14px;
+  left: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid rgba(216, 208, 196, 0.8);
+  border-radius: 999px;
+  padding: 7px 10px;
+  color: #71685d;
+  background: rgba(253, 251, 247, 0.8);
+  backdrop-filter: blur(10px);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.apartment-fallback-building {
+  position: absolute;
+  left: 50%;
+  bottom: 28px;
+  width: min(52%, 210px);
+  height: 82%;
+  transform: translateX(-38%) perspective(500px) rotateY(-12deg);
+  border: 1px solid #bdb4a8;
+  background: linear-gradient(90deg, #cbc3b6, #e9e4da 55%, #b4aaa0);
+  box-shadow: 20px 20px 0 rgba(77, 95, 81, 0.12);
+}
+
+.apartment-fallback-roof {
+  position: absolute;
+  top: -9px;
+  left: -4%;
+  width: 108%;
+  height: 9px;
+  background: #f0ebe2;
+}
+
+.apartment-fallback-windows {
+  position: absolute;
+  inset: 15px 14px 14px;
+  background: repeating-linear-gradient(90deg, transparent 0 12px, #55757a 12px 22px, transparent 22px 31px), repeating-linear-gradient(0deg, transparent 0 18px, rgba(255,255,255,.34) 18px 21px, transparent 21px 31px);
+  opacity: .88;
+}
+
+.apartment-fallback-door {
+  position: absolute;
+  bottom: 0;
+  left: 43%;
+  width: 19%;
+  height: 25%;
+  background: #31513f;
+}
+
+@media (min-width: 640px) {
+  .landing-building-stage { min-height: 330px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-building-caption { backdrop-filter: none; }
+}
+
+/* Shared Stitch language for authenticated routes. Public landing styles stay scoped elsewhere. */
+.iktis-internal h1 {
+  font-family: "Comfortaa", "DM Sans", sans-serif;
+  font-size: 2rem;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.iktis-internal h2 {
+  font-family: "Comfortaa", "DM Sans", sans-serif;
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+
+.iktis-internal input:not([type="checkbox"]):not([type="radio"]),
+.iktis-internal select,
+.iktis-internal textarea {
+  border-radius: 0.5rem;
+  border-color: #c4c6cc;
+  background-color: #f8f3e9;
+}
+
+.iktis-internal button[class*="rounded-full"] {
+  border-radius: 0.5rem;
+}
+
+.iktis-internal button[class*="bg-primary"]:not(:disabled) {
+  color: #2d1600;
+  background-color: #ffb872;
+}
+
+.iktis-internal button[class*="bg-primary"]:not(:disabled):hover {
+  background-color: #ffdcbf;
+}
+
+.iktis-internal [class*="rounded-[18px]"] {
+  border-radius: 1rem;
+}
+
+.iktis-internal [class*="border-slate-100"] {
+  border-color: rgb(196 198 204 / 45%);
+}
+
+.iktis-internal [class*="bg-slate-100"] {
+  background-color: #ede8de;
+}
+
+.iktis-internal [class*="bg-blue-50"],
+.iktis-internal [class*="bg-emerald-50"] {
+  background-color: #d1e1f8;
+}
+
+.iktis-internal [class*="text-blue-"],
+.iktis-internal [class*="text-emerald-"] {
+  color: #506073;
+}
+
+.iktis-internal [class*="bg-emerald-"]:not([class*="bg-emerald-50"]) {
+  background-color: #506073;
+}
+
+.iktis-internal [class*="bg-rose-50"] {
+  background-color: rgb(163 81 57 / 9%);
+}
+
+.iktis-internal [class*="border-rose-"] {
+  border-color: rgb(163 81 57 / 28%);
+}
+
+.iktis-internal [class*="text-rose-"] {
+  color: #a35139;
+}
+
+.iktis-internal [class*="shadow-md"] {
+  box-shadow: 0 8px 24px -4px rgb(27 38 50 / 4%);
 }

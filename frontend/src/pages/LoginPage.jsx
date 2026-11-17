@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
+import AuthShell from '../components/AuthShell.jsx';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -30,29 +31,17 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-surface-soft flex flex-col justify-center items-center px-4 py-10 sm:py-16">
-      <div className="w-full max-w-[420px]">
-        {/* Brand Header */}
-        <div className="mb-8 flex justify-center">
-          <Link to="/" className="inline-flex items-center gap-3" aria-label="IKTIS home">
-            <img src="/icons.svg" alt="" aria-hidden="true" className="h-12 w-12 object-contain" />
-            <h1 className="text-3xl font-extrabold tracking-tight text-ink font-heading">IKTIS</h1>
-          </Link>
-        </div>
-
-        {/* Auth Card */}
-        <div className="bg-surface-canvas rounded-[24px] border border-border/80 p-6 sm:p-8 shadow-xs">
-          <div className="mb-6">
-            <h2 className="text-xl font-bold text-ink">
-              Sign In
-            </h2>
-            <p className="text-xs text-ink-muted mt-0.5">
-              Enter your credentials to access your landlord dashboard
-            </p>
-          </div>
-
+    <AuthShell
+      title="Sign in"
+      footer={(
+        <p className="text-sm text-ink-muted">
+          Don&apos;t have an account?{' '}
+          <Link to="/register" className="font-medium text-primary hover:underline">Create one</Link>
+        </p>
+      )}
+    >
           {location.state?.message && (
-            <div role="status" className="mb-5 p-3.5 rounded-[14px] bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm">
+            <div role="status" className="mb-5 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">
               {location.state.message}
             </div>
           )}
@@ -60,7 +49,7 @@ export default function LoginPage() {
           {error && (
             <div
               role="alert"
-              className="mb-5 p-3.5 rounded-[14px] bg-rose-50 border border-rose-200 text-rose-800 text-xs sm:text-sm leading-snug flex items-start gap-2.5"
+              className="mb-5 flex items-start gap-2.5 rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm leading-snug text-rose-800"
             >
               <span className="material-symbols-outlined text-[18px] text-rose-600 mt-0.5 shrink-0">
                 error
@@ -73,7 +62,7 @@ export default function LoginPage() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-[11px] font-bold text-ink-muted uppercase tracking-wider mb-1.5"
+                className="mb-1.5 block text-sm font-medium text-ink"
               >
                 Email Address
               </label>
@@ -89,7 +78,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="landlord@example.com"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-full border border-border bg-surface-canvas text-ink text-sm placeholder:text-ink-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent min-h-[44px] transition"
+                  className="min-h-11 w-full rounded-lg border border-border bg-white py-2.5 pl-10 pr-4 text-sm text-ink placeholder:text-ink-muted/60 transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                 />
               </div>
             </div>
@@ -97,7 +86,7 @@ export default function LoginPage() {
             <div>
               <label
                 htmlFor="password"
-                className="block text-[11px] font-bold text-ink-muted uppercase tracking-wider mb-1.5"
+                className="mb-1.5 block text-sm font-medium text-ink"
               >
                 Password
               </label>
@@ -113,13 +102,13 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-12 py-2.5 rounded-full border border-border bg-surface-canvas text-ink text-sm placeholder:text-ink-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent min-h-[44px] transition"
+                  className="min-h-11 w-full rounded-lg border border-border bg-white py-2.5 pl-10 pr-12 text-sm text-ink placeholder:text-ink-muted/60 transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((visible) => !visible)}
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 min-h-[40px] min-w-[40px] rounded-full text-ink-muted hover:text-ink hover:bg-canvas-soft inline-flex items-center justify-center cursor-pointer"
+                  className="absolute right-2 top-1/2 inline-flex min-h-10 min-w-10 -translate-y-1/2 items-center justify-center rounded-lg text-ink-muted hover:bg-surface-soft hover:text-ink"
                 >
                   <span className="material-symbols-outlined text-[18px]">
                     {showPassword ? 'visibility_off' : 'visibility'}
@@ -131,7 +120,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full mt-3 py-3 px-4 rounded-full bg-primary hover:bg-primary-focus text-white text-sm font-bold shadow-xs transition-all active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer min-h-[44px] flex items-center justify-center gap-2"
+              className="mt-3 flex min-h-11 w-full items-center justify-center gap-2 rounded-lg bg-tertiary-fixed-dim px-4 py-3 text-sm font-medium text-primary shadow-sm transition-colors hover:bg-tertiary-fixed disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isSubmitting ? (
                 <span>Signing in...</span>
@@ -144,30 +133,6 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <div className="mt-6 pt-5 border-t border-border/60 text-center">
-            <p className="text-xs text-ink-muted">
-              Don't have an account?{' '}
-              <Link
-                to="/register"
-                className="font-bold text-primary hover:underline ml-1"
-              >
-                Create one now
-              </Link>
-            </p>
-          </div>
-        </div>
-
-        {/* Security watermark footer */}
-        <p className="text-center text-[11px] text-ink-muted/70 mt-6 flex items-center justify-center gap-1">
-          <span className="material-symbols-outlined text-[14px]">shield</span>
-          <span>Encrypted session & strict multi-tenant tenant isolation</span>
-        </p>
-        <nav aria-label="Legal" className="text-center text-xs text-ink-muted mt-3">
-          <Link to="/privacy" className="hover:text-ink hover:underline">Privacy Policy</Link>
-          <span className="mx-2" aria-hidden="true">·</span>
-          <Link to="/terms" className="hover:text-ink hover:underline">Terms of Service</Link>
-        </nav>
-      </div>
-    </div>
+    </AuthShell>
   );
 }

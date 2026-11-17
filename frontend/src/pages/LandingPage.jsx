@@ -5,6 +5,45 @@ import { AnimatePresence, motion } from 'motion/react';
 import useReducedMotion from '../hooks/useReducedMotion.js';
 import useScrollAnimation from '../hooks/useScrollAnimation.js';
 
+const ApartmentBuildingHero = React.lazy(() => import('../components/3d/ApartmentBuildingHero.jsx'));
+
+class SceneErrorBoundary extends React.Component {
+  state = { hasError: false };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error) {
+    if (import.meta.env.DEV) console.warn('Apartment preview unavailable:', error);
+  }
+
+  render() {
+    if (this.state.hasError) return <div className="apartment-scene-fallback" aria-hidden="true" />;
+    return this.props.children;
+  }
+}
+
+function ApartmentBuildingPreview() {
+  const fallback = (
+    <div className="apartment-scene-fallback" aria-hidden="true">
+      <div className="apartment-fallback-building">
+        <div className="apartment-fallback-roof" />
+        <div className="apartment-fallback-windows" />
+        <div className="apartment-fallback-door" />
+      </div>
+    </div>
+  );
+
+  return (
+    <SceneErrorBoundary>
+      <React.Suspense fallback={fallback}>
+        <ApartmentBuildingHero />
+      </React.Suspense>
+    </SceneErrorBoundary>
+  );
+}
+
 function IktisMark({ className = '' }) {
   return <img src="/icons.svg" alt="" aria-hidden="true" className={className} />;
 }
@@ -173,6 +212,10 @@ export default function LandingPage() {
             transition={{ delay: prefersReducedMotion ? 0 : 0.36, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           >
             <div className="landing-product-preview relative overflow-hidden rounded-2xl border border-[#d8d0c4] bg-[#fdfbf7] text-left shadow-[0_16px_40px_rgba(52,43,32,0.1)]">
+              <div className="landing-building-stage" aria-hidden="true">
+                <ApartmentBuildingPreview />
+                <div className="landing-building-caption"><span className="h-1.5 w-1.5 rounded-full bg-[#557c62]" /> Riverside Apartments · 20 homes</div>
+              </div>
               <div className="flex items-center justify-between border-b border-[#e7e0d5] px-4 py-3 sm:px-7 sm:py-4">
                 <div className="flex items-center gap-2.5">
                   <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#e8f0f2]"><IktisMark className="h-5 w-5 object-contain" /></span>

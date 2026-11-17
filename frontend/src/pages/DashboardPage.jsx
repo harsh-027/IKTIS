@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import { dashboardApi, paymentApi } from '../services/api.js';
 import Dialog from '../components/Dialog.jsx';
+import Icons8Icon from '../components/Icons8Icon.jsx';
 
 function formatINR(amount) {
   if (amount === undefined || amount === null || isNaN(amount)) return '₹0';
@@ -28,8 +29,8 @@ function formatDate(dateStr) {
 }
 
 export default function DashboardPage() {
-  const { user } = useAuth();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   // Selected Month (YYYY-MM), defaults to current UTC month
   const [selectedMonth, setSelectedMonth] = useState(() => {
@@ -140,42 +141,39 @@ export default function DashboardPage() {
   const isCurrentMonth = selectedMonth === currentMonthStr;
 
   return (
-    <div className="space-y-5 pb-8">
+    <div className="iktis-internal space-y-6 pb-8">
       {/* ─── Greeting & Period Context Bar ────────────────────────────── */}
       <div className="flex flex-col gap-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <div className="flex items-center gap-1.5 text-xs text-ink-muted font-medium mb-0.5">
-              <span className="material-symbols-outlined text-[15px] text-primary">domain</span>
-              <span>Portfolio Overview • {portfolio.totalProperties} Properties</span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-ink">
-              Welcome back, {user?.name?.split(' ')[0] || 'Landlord'}
+            <p className="font-label text-[10px] font-semibold uppercase tracking-[0.08em] text-secondary">{formattedMonthHeader}</p>
+            <h1 className="font-display text-2xl font-medium tracking-tight text-ink sm:text-3xl">
+              Good morning, {user?.name?.split(' ')[0] || 'Landlord'}
             </h1>
           </div>
 
           <div className="flex items-center gap-2">
             <Link
               to={`/rent-charges?month=${selectedMonth}`}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-white font-medium text-xs sm:text-sm active:scale-[0.98] transition-transform duration-100 shadow-sm min-h-[40px] cursor-pointer"
+              className="flex min-h-10 items-center gap-1.5 rounded-lg bg-tertiary-fixed-dim px-4 py-2 text-xs font-medium text-primary shadow-sm transition-colors hover:bg-tertiary-fixed sm:text-sm"
             >
-              <span className="material-symbols-outlined text-[18px]">add_circle</span>
+<Icons8Icon icon="add" className="text-[18px]" />
               <span>Bulk Rent</span>
             </Link>
           </div>
         </div>
 
         {/* Period Filter Pills & Month Navigator */}
-        <div className="flex items-center gap-3 overflow-x-auto no-scrollbar py-1">
-          <div className="flex items-center bg-canvas rounded-full border border-border p-1 shadow-sm shrink-0">
+        <div className="flex w-full flex-wrap items-center gap-2 py-1">
+          <div className="flex min-w-[180px] flex-1 items-center justify-between rounded-lg border border-border bg-canvas p-1 shadow-sm">
             <button
               onClick={handlePrevMonth}
               aria-label="Previous month"
               className="p-1 rounded-full text-ink-muted hover:text-ink hover:bg-canvas-soft min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer active:scale-95 transition"
             >
-              <span className="material-symbols-outlined text-[18px]">chevron_left</span>
+<Icons8Icon icon="chevron_left" className="text-[18px]" />
             </button>
-            <span aria-live="polite" className="px-4 text-xs font-semibold text-ink tracking-tight whitespace-nowrap">
+            <span aria-live="polite" className="px-2 text-xs font-semibold text-ink tracking-tight whitespace-nowrap sm:px-4">
               {formattedMonthHeader}
             </span>
             <button
@@ -183,7 +181,7 @@ export default function DashboardPage() {
               aria-label="Next month"
               className="p-1 rounded-full text-ink-muted hover:text-ink hover:bg-canvas-soft min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer active:scale-95 transition"
             >
-              <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+<Icons8Icon icon="chevron_right" className="text-[18px]" />
             </button>
           </div>
 
@@ -199,31 +197,101 @@ export default function DashboardPage() {
             This Month
           </button>
 
-          <Link
-            to="/payments?action=record"
-            className="px-3.5 py-1.5 rounded-full bg-canvas-soft text-ink hover:bg-surface-container text-xs font-medium whitespace-nowrap active:scale-[0.98] transition-transform shrink-0 inline-flex items-center gap-1"
-          >
-            <span className="material-symbols-outlined text-[16px] text-primary" aria-hidden="true">payments</span>
-            <span>Record Payment</span>
-          </Link>
         </div>
       </div>
 
       {error && (
         <div className="p-4 bg-rose-50 border border-rose-200 rounded-[18px] text-rose-800 text-xs sm:text-sm flex items-center gap-2">
-          <span className="material-symbols-outlined text-rose-600 text-[20px]">error</span>
+<Icons8Icon icon="error" className="text-rose-600 text-[20px]" />
           <span>{error}</span>
         </div>
       )}
 
+      <section className="relative overflow-hidden rounded-2xl bg-primary-container p-5 text-white sm:p-6" aria-label="Monthly financial summary">
+        <div className="mb-4 flex items-start justify-between gap-3">
+          <div>
+            <p className="font-label text-[10px] font-semibold uppercase tracking-[0.08em] text-primary-fixed">Expected monthly revenue</p>
+            <p className="mt-2 font-display text-3xl font-normal tracking-tight text-white">
+              {loading ? '—' : formatINR(monthly.rentCharged)}
+            </p>
+          </div>
+          <span className="shrink-0 rounded bg-white/10 px-2.5 py-1 font-label text-[10px] font-semibold text-tertiary-fixed">
+            {formattedMonthHeader}
+          </span>
+        </div>
+        <div className="mb-4 h-1.5 overflow-hidden rounded-full bg-white/15">
+          <div
+            className="h-full rounded-full bg-tertiary-fixed-dim transition-all duration-300"
+            style={{ width: `${Math.min(100, Math.max(0, monthly.collectionRate))}%` }}
+          />
+        </div>
+        <div className="grid grid-cols-3 gap-2 pt-3">
+          <div>
+            <p className="font-label text-[10px] font-semibold text-primary-fixed">Collected</p>
+            <p className="mt-1 font-display text-lg font-medium text-white">{loading ? '—' : formatINR(monthly.paymentsCollected)}</p>
+            <p className="mt-1 text-[10px] font-medium text-tertiary-fixed-dim">{monthly.collectionRate}% in ledger</p>
+          </div>
+          <div className="px-1">
+            <p className="font-label text-[10px] font-semibold text-primary-fixed">Outstanding</p>
+            <p className="mt-1 font-display text-lg font-medium text-white">{loading ? '—' : formatINR(monthly.outstandingRent)}</p>
+            <p className="mt-1 text-[10px] font-medium text-primary-fixed">{monthly.chargesCount} charges</p>
+          </div>
+          <div className="text-right">
+            <p className="font-label text-[10px] font-semibold text-primary-fixed">Overdue</p>
+            <p className="mt-1 font-display text-lg font-medium text-tertiary-fixed">{loading ? '—' : formatINR(monthly.overdueRent)}</p>
+            <p className="mt-1 text-[10px] font-medium text-primary-fixed">Needs attention</p>
+          </div>
+        </div>
+      </section>
+
+      <section aria-label="Quick actions" className="grid grid-cols-2 gap-2 sm:gap-3">
+        <Link
+          to="/payments?action=record"
+          className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-tertiary-fixed-dim px-3 py-3 text-center text-sm font-semibold text-on-tertiary-fixed transition-colors hover:bg-tertiary-fixed"
+        >
+<Icons8Icon icon="add" className="text-[20px]" />
+          <span>Record Payment</span>
+        </Link>
+        <Link
+          to="/tenants"
+          className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg border border-border/60 bg-white px-3 py-3 text-center text-sm font-semibold text-secondary transition-colors hover:bg-surface-low"
+        >
+<Icons8Icon icon="add" className="text-[20px]" />
+          <span>Add Tenant</span>
+        </Link>
+      </section>
+
+      <section aria-labelledby="portfolio-pulse-heading">
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <h2 id="portfolio-pulse-heading" className="font-display text-lg font-medium text-ink">Portfolio pulse</h2>
+          <span className="font-label text-[10px] font-semibold uppercase tracking-[0.06em] text-secondary">{portfolio.totalProperties} active properties</span>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="rounded-2xl bg-surface-low p-4">
+            <p className="font-label text-[10px] font-semibold uppercase tracking-[0.06em] text-secondary">Capacity</p>
+            <p className="mt-2 font-display text-2xl font-normal text-ink">{portfolio.totalRooms}</p>
+            <p className="text-xs text-secondary">Total units</p>
+          </div>
+          <div className="rounded-2xl bg-surface-low p-4">
+            <div className="flex items-center justify-between gap-2">
+              <p className="font-label text-[10px] font-semibold uppercase tracking-[0.06em] text-secondary">Occupancy</p>
+              <span className="rounded bg-white/70 px-2 py-0.5 text-[10px] font-semibold text-secondary">{portfolio.occupancyRate}%</span>
+            </div>
+            <p className="mt-2 font-display text-2xl font-normal text-ink">{portfolio.occupiedRooms}<span className="px-2 text-border">·</span><span className="text-tertiary">{portfolio.vacantRooms}</span></p>
+            <p className="text-xs text-secondary">Occupied <span className="px-1">·</span> Vacant</p>
+            <p className="mt-3 text-[11px] font-medium text-secondary">{portfolio.activeTenants} active tenants</p>
+          </div>
+        </div>
+      </section>
+
       {/* ─── Key Financial Metrics 2x2 / 4-Col Bento Grid ───────────────── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="hidden grid-cols-2 gap-3 lg:grid-cols-4">
         {/* Card 1: Expected / Charged */}
         <div className="p-4 rounded-[18px] bg-canvas flex flex-col justify-between shadow-sm border border-slate-100 hover:shadow-md transition-shadow relative overflow-hidden">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-ink-muted font-medium">Total Expected</span>
             <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-ink-muted">
-              <span className="material-symbols-outlined text-[18px]">receipt_long</span>
+<Icons8Icon icon="receipt" className="text-[18px]" />
             </div>
           </div>
           <div className="space-y-2">
@@ -248,7 +316,7 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-ink-muted font-medium">Collected</span>
             <div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
-              <span className="material-symbols-outlined text-[18px]">check_circle</span>
+<Icons8Icon icon="approval" className="text-[18px]" />
             </div>
           </div>
           <div className="space-y-2">
@@ -278,7 +346,7 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-ink-muted font-medium">Outstanding</span>
             <div className={`w-8 h-8 rounded-full flex items-center justify-center ${monthly.overdueRent > 0 ? 'bg-rose-50 text-rose-600' : 'bg-slate-100 text-slate-600'}`}>
-              <span className="material-symbols-outlined text-[18px]">schedule</span>
+<Icons8Icon icon="clock" className="text-[18px]" />
             </div>
           </div>
           <div className="space-y-2">
@@ -316,7 +384,7 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-ink-muted font-medium">Occupancy</span>
             <div className="w-8 h-8 rounded-full bg-blue-50 text-primary flex items-center justify-center">
-              <span className="material-symbols-outlined text-[18px]">bed</span>
+<Icons8Icon icon="bed" className="text-[18px]" />
             </div>
           </div>
           <div className="space-y-2">
@@ -341,57 +409,17 @@ export default function DashboardPage() {
       </div>
 
       {/* ─── Idempotency & Bulk Generation Banner ──────────────────────── */}
-      <div className="p-4 rounded-[18px] bg-gradient-to-r from-blue-50/70 via-indigo-50/30 to-canvas border border-blue-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
-        <div className="flex items-start gap-3 min-w-0">
-          <div className="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center shrink-0 shadow-sm mt-0.5">
-            <span className="material-symbols-outlined text-[22px]">verified_user</span>
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <p className="text-sm font-semibold text-ink">{formattedMonthHeader} Rent Roll</p>
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-100/70 text-emerald-800 text-[11px] font-medium">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Safe Check Active
-              </span>
-            </div>
-            <p className="text-xs text-ink-muted mt-0.5 leading-snug">
-              {monthly.chargesCount} charges calculated. Idempotent bulk generation and strict landlord isolation enforced.
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2 w-full sm:w-auto shrink-0 justify-end pt-1 sm:pt-0">
-          {monthly.chargesCount > 0 ? (
-            <Link
-              to={`/rent-charges?month=${selectedMonth}`}
-              className="px-3.5 py-2 rounded-xl bg-primary text-white text-xs font-semibold flex items-center gap-1.5 shadow-sm active:scale-[0.98] transition-transform"
-            >
-              <span>Review Charges</span>
-              <span className="material-symbols-outlined text-[16px]" aria-hidden="true">arrow_forward</span>
-            </Link>
-          ) : (
-            <button
-              type="button"
-              disabled
-              className="px-3.5 py-2 rounded-xl border border-border bg-canvas-soft text-ink-muted text-xs font-semibold flex items-center gap-1.5 cursor-not-allowed"
-            >
-              <span>No charges to review</span>
-            </button>
-          )}
-        </div>
-      </div>
-
       {/* ─── Cumulative Lifetime Totals (Phase 7 Financial Ledger Banner) ──── */}
-      <div className="p-4 sm:p-5 rounded-[18px] bg-canvas border border-border shadow-sm space-y-3">
+      <div className="space-y-3 rounded-xl border border-border/60 bg-white p-4 sm:p-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-border/60">
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-primary text-[18px]">account_balance</span>
+<Icons8Icon icon="bank_account" className="text-primary text-[18px]" />
               <span className="text-xs font-bold text-ink">
                 Cumulative lifetime totals
               </span>
             </div>
-            <p className="text-xs text-ink-muted mt-0.5">
-              Historical ledger across all recorded periods (excludes voided payments)
-            </p>
+            <p className="text-xs text-ink-muted mt-0.5">Excludes voided payments</p>
           </div>
         </div>
 
@@ -431,16 +459,15 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between pb-3 border-b border-border/60">
               <div>
                 <h2 className="text-sm sm:text-base font-semibold text-ink flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-amber-600 text-[20px]">pending_actions</span>
+<Icons8Icon icon="clock" className="text-amber-600 text-[20px]" />
                   <span>Upcoming Rent Obligations</span>
                 </h2>
-                <p className="text-[11px] text-ink-muted">Rent charges requiring collection</p>
               </div>
               <Link
                 to="/payments?action=record"
                 className="text-xs font-medium text-primary hover:underline min-h-[36px] inline-flex items-center gap-1"
               >
-                <span className="material-symbols-outlined text-[16px] text-primary" aria-hidden="true">payments</span>
+<Icons8Icon icon="transaction" className="text-primary text-[16px]" />
                 <span>Record Payment</span>
               </Link>
             </div>
@@ -451,9 +478,8 @@ export default function DashboardPage() {
               </div>
             ) : upcomingDue.length === 0 ? (
               <div className="py-8 text-center text-xs text-ink-muted space-y-1">
-                <span className="material-symbols-outlined text-emerald-600 text-[28px] block mx-auto">task_alt</span>
-                <p className="font-medium text-ink">No upcoming pending charges scheduled.</p>
-                <p className="text-[11px] text-ink-muted">All active tenants are currently settled.</p>
+<Icons8Icon icon="checkmark" className="text-emerald-600 text-[28px] block mx-auto" />
+                <p className="font-medium text-ink-muted/80">No upcoming charges.</p>
               </div>
             ) : (
               <div className="space-y-2 mt-3">
@@ -481,10 +507,10 @@ export default function DashboardPage() {
           <div className="pt-3 border-t border-border/50 text-right">
             <Link
               to={`/rent-charges?month=${selectedMonth}`}
-              className="text-xs text-primary font-medium hover:underline inline-flex items-center gap-1"
+              className="text-xs text-ink-muted/80 font-medium hover:text-ink hover:underline inline-flex items-center gap-1"
             >
               <span>Manage all charges for {formattedMonthHeader}</span>
-              <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+<Icons8Icon icon="arrow_forward" className="text-[16px]" />
             </Link>
           </div>
         </div>
@@ -495,17 +521,16 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between pb-3 border-b border-border/60">
               <div>
                 <h2 className="text-sm sm:text-base font-semibold text-ink flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-emerald-600 text-[20px]">payments</span>
+<Icons8Icon icon="transaction" className="text-emerald-600 text-[20px]" />
                   <span>Recent Payments</span>
                 </h2>
-                <p className="text-[11px] text-ink-muted">Latest verified ledger transactions</p>
               </div>
               <Link
                 to="/payments"
                 className="text-xs font-semibold text-primary hover:underline min-h-[36px] inline-flex items-center gap-1"
               >
                 <span>View All</span>
-                <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+<Icons8Icon icon="arrow_forward" className="text-[16px]" />
               </Link>
             </div>
 
@@ -515,9 +540,8 @@ export default function DashboardPage() {
               </div>
             ) : recentPayments.length === 0 ? (
               <div className="py-8 text-center text-xs text-ink-muted space-y-1">
-                <span className="material-symbols-outlined text-slate-400 text-[28px] block mx-auto">receipt_long</span>
-                <p className="font-medium text-ink">No payments recorded yet.</p>
-                <p className="text-[11px] text-ink-muted">Payments recorded through FIFO or manual selection will appear here.</p>
+<Icons8Icon icon="receipt" className="text-slate-400 text-[28px] block mx-auto" />
+                <p className="font-medium text-ink-muted/80">No payments recorded yet.</p>
               </div>
             ) : (
               <div className="space-y-2 mt-3">
@@ -554,7 +578,7 @@ export default function DashboardPage() {
                         title="Open Printable Receipt"
                         className="px-2.5 py-1 text-xs text-primary hover:bg-primary/10 rounded-lg min-h-[32px] cursor-pointer inline-flex items-center gap-1 transition"
                       >
-                        <span className="material-symbols-outlined text-[16px]">receipt</span>
+<Icons8Icon icon="receipt" className="text-[16px]" />
                         <span className="hidden sm:inline">Receipt</span>
                       </button>
                     </div>
@@ -567,10 +591,10 @@ export default function DashboardPage() {
           <div className="pt-3 border-t border-border/50 text-right">
             <Link
               to="/payments"
-              className="text-xs text-primary font-medium hover:underline inline-flex items-center gap-1"
+              className="text-xs text-ink-muted/80 font-medium hover:text-ink hover:underline inline-flex items-center gap-1"
             >
               <span>View transaction ledger & history</span>
-              <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+<Icons8Icon icon="arrow_forward" className="text-[16px]" />
             </Link>
           </div>
         </div>
@@ -622,7 +646,7 @@ export default function DashboardPage() {
                 onClick={() => window.print()}
                 className="px-4 py-2 text-xs font-semibold text-white bg-primary rounded-full min-h-[40px] cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-[0.98] transition"
               >
-                <span className="material-symbols-outlined text-[16px]">print</span>
+<Icons8Icon icon="print" className="text-[16px]" />
                 <span>Print Receipt</span>
               </button>
             </div>

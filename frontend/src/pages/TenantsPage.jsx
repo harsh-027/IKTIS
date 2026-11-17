@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { tenantApi } from '../services/api.js';
 import Modal from '../components/Dialog.jsx';
+import Icons8Icon from '../components/Icons8Icon.jsx';
 
 // ─── Tenant Form ─────────────────────────────────────────────────────────────
 function TenantForm({ initial = {}, onSubmit, onCancel, loading }) {
@@ -40,7 +41,7 @@ function TenantForm({ initial = {}, onSubmit, onCancel, loading }) {
     <form onSubmit={handleSubmit} noValidate className="space-y-4">
       {error && (
         <div className="text-xs text-rose-700 bg-rose-50 border border-rose-200 rounded-xl px-3 py-2 flex items-center gap-1.5">
-          <span className="material-symbols-outlined text-[16px] text-rose-600">error</span>
+<Icons8Icon icon="error" className="text-[16px] text-rose-600" />
           <span>{error}</span>
         </div>
       )}
@@ -236,61 +237,58 @@ export default function TenantsPage() {
   const unassignedCount = tenants.filter(t => !t.archivedAt && !t.currentTenancy).length;
 
   return (
-    <div className="space-y-5 pb-8">
+    <div className="iktis-internal space-y-6 pb-8">
       {/* ─── Page Header & Quick Action ───────────────────────────────── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-ink">
-            Tenants &amp; Occupants
+          <h1 className="font-display text-2xl font-medium tracking-tight text-ink sm:text-3xl">
+            Tenants
           </h1>
-          <p className="text-xs text-ink-muted">
-            Manage resident profiles, contact records, and active tenancy assignments
-          </p>
         </div>
 
         <button
           onClick={() => setCreateOpen(true)}
-          className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-primary hover:bg-primary-focus text-white text-xs sm:text-sm font-semibold transition active:scale-[0.98] shadow-sm min-h-[40px] cursor-pointer shrink-0"
+          className="flex min-h-10 shrink-0 items-center justify-center gap-1.5 rounded-lg bg-tertiary-fixed-dim px-4 py-2 text-xs font-medium text-primary shadow-sm transition-colors hover:bg-tertiary-fixed sm:text-sm"
         >
-          <span className="material-symbols-outlined text-[18px]">person_add</span>
+<Icons8Icon icon="add" className="text-[18px]" />
           <span>New Tenant</span>
         </button>
       </div>
 
       {/* ─── Bento Overview Metric Cards ──────────────────────────────── */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div className="bg-canvas rounded-[18px] border border-slate-100 p-4 shadow-sm flex flex-col justify-between">
-          <span className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider block mb-1">
-            Registered Tenants
+      <div className="grid grid-cols-3 gap-2 rounded-2xl bg-primary-container p-4 text-white sm:gap-3 sm:p-5">
+        <div className="min-w-0">
+          <span className="block truncate font-label text-[10px] font-semibold uppercase tracking-wider text-primary-fixed">
+            Registered
           </span>
-          <div className="text-2xl sm:text-3xl font-bold text-ink tracking-tight tabular-nums">
+          <div className="text-2xl sm:text-3xl font-bold text-white tracking-tight tabular-nums">
             {loading ? '—' : totalTenantsCount}
           </div>
-          <span className="text-[11px] text-ink-muted mt-0.5 block">
+          <span className="mt-1 hidden text-[11px] text-primary-fixed sm:block">
             Active resident profiles
           </span>
         </div>
 
-        <div className="bg-canvas rounded-[18px] border border-slate-100 p-4 shadow-sm flex flex-col justify-between">
-          <span className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider block mb-1">
-            Active Room Leases
+        <div className="min-w-0 border-l border-white/15 pl-3 sm:pl-4">
+          <span className="block truncate font-label text-[10px] font-semibold uppercase tracking-wider text-primary-fixed">
+            Active leases
           </span>
-          <div className="text-2xl sm:text-3xl font-bold text-emerald-700 tracking-tight tabular-nums">
+          <div className="text-2xl sm:text-3xl font-bold text-tertiary-fixed tracking-tight tabular-nums">
             {loading ? '—' : activeLeaseCount}
           </div>
-          <span className="text-[11px] text-emerald-600 font-medium mt-0.5 block">
+          <span className="mt-1 hidden text-[11px] font-medium text-primary-fixed sm:block">
             Occupying unit rooms
           </span>
         </div>
 
-        <div className="bg-canvas rounded-[18px] border border-slate-100 p-4 shadow-sm flex flex-col justify-between">
-          <span className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider block mb-1">
-            Awaiting Assignment
+        <div className="min-w-0 border-l border-white/15 pl-3 sm:pl-4">
+          <span className="block truncate font-label text-[10px] font-semibold uppercase tracking-wider text-primary-fixed">
+            Unassigned
           </span>
-          <div className="text-2xl sm:text-3xl font-bold text-ink tracking-tight tabular-nums">
+          <div className="text-2xl sm:text-3xl font-bold text-white tracking-tight tabular-nums">
             {loading ? '—' : unassignedCount}
           </div>
-          <span className="text-[11px] text-ink-muted mt-0.5 block">
+          <span className="mt-1 hidden text-[11px] text-primary-fixed sm:block">
             Ready to be assigned to room
           </span>
         </div>
@@ -299,9 +297,7 @@ export default function TenantsPage() {
       {/* ─── Search & Status Segmented Filters ─────────────────────────── */}
       <div className="space-y-2">
         <div className="relative flex items-center w-full">
-          <span className="material-symbols-outlined absolute left-3.5 text-ink-muted text-[18px] pointer-events-none">
-            search
-          </span>
+          <Icons8Icon icon="search" className="absolute left-3.5 text-ink-muted text-[18px] pointer-events-none" />
           <input
             type="search"
             value={search}
@@ -382,26 +378,26 @@ export default function TenantsPage() {
         </div>
       ) : error ? (
         <div className="bg-rose-50 border border-rose-200 text-rose-700 rounded-xl p-4 text-xs flex items-center gap-2">
-          <span className="material-symbols-outlined text-[18px]">error</span>
+<Icons8Icon icon="error" className="text-[18px]" />
           <span>{error}</span>
         </div>
       ) : filteredTenants.length === 0 ? (
         <div className="bg-canvas rounded-[18px] border border-slate-100 p-8 sm:p-12 text-center shadow-sm space-y-2">
           <div className="w-12 h-12 rounded-2xl bg-canvas-soft flex items-center justify-center mx-auto mb-2 text-ink-muted">
-            <span className="material-symbols-outlined text-[28px]">group</span>
+<Icons8Icon icon="user_group" className="text-[28px]" />
           </div>
           <p className="text-sm font-semibold text-ink">No tenants found</p>
           <p className="text-xs text-ink-muted max-w-sm mx-auto">
             {search
-              ? 'No tenants match your search filter. Try clearing your query.'
-              : 'Add your first tenant to begin assigning rooms and managing tenancies.'}
+              ? 'No tenants match your search. Try clearing the query.'
+              : 'Add a tenant to assign rooms and manage tenancies.'}
           </p>
           {!search && (
             <button
               onClick={() => setCreateOpen(true)}
               className="mt-3 inline-flex items-center gap-1 px-4 py-2 bg-primary text-white text-xs font-semibold rounded-full shadow-sm cursor-pointer"
             >
-              <span className="material-symbols-outlined text-[16px]">person_add</span>
+<Icons8Icon icon="add" className="text-[16px]" />
               <span>Create First Tenant</span>
             </button>
           )}
@@ -464,7 +460,7 @@ export default function TenantsPage() {
                     {current ? (
                       <div className="p-2.5 bg-blue-50/60 rounded-xl border border-blue-100/60 text-xs text-primary flex items-center justify-between gap-2">
                         <div className="flex items-center gap-1.5 min-w-0">
-                          <span className="material-symbols-outlined text-[16px] shrink-0">apartment</span>
+<Icons8Icon icon="apartment" className="text-[16px] shrink-0" />
                           <span className="font-semibold truncate">
                             {current.roomLabel} • {current.propertyName}
                           </span>
@@ -475,7 +471,7 @@ export default function TenantsPage() {
                       </div>
                     ) : (
                       <div className="p-2.5 bg-canvas-soft rounded-xl border border-slate-100 text-xs text-ink-muted flex items-center gap-1.5">
-                        <span className="material-symbols-outlined text-[16px]">door_front</span>
+<Icons8Icon icon="door" className="text-[16px]" />
                         <span>{isArchived ? 'Profile archived' : 'Not currently assigned to any room'}</span>
                       </div>
                     )}
@@ -485,7 +481,7 @@ export default function TenantsPage() {
                   <div className="space-y-1 text-xs text-ink-muted border-t border-border/50 pt-2.5">
                     {tenant.phone && (
                       <div className="flex items-center gap-1.5 truncate">
-                        <span className="material-symbols-outlined text-[15px] text-ink-muted">call</span>
+<Icons8Icon icon="phone" className="text-[16px] text-ink-muted" />
                         <a href={`tel:${tenant.phone}`} className="hover:text-primary transition font-mono">
                           {tenant.phone}
                         </a>
@@ -493,7 +489,7 @@ export default function TenantsPage() {
                     )}
                     {tenant.email && (
                       <div className="flex items-center gap-1.5 truncate">
-                        <span className="material-symbols-outlined text-[15px] text-ink-muted">mail</span>
+<Icons8Icon icon="email" className="text-[16px] text-ink-muted" />
                         <a href={`mailto:${tenant.email}`} className="hover:text-primary transition truncate">
                           {tenant.email}
                         </a>
@@ -509,7 +505,7 @@ export default function TenantsPage() {
                     className="flex-1 text-center bg-canvas-soft hover:bg-surface-container text-ink rounded-full py-1.5 text-xs font-semibold transition active:scale-[0.98] min-h-[38px] inline-flex items-center justify-center gap-1"
                   >
                     <span>Manage Tenancy</span>
-                    <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
+<Icons8Icon icon="arrow_forward" className="text-[16px]" />
                   </Link>
 
                   {!isArchived && (
@@ -520,7 +516,7 @@ export default function TenantsPage() {
                         className="px-3 border border-border rounded-full py-1.5 text-xs font-medium text-primary hover:bg-primary/10 hover:border-primary/30 transition min-h-[38px] inline-flex items-center justify-center cursor-pointer"
                         title="Assign Room"
                       >
-                        <span className="material-symbols-outlined text-[16px]">meeting_room</span>
+<Icons8Icon icon="meeting_room" className="text-[16px]" />
                       </Link>
 
                       <button
@@ -529,7 +525,7 @@ export default function TenantsPage() {
                         className="px-3 border border-border rounded-full py-1.5 text-xs font-medium text-ink hover:bg-canvas-soft transition min-h-[38px] inline-flex items-center justify-center cursor-pointer"
                         title="Edit Profile"
                       >
-                        <span className="material-symbols-outlined text-[16px]">edit</span>
+<Icons8Icon icon="edit" className="text-[16px]" />
                       </button>
 
                       <button
@@ -541,7 +537,7 @@ export default function TenantsPage() {
                         className="px-3 border border-border rounded-full py-1.5 text-xs font-medium text-rose-600 hover:bg-rose-50 hover:border-rose-200 transition min-h-[38px] inline-flex items-center justify-center cursor-pointer"
                         title="Archive Tenant"
                       >
-                        <span className="material-symbols-outlined text-[16px]">archive</span>
+<Icons8Icon icon="archive" className="text-[16px]" />
                       </button>
                     </>
                   )}
@@ -579,13 +575,13 @@ export default function TenantsPage() {
           <div className="space-y-4">
             {archiveError && (
               <div className="text-xs text-rose-700 bg-rose-50 border border-rose-200 rounded-xl px-3 py-2 flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-[16px] text-rose-600">error</span>
+<Icons8Icon icon="error" className="text-[16px] text-rose-600" />
                 <span>{archiveError}</span>
               </div>
             )}
 
             <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-xl text-amber-900 text-xs sm:text-sm flex items-start gap-2.5">
-              <span className="material-symbols-outlined text-[20px] text-amber-600 shrink-0 mt-0.5">warning</span>
+<Icons8Icon icon="warning" className="text-[20px] text-amber-600 shrink-0 mt-0.5" />
               <div>
                 <p className="font-bold text-ink">Archive &quot;{archiveTarget.fullName}&quot;?</p>
                 <p className="mt-0.5 text-xs text-amber-800 leading-relaxed">
