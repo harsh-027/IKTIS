@@ -33,10 +33,11 @@ export default function LoginPage() {
   return (
     <AuthShell
       title="Sign in"
+      glass
       footer={(
-        <p className="text-sm text-ink-muted">
+        <p className="text-sm text-white/70">
           Don&apos;t have an account?{' '}
-          <Link to="/register" className="font-medium text-primary hover:underline">Create one</Link>
+          <Link to="/register" className="font-medium text-white hover:underline">Create one</Link>
         </p>
       )}
     >
@@ -62,12 +63,12 @@ export default function LoginPage() {
             <div>
               <label
                 htmlFor="email"
-                className="mb-1.5 block text-sm font-medium text-ink"
+                className="mb-1.5 block text-sm font-medium text-white"
               >
                 Email Address
               </label>
               <div className="relative">
-                <span className="material-symbols-outlined absolute left-3.5 top-3 text-[18px] text-ink-muted pointer-events-none">
+                <span className="material-symbols-outlined absolute left-3.5 top-3 text-[18px] text-white/65 pointer-events-none">
                   mail
                 </span>
                 <input
@@ -78,7 +79,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="landlord@example.com"
-                  className="min-h-11 w-full rounded-lg border border-border bg-white py-2.5 pl-10 pr-4 text-sm text-ink placeholder:text-ink-muted/60 transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className="min-h-11 w-full rounded-lg border border-white/20 bg-white/10 py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-white/50 transition-colors focus:border-white/50 focus:outline-none focus:ring-2 focus:ring-white/20"
                 />
               </div>
             </div>
@@ -86,12 +87,12 @@ export default function LoginPage() {
             <div>
               <label
                 htmlFor="password"
-                className="mb-1.5 block text-sm font-medium text-ink"
+                className="mb-1.5 block text-sm font-medium text-white"
               >
                 Password
               </label>
               <div className="relative">
-                <span className="material-symbols-outlined absolute left-3.5 top-3 text-[18px] text-ink-muted pointer-events-none">
+                <span className="material-symbols-outlined absolute left-3.5 top-3 text-[18px] text-white/65 pointer-events-none">
                   lock
                 </span>
                 <input
@@ -102,13 +103,13 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="min-h-11 w-full rounded-lg border border-border bg-white py-2.5 pl-10 pr-12 text-sm text-ink placeholder:text-ink-muted/60 transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className="min-h-11 w-full rounded-lg border border-white/20 bg-white/10 py-2.5 pl-10 pr-12 text-sm text-white placeholder:text-white/50 transition-colors focus:border-white/50 focus:outline-none focus:ring-2 focus:ring-white/20"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((visible) => !visible)}
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
-                  className="absolute right-2 top-1/2 inline-flex min-h-10 min-w-10 -translate-y-1/2 items-center justify-center rounded-lg text-ink-muted hover:bg-surface-soft hover:text-ink"
+                  className="absolute right-2 top-1/2 inline-flex min-h-10 min-w-10 -translate-y-1/2 items-center justify-center rounded-lg text-white/65 hover:bg-white/10 hover:text-white"
                 >
                   <span className="material-symbols-outlined text-[18px]">
                     {showPassword ? 'visibility_off' : 'visibility'}

@@ -53,10 +53,11 @@ export default function RegisterPage() {
       title="Create your account"
       description="Set up your private workspace for properties, tenants, and collections"
       maxWidth="max-w-lg"
+      glass
       footer={(
-        <p className="text-sm text-ink-muted">
+        <p className="text-sm text-white/70">
           Already have an account?{' '}
-          <Link to="/login" className="font-medium text-primary hover:underline">Sign in</Link>
+          <Link to="/login" className="font-medium text-white hover:underline">Sign in</Link>
         </p>
       )}
     >
@@ -76,12 +77,12 @@ export default function RegisterPage() {
             <div>
               <label
                 htmlFor="name"
-                className="mb-1.5 block text-sm font-medium text-ink"
+                className="mb-1.5 block text-sm font-medium text-white"
               >
                 Full Name
               </label>
               <div className="relative">
-                <span className="material-symbols-outlined absolute left-3.5 top-3 text-[18px] text-ink-muted pointer-events-none">
+                <span className="material-symbols-outlined absolute left-3.5 top-3 text-[18px] text-white/65 pointer-events-none">
                   person
                 </span>
                 <input
@@ -92,7 +93,7 @@ export default function RegisterPage() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Jane Doe"
-                  className="min-h-11 w-full rounded-lg border border-border bg-white py-2.5 pl-10 pr-4 text-sm text-ink placeholder:text-ink-muted/60 transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className="min-h-11 w-full rounded-lg border border-white/20 bg-white/10 py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-white/50 transition-colors focus:border-white/50 focus:outline-none focus:ring-2 focus:ring-white/20"
                 />
               </div>
             </div>
@@ -100,12 +101,12 @@ export default function RegisterPage() {
             <div>
               <label
                 htmlFor="email"
-                className="mb-1.5 block text-sm font-medium text-ink"
+                className="mb-1.5 block text-sm font-medium text-white"
               >
                 Email Address
               </label>
               <div className="relative">
-                <span className="material-symbols-outlined absolute left-3.5 top-3 text-[18px] text-ink-muted pointer-events-none">
+                <span className="material-symbols-outlined absolute left-3.5 top-3 text-[18px] text-white/65 pointer-events-none">
                   mail
                 </span>
                 <input
@@ -116,7 +117,7 @@ export default function RegisterPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="landlord@example.com"
-                  className="min-h-11 w-full rounded-lg border border-border bg-white py-2.5 pl-10 pr-4 text-sm text-ink placeholder:text-ink-muted/60 transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className="min-h-11 w-full rounded-lg border border-white/20 bg-white/10 py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-white/50 transition-colors focus:border-white/50 focus:outline-none focus:ring-2 focus:ring-white/20"
                 />
               </div>
             </div>
@@ -124,12 +125,12 @@ export default function RegisterPage() {
             <div>
               <label
                 htmlFor="password"
-                className="mb-1.5 block text-sm font-medium text-ink"
+                className="mb-1.5 block text-sm font-medium text-white"
               >
                 Password
               </label>
               <div className="relative">
-                <span className="material-symbols-outlined absolute left-3.5 top-3 text-[18px] text-ink-muted pointer-events-none">
+                <span className="material-symbols-outlined absolute left-3.5 top-3 text-[18px] text-white/65 pointer-events-none">
                   lock
                 </span>
                 <input
@@ -140,7 +141,7 @@ export default function RegisterPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="At least 8 characters"
-                  className="min-h-11 w-full rounded-lg border border-border bg-white py-2.5 pl-10 pr-4 text-sm text-ink placeholder:text-ink-muted/60 transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className="min-h-11 w-full rounded-lg border border-white/20 bg-white/10 py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-white/50 transition-colors focus:border-white/50 focus:outline-none focus:ring-2 focus:ring-white/20"
                 />
               </div>
             </div>
@@ -148,12 +149,12 @@ export default function RegisterPage() {
             <div>
               <label
                 htmlFor="confirmPassword"
-                className="mb-1.5 block text-sm font-medium text-ink"
+                className="mb-1.5 block text-sm font-medium text-white"
               >
                 Confirm Password
               </label>
               <div className="relative">
-                <span className="material-symbols-outlined absolute left-3.5 top-3 text-[18px] text-ink-muted pointer-events-none">
+                <span className="material-symbols-outlined absolute left-3.5 top-3 text-[18px] text-white/65 pointer-events-none">
                   verified_user
                 </span>
                 <input
@@ -164,22 +165,22 @@ export default function RegisterPage() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Re-enter password"
-                  className="min-h-11 w-full rounded-lg border border-border bg-white py-2.5 pl-10 pr-4 text-sm text-ink placeholder:text-ink-muted/60 transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className="min-h-11 w-full rounded-lg border border-white/20 bg-white/10 py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-white/50 transition-colors focus:border-white/50 focus:outline-none focus:ring-2 focus:ring-white/20"
                 />
               </div>
             </div>
 
-            <div className="space-y-3 pt-1 text-sm text-ink-muted">
+            <div className="space-y-3 pt-1 text-sm text-white/70">
               <label className="flex items-start gap-2 cursor-pointer">
                 <input
                   type="checkbox"
                   required
                   checked={termsAccepted}
                   onChange={(e) => setTermsAccepted(e.target.checked)}
-                  className="mt-0.5 h-4 w-4 rounded border-border text-primary focus:ring-primary/20"
+                  className="mt-0.5 h-4 w-4 rounded border-white/30 bg-white/10 text-tertiary-fixed-dim focus:ring-white/20"
                 />
                 <span>
-                  I agree to the <Link to="/terms" className="text-primary hover:underline">Terms of Service</Link>.
+                  I agree to the <Link to="/terms" className="text-white hover:underline">Terms of Service</Link>.
                 </span>
               </label>
               <label className="flex items-start gap-2 cursor-pointer">
@@ -188,10 +189,10 @@ export default function RegisterPage() {
                   required
                   checked={privacyPolicyAccepted}
                   onChange={(e) => setPrivacyPolicyAccepted(e.target.checked)}
-                  className="mt-0.5 h-4 w-4 rounded border-border text-primary focus:ring-primary"
+                  className="mt-0.5 h-4 w-4 rounded border-white/30 bg-white/10 text-tertiary-fixed-dim focus:ring-white/20"
                 />
                 <span>
-                  I acknowledge the <Link to="/privacy" className="text-primary hover:underline">Privacy Policy</Link>.
+                  I acknowledge the <Link to="/privacy" className="text-white hover:underline">Privacy Policy</Link>.
                 </span>
               </label>
             </div>

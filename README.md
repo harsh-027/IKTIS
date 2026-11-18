@@ -56,4 +56,3 @@ Password recovery is disabled by default. To re-enable it after configuring Rese
 ## Local setup (to be completed during implementation)
 
 The final setup commands will be documented after the root scripts, frontend, backend, Prisma schema, and environment variables are implemented. Never commit real `.env` files or secrets.
-//USE LOWEST AMOUNT OF CODEX TOKENS

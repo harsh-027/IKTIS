@@ -6,7 +6,7 @@ const PRIVACY_EMAIL = 'harshit.work009@gmail.com';
 
 function PolicyShell({ title, children }) {
   return (
-    <article className="max-w-3xl mx-auto bg-canvas border border-border rounded-[18px] p-5 sm:p-8 shadow-sm">
+    <article className="max-w-3xl mx-auto bg-canvas rounded-[18px] p-5 sm:p-8 shadow-sm">
       <div className="mb-8">
         <Link to="/" className="text-sm font-semibold text-primary hover:underline">
           Back to IKTIS
