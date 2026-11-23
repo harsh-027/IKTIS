@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+Disallow: /properties
+Disallow: /tenants
+Disallow: /rent-charges
+Disallow: /payments
+Disallow: /reports
+Disallow: /settings
+
+Sitemap: https://iktis.vercel.app/sitemap.xml
