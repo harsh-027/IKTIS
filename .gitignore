@@ -35,6 +35,13 @@ yarn-error.log*
 *.p12
 *.pfx
 
+# Android release artifacts and signing credentials
+/android-release/
+
+# Android signing credentials
+*.jks
+*.keystore
+
 # Coverage, caches, and temporary files
 coverage/
 .nyc_output/
