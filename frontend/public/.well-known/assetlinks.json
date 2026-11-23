@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.iktis.rentmanager",
+        "sha256_cert_fingerprints": ["D9:CE:E3:DA:C2:F9:0E:9A:49:59:B4:80:30:DE:73:BD:E2:72:16:DB:EF:5C:80:D3:CB:11:8C:5C:BD:FB:E7:31"]
+      }
+    }]
