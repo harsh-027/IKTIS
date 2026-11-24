@@ -218,18 +218,6 @@ export default function PropertiesPage() {
 
   // Calculate portfolio totals
   const totalPropertiesCount = properties.filter((p) => !p.archivedAt).length;
-  const totalRoomsCount = properties
-    .filter((p) => !p.archivedAt)
-    .reduce((acc, p) => acc + (p.stats?.totalRooms ?? 0), 0);
-  const totalAvailableRooms = properties
-    .filter((p) => !p.archivedAt)
-    .reduce((acc, p) => acc + (p.stats?.availableRooms ?? 0), 0);
-  const totalOccupiedRooms = properties
-    .filter((p) => !p.archivedAt)
-    .reduce((acc, p) => acc + (p.stats?.occupiedRooms ?? 0), 0);
-  const portfolioOccupancyRate = totalRoomsCount > 0
-    ? Math.round((totalOccupiedRooms / totalRoomsCount) * 100)
-    : 0;
 
   return (
     <div className="iktis-internal space-y-4 pb-8">
@@ -247,46 +235,6 @@ export default function PropertiesPage() {
           </button>
         </div>
 
-        {/* Portfolio Occupancy Progress Bar & Quick Stats */}
-        <div className="space-y-4 rounded-2xl bg-primary-container p-4 text-white sm:p-5">
-          <div className="flex items-center justify-between gap-2 text-xs">
-            <div className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-tertiary-fixed-dim inline-block ring-2 ring-tertiary-fixed/40"></span>
-              <span className="font-semibold text-white">Portfolio Occupancy</span>
-            </div>
-            <div className="flex items-baseline gap-1 font-bold text-white">
-              <span className="text-base tabular-nums">{portfolioOccupancyRate}%</span>
-              <span className="text-[11px] text-primary-fixed font-normal">capacity</span>
-            </div>
-          </div>
-          <div className="w-full h-2 rounded-full bg-white/15 flex overflow-hidden">
-            <div
-              className="h-full bg-tertiary-fixed-dim transition-all duration-300 rounded-l-full"
-              style={{ width: `${portfolioOccupancyRate}%` }}
-            ></div>
-            <div
-              className="h-full bg-white/10 transition-all duration-300 rounded-r-full"
-              style={{ width: `${100 - portfolioOccupancyRate}%` }}
-            ></div>
-          </div>
-          <div className="grid grid-cols-3 gap-2 pt-3 text-center text-xs">
-            <div className="flex items-center justify-center gap-1.5 px-1 py-1.5">
-<Icons8Icon icon="building" className="text-tertiary-fixed-dim text-[16px]" />
-              <span className="font-semibold text-white tabular-nums">{totalPropertiesCount}</span>
-              <span className="text-primary-fixed hidden sm:inline">Properties</span>
-            </div>
-            <div className="flex items-center justify-center gap-1.5 px-1 py-1.5">
-<Icons8Icon icon="approval" className="text-tertiary-fixed-dim text-[16px]" />
-              <span className="font-semibold text-white tabular-nums">{totalOccupiedRooms}</span>
-              <span className="text-primary-fixed hidden sm:inline">Occupied</span>
-            </div>
-            <div className="flex items-center justify-center gap-1.5 px-1 py-1.5">
-<Icons8Icon icon="meeting_room" className="text-tertiary-fixed-dim text-[16px]" />
-              <span className="font-semibold text-white tabular-nums">{totalAvailableRooms}</span>
-              <span className="text-primary-fixed hidden sm:inline">Available</span>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* ─── Search & Segmented Filter Bar (Stitch Horizontal Scroll) ───── */}

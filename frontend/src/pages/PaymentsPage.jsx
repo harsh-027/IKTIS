@@ -822,16 +822,6 @@ export default function PaymentsPage() {
       </div>
 
       {/* ─── Search & Segmented Filter Bar ────────────────────────────── */}
-      {monthlySummary?.overdueRent > 0 && (
-        <Link
-          to="/rent-charges"
-          className="flex min-h-11 items-center justify-between gap-3 rounded-lg border border-error-container bg-error-container/50 px-3.5 py-2.5 text-sm text-on-error-container transition-colors hover:bg-error-container/70"
-        >
-          <span className="font-semibold">Review overdue charges</span>
-          <span className="shrink-0 font-display text-lg font-medium tabular-nums">{formatINR(monthlySummary.overdueRent)}</span>
-        </Link>
-      )}
-
       <div className="space-y-2">
         <div className="relative flex items-center w-full max-w-3xl">
           <Icons8Icon icon="search" className="absolute left-3.5 text-ink-muted text-[18px] pointer-events-none" />

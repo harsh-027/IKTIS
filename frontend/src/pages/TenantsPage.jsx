@@ -392,15 +392,6 @@ export default function TenantsPage() {
               ? 'No tenants match your search. Try clearing the query.'
               : 'Add a tenant to assign rooms and manage tenancies.'}
           </p>
-          {!search && (
-            <button
-              onClick={() => setCreateOpen(true)}
-              className="mt-3 inline-flex items-center gap-1 px-4 py-2 bg-primary text-white text-xs font-semibold rounded-full shadow-sm cursor-pointer"
-            >
-<Icons8Icon icon="add" className="text-[16px]" />
-              <span>Create First Tenant</span>
-            </button>
-          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">

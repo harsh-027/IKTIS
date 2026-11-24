@@ -377,7 +377,6 @@ export default function PropertyDetailPage() {
   const occupiedUnits = rooms.filter((r) => r.isOccupied).length;
   const maintenanceUnits = rooms.filter((r) => !r.isAvailable).length;
   const vacantUnits = rooms.filter((r) => !r.isOccupied && r.isAvailable).length;
-  const occupancyPercentage = totalUnits > 0 ? Math.round((occupiedUnits / totalUnits) * 100) : 0;
 
   // Filtered rooms
   const filteredRooms = rooms.filter((room) => {
@@ -455,50 +454,6 @@ export default function PropertyDetailPage() {
           )}
         </div>
 
-        {/* Occupancy Stats Section */}
-        <div className="space-y-2 pt-2 border-t border-border/50">
-          <div className="flex justify-between items-end text-xs">
-            <div className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-badge-paid-text inline-block ring-2 ring-badge-paid-border/40"></span>
-              <span className="font-semibold text-ink">Occupancy Rate</span>
-            </div>
-            <div className="flex items-baseline gap-1">
-              <span className="text-base sm:text-lg font-bold text-primary tabular-nums">
-                {occupancyPercentage}%
-              </span>
-              <span className="text-[11px] text-ink-muted font-normal">capacity</span>
-            </div>
-          </div>
-
-          <div className="w-full h-2.5 rounded-full bg-surface-container flex overflow-hidden p-0.5">
-            <div
-              className="h-full bg-primary-container rounded-l-full transition-all duration-300"
-              style={{ width: `${occupancyPercentage}%` }}
-            ></div>
-            <div
-              className="h-full bg-slate-300 rounded-r-full transition-all duration-300"
-              style={{ width: `${100 - occupancyPercentage}%` }}
-            ></div>
-          </div>
-
-          <div className="grid grid-cols-3 gap-2 pt-1 text-center text-xs">
-            <div className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-xl bg-surface-container-low">
-<Icons8Icon icon="approval" className="text-badge-paid-text text-[16px]" />
-              <span className="font-semibold text-ink">{occupiedUnits}</span>
-              <span className="text-ink-muted">Active</span>
-            </div>
-            <div className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-xl bg-badge-partial-bg/60">
-<Icons8Icon icon="settings" className="text-badge-partial-text text-[16px]" />
-              <span className="font-semibold text-badge-partial-text">{maintenanceUnits}</span>
-              <span className="text-badge-partial-text">Maint.</span>
-            </div>
-            <div className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-xl bg-surface-container-low">
-<Icons8Icon icon="meeting_room" className="text-ink-muted text-[16px]" />
-              <span className="font-semibold text-ink">{vacantUnits}</span>
-              <span className="text-ink-muted">Vacant</span>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* ─── Operational & Derived Logic Explainer Micro-banner ─────────── */}

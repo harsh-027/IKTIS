@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './context/AuthContext.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import PublicOnlyRoute from './components/PublicOnlyRoute.jsx';
 import IKTISLoadingScreen from './components/IKTISLoadingScreen.jsx';
+import { isTrustedWebActivity } from './lib/environment.js';
 const AppLayout = lazy(() => import('./components/AppLayout.jsx'));
 const LoginPage = lazy(() => import('./pages/LoginPage.jsx'));
 const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage.jsx'));
@@ -14,13 +15,13 @@ const PropertiesPage = lazy(() => import('./pages/PropertiesPage.jsx'));
 const PropertyDetailPage = lazy(() => import('./pages/PropertyDetailPage.jsx'));
 const TenantsPage = lazy(() => import('./pages/TenantsPage.jsx'));
 const TenantDetailPage = lazy(() => import('./pages/TenantDetailPage.jsx'));
-const RentChargesPage = lazy(() => import('./pages/RentChargesPage.jsx'));
 const PaymentsPage = lazy(() => import('./pages/PaymentsPage.jsx'));
 const ReportsPage = lazy(() => import('./pages/ReportsPage.jsx'));
 const LegalPage = lazy(() => import('./pages/LegalPage.jsx'));
 const LandingPage = lazy(() => import('./pages/LandingPage.jsx'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage.jsx'));
 const SettingsPage = lazy(() => import('./pages/SettingsPage.jsx'));
+const OnboardingPage = lazy(() => import('./pages/OnboardingPage.jsx'));
 
 export default function App() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
 
           {/* Public routes (redirect to / if already logged in) */}
           <Route element={<PublicOnlyRoute />}>
+            <Route path="/onboarding" element={<OnboardingPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
@@ -48,7 +50,6 @@ export default function App() {
               <Route path="/properties/:id" element={<PropertyDetailPage />} />
               <Route path="/tenants" element={<TenantsPage />} />
               <Route path="/tenants/:id" element={<TenantDetailPage />} />
-              <Route path="/rent-charges" element={<RentChargesPage />} />
               <Route path="/payments" element={<PaymentsPage />} />
               <Route path="/reports" element={<ReportsPage />} />
               <Route path="/settings" element={<SettingsPage />} />
@@ -83,5 +84,5 @@ function RootRoute() {
     );
   }
 
-  return <LandingPage />;
+  return isTrustedWebActivity() ? <OnboardingPage /> : <LandingPage />;
 }

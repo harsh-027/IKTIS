@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import Icons8Icon from './Icons8Icon.jsx';
+import { isTrustedWebActivity } from '../lib/environment.js';
 
 const primaryNavigation = [
   { to: '/', label: 'Dashboard', icon: 'dashboard', end: true },
@@ -11,7 +12,6 @@ const primaryNavigation = [
 ];
 
 const secondaryNavigation = [
-  { to: '/rent-charges', label: 'Rent charges', icon: 'invoice' },
   { to: '/reports', label: 'Reports', icon: 'graph_report' },
 ];
 
@@ -75,7 +75,7 @@ export default function AppLayout({ children }) {
   const handleSignOut = async () => {
     setIsProfileMenuOpen(false);
     await logout();
-    navigate('/login');
+    navigate(isTrustedWebActivity() ? '/' : '/login');
   };
 
   return (

@@ -152,15 +152,6 @@ export default function DashboardPage() {
             </h1>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Link
-              to={`/rent-charges?month=${selectedMonth}`}
-              className="flex min-h-10 items-center gap-1.5 rounded-lg bg-tertiary-fixed-dim px-4 py-2 text-xs font-medium text-primary shadow-sm transition-colors hover:bg-tertiary-fixed sm:text-sm"
-            >
-<Icons8Icon icon="add" className="text-[18px]" />
-              <span>Bulk Rent</span>
-            </Link>
-          </div>
         </div>
 
         {/* Period Filter Pills & Month Navigator */}
@@ -504,15 +495,6 @@ export default function DashboardPage() {
             )}
           </div>
 
-          <div className="pt-3 border-t border-border/50 text-right">
-            <Link
-              to={`/rent-charges?month=${selectedMonth}`}
-              className="text-xs text-ink-muted/80 font-medium hover:text-ink hover:underline inline-flex items-center gap-1"
-            >
-              <span>Manage all charges for {formattedMonthHeader}</span>
-<Icons8Icon icon="arrow_forward" className="text-[16px]" />
-            </Link>
-          </div>
         </div>
 
         {/* Recent Payments */}
